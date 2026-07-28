@@ -211,7 +211,7 @@ footer.app-foot a { color: var(--text-dim); }
       <div class="banner-headline">今天可以下手 2 只</div>
       <div class="banner-counts">
         <span class="count-buy">🟢 BUY <strong>2</strong></span>
-        <span class="count-watch">🟡 WATCH <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
         <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
       </div>
       <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
@@ -221,39 +221,46 @@ footer.app-foot a { color: var(--text-dim); }
   <section class="section">
     <h2>📊 持仓建议</h2>
     <div class="picks-grid">
-    <article class="pick-card verdict-watch">
-      <div class="pick-ribbon">WATCH</div>
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
       <div class="pick-head">
         <div>
           <div class="ticker">$LITE</div>
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$711.96</div>
-          <div class="change up">+0.84%</div>
+          <div class="price">$629.19</div>
+          <div class="change down">-10.88%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,4.3 L 70.0,3.1 L 105.0,23.4 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,4.3 L 70.0,3.1 L 105.0,23.4 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 -15.0%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.7 L 35.0,2.0 L 70.0,14.4 L 105.0,23.4 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.7 L 35.0,2.0 L 70.0,14.4 L 105.0,23.4 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -24.2%</div>
       </div>
       
-      <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">690(strike)</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ</span></div>
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:29.9%;width:11.5%" title="入场区 $610-$630"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $570.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $570</div><div class="marker target" style="left:93.1%" title="止盈 $720.0"></div><div class="marker-label target-label" style="left:93.1%">target $720</div><div class="marker current" style="left:40.9%" title="当前 $629.19"></div><div class="marker-label current-label" style="left:40.9%">$629.19</div>
       </div>
-      <div class="pick-thesis">CPO 800G/1.6T 光模块激光器瓶颈核心标的，上周暴跌后企稳回升，Barron&#x27;s 背书确认 AI 资本开支受益逻辑</div>
-      <div class="pick-reason"><span class="reason-icon">✓</span> 入场区间未指定</div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">610.00-630.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股 / 等待企稳后 sell put</span></div>
+      </div>
+      <div class="pick-thesis">CPO 800G/1.6T光模块瓶颈未变，板块恐慌抛售后等待企稳V型反弹</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI 算力板块暴跌后企稳反弹 + Barron&#x27;s 背书 LITE 为 AI 资本开支核心受益</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 800G/1.6T 光模块激光器芯片瓶颈</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Barron&#x27;s 发声 + 散户恐慌后情绪冷淡，未被过度追捧</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>IV 高位 Sell Put 收割时间价值，$690 有充足下行保护</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>LITE 连续 2 日收盘跌破 $690（Sell Put 行权价），需重新评估 CPO 需求逻辑</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>CPO板块5天暴跌-24%，但1.6T需求逻辑未破，Hyperscaler自身在涨</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>800G/1.6T 光模块激光器 — 产能瓶颈持续至2027H2</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.6</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:20%;background:var(--avoid)"></span></span><span class="score-val">2</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>搜索受限未获取Serenity最新推文，但板块恐慌抛售符合其&#x27;unknown bottleneck&#x27;布局风格</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>今日观望不进场，等放量企稳后再用sell put入场</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在 $LITE &lt;$570 且成交量&gt;300万股 或 MSFT财报CapEx指引低于预期时看到</span></div>
       </div>
     </details>
     
@@ -267,83 +274,38 @@ footer.app-foot a { color: var(--text-dim); }
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$271.31</div>
-          <div class="change up">+1.50%</div>
+          <div class="price">$235.8</div>
+          <div class="change down">-11.79%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,5.9 L 70.0,5.1 L 105.0,29.3 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,5.9 L 70.0,5.1 L 105.0,29.3 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 -14.5%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.5 L 35.0,2.0 L 70.0,16.3 L 105.0,21.5 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.5 L 35.0,2.0 L 70.0,16.3 L 105.0,21.5 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -24.5%</div>
       </div>
       
     <div class="zone-bar-wrap">
       <div class="zone-bar">
-        <div class="zone-entry" style="left:33.4%;width:19.9%" title="入场区 $270-$285"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $250.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $250</div><div class="marker target" style="left:93.1%" title="止盈 $315.0"></div><div class="marker-label target-label" style="left:93.1%">target $315</div><div class="marker current" style="left:35.2%" title="当前 $271.31"></div><div class="marker-label current-label" style="left:35.2%">$271.31</div>
+        <div class="zone-entry" style="left:22.6%;width:23.5%" title="入场区 $225-$240"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $215.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $215</div><div class="marker target" style="left:93.1%" title="止盈 $270.0"></div><div class="marker-label target-label" style="left:93.1%">target $270</div><div class="marker current" style="left:39.5%" title="当前 $235.8"></div><div class="marker-label current-label" style="left:39.5%">$235.8</div>
       </div>
     </div>
     
       <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">270-285</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">225.00-240.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股 / 等待企稳后入场</span></div>
       </div>
-      <div class="pick-thesis">AI 数据中心光互联整合供应商，营收 +41% YoY 受 AI 基建长期驱动，上周暴跌后估值修复中</div>
+      <div class="pick-thesis">CPO光模块双龙头之一，同样受板块恐慌拖累，等待$225-235支撑区企稳</div>
       <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Zacks 7/24 坚定看多 COHR AI 基础设施转型，Barron&#x27;s 列 LITE/COHR 为 AI 资本开支受益</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 光收发器 + 激光器，数据中心光互联瓶颈</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Zacks Buy 覆盖，散户情绪从恐慌转向企稳</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>正股直接持有享受 AI 基建长期增长，或 Sell Put $255 收割高 IV</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>COHR 收盘跌破 $250 且 AAOI/FN 同步破位，行业级需求低迷信号</span></div>
-      </div>
-    </details>
-    
-    </article>
-    
-    <article class="pick-card verdict-buy">
-      <div class="pick-ribbon">BUY</div>
-      <div class="pick-head">
-        <div>
-          <div class="ticker">$AXTI</div>
-          <div class="direction">LONG</div>
-        </div>
-        <div class="price-block">
-          <div class="price">$47.88</div>
-          <div class="change up">+2.31%</div>
-        </div>
-      </div>
-      <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,15.7 L 70.0,15.9 L 105.0,38.0 L 140.0,35.5 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,15.7 L 70.0,15.9 L 105.0,38.0 L 140.0,35.5" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 -15.3%</div>
-      </div>
-      
-    <div class="zone-bar-wrap">
-      <div class="zone-bar">
-        <div class="zone-entry" style="left:17.7%;width:21.6%" title="入场区 $44-$48"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $42.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $42</div><div class="marker target" style="left:93.1%" title="止盈 $58.0"></div><div class="marker-label target-label" style="left:93.1%">target $58</div><div class="marker current" style="left:38.6%" title="当前 $47.88"></div><div class="marker-label current-label" style="left:38.6%">$47.88</div>
-      </div>
-    </div>
-    
-      <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">44-48</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
-      </div>
-      <div class="pick-thesis">7N 高纯铟/InP 衬底全球瓶颈，7/30 财报催化剂窗口，InP 积压订单破 $1 亿，估值已充分回调</div>
-      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
-      
-    <details class="reasoning">
-      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
-      <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>7/30 Q2 财报 InP 创纪录收入预期 + 出口许可不确定性是已知风险 vs 预期</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>InP 衬底（7N 高纯铟）→ CPO 激光器基础材料瓶颈</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Zacks 财报预览中性偏多，Serenity 核心持仓标的，散户情绪未过热</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>正股持有以捕捉财报超预期 Alpha，避免期权窗口 IV crush</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>7/30 财报 InP 收入 &lt;$30M 或 Q3 指引积压 &lt;$80M，瓶颈逻辑松动</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>同LITE，CPO板块系统性恐慌抛售，Corning业绩拖累光通讯板块</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>1.6T光模块激光器 + 数通电信双hub客户锁定</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:20%;background:var(--avoid)"></span></span><span class="score-val">2</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>板块情绪极恐慌，散户在StockTwits上高比例bullish正转为恐慌——逆向买入区</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>观望不进场，双底确认后sell put 30-45 DTE</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在 $COHR &lt;$215 或 板块内出现个股利空财报时看到</span></div>
       </div>
     </details>
     
@@ -353,13 +315,13 @@ footer.app-foot a { color: var(--text-dim); }
   
     <section class="section">
       <h2>📰 最新新闻</h2>
-      <div class="news-grid"><div class="news-card"><h3>$LITE</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/zacks-com-featured-highlights-penn-100600447.html" target="_blank" rel="noopener">Zacks.com featured highlights include PENN Entertainment, Chemours and Lumentum</a> <span class="news-pub">Zacks</span></li><li><a href="https://www.barchart.com/story/news/3462511/2-stocks-to-buy-now-as-google-raises-its-ai-spending-forecast-yet-again" target="_blank" rel="noopener">2 Stocks to Buy Now as Google Raises Its AI Spending Forecast Yet Again</a> <span class="news-pub">Barchart</span></li><li><a href="https://www.barrons.com/articles/lumentum-stock-ai-spending-41018bb5?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Lumentum and 5 Other Stocks Set to Win From Big Tech’s AI Spending Spree</a> <span class="news-pub">Barrons.com</span></li></ul></div><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://www.barrons.com/livecoverage/stock-market-news-today-072726/card/chip-stocks-tank-while-software-shines-glV8HPCZ2thg82L32jnB?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Chip Stocks Tank While Software Shines</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://www.barrons.com/livecoverage/stock-market-news-today-072726/card/most-stocks-are-higher-despite-the-s-p-500-s-reversal-U0deJiRHZO47jdlFSQ79?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Most Stocks Are Higher Despite the S&amp;P 500&#x27;s Reversal</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://finance.yahoo.com/technology/articles/ai-memory-stocks-lead-chip-182413900.html" target="_blank" rel="noopener">AI Memory Stocks Lead Chip Selloff</a> <span class="news-pub">GuruFocus.com</span></li></ul></div><div class="news-card"><h3>$AXTI</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/buy-sell-hold-axti-stock-135100385.html" target="_blank" rel="noopener">Should You Buy, Sell or Hold AXTI Stock Ahead of Q2 Earnings?</a> <span class="news-pub">Zacks</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/axt-axti-earnings-expected-grow-140018256.html" target="_blank" rel="noopener">AXT (AXTI) Earnings Expected to Grow: Should You Buy?</a> <span class="news-pub">Zacks</span></li><li><a href="https://finance.yahoo.com/technology/articles/axt-eyes-co-packaged-optics-152100418.html" target="_blank" rel="noopener">AXT Eyes Co-Packaged Optics: Can It Become the Next Growth Driver?</a> <span class="news-pub">Zacks</span></li></ul></div></div>
+      <div class="news-grid"><div class="news-card"><h3>$LITE</h3><ul><li><a href="https://247wallst.com/investing/2026/07/28/a-new-ai-shortage-is-coming-one-ceo-just-predicted-it-will-be-bigger-than-memory/" target="_blank" rel="noopener">A New AI Shortage Is Coming. One CEO Just Predicted it Will Be “Bigger Than Memory.”</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.barrons.com/articles/corning-earnings-stock-price-d2d34cd2?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Why Corning Stock Is Having Its Worst Day in 24 Years After Earnings</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/zacks-com-featured-highlights-penn-100600447.html" target="_blank" rel="noopener">Zacks.com featured highlights include PENN Entertainment, Chemours and Lumentum</a> <span class="news-pub">Zacks</span></li></ul></div><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://247wallst.com/investing/2026/07/28/a-new-ai-shortage-is-coming-one-ceo-just-predicted-it-will-be-bigger-than-memory/" target="_blank" rel="noopener">A New AI Shortage Is Coming. One CEO Just Predicted it Will Be “Bigger Than Memory.”</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.barrons.com/articles/corning-earnings-stock-price-d2d34cd2?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Why Corning Stock Is Having Its Worst Day in 24 Years After Earnings</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://www.barrons.com/livecoverage/stock-market-news-today-072726/card/chip-stocks-tank-while-software-shines-glV8HPCZ2thg82L32jnB?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Chip Stocks Tank While Software Shines</a> <span class="news-pub">Barrons.com</span></li></ul></div></div>
     </section>
     
   
     <section class="section">
       <h2>🛡️ 红队审计（按严重级别分级）</h2>
-      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR失败信号未量化行业同步条件</strong></div><div class="finding-detail">报告中失败信号描述为“COHR收盘跌破$250（止损位）+光纤板块（AAOI、FN）同步破位”，但未定义“同步破位”的量化标准（如跌幅百分比、连续天数等），导致用户无法精确监控该信号。原文仅以文字表述，缺乏可执行指标。</div><div class="finding-action">→ 补充量化规则：例如“AAOI或FN中至少一只单日跌幅超过5%且COHR跌破$250”或“板块指数（如IPOS）连续2日低于5日均线”。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>未讨论竞争对手与替代技术风险</strong></div><div class="finding-detail">报告强调LITE的替代难度（评分8）和客户锁定期，但未分析主要竞争对手（如II‑VI/Coherent、Accelink）的产能扩张计划或硅光技术对传统激光器的替代威胁。Barron&#x27;s背书提供了需求侧支持，但供给侧竞争格局缺失，可能低估估值风险。</div><div class="finding-action">→ 补充核心竞争对手（如Coherent/Lumentum本身？）的产能动态、技术路线图，并评估硅光对CPO激光器需求的长期侵蚀概率。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI失败信号不可日常监控</strong></div><div class="finding-detail">失败信号完全依赖7/30财报数据（InP收入&lt;30M或积压&lt;80M），用户无法在财报发布前每日观察此信号。虽然财报是高频催化剂，但日常交易中缺少可量化的先行指标（如股价相对强度、期权隐含波动率等），削弱了信号的可操作性。</div><div class="finding-action">→ 建议增加每日可监控的先行信号：例如AXTI相对COHR/LITE的股价相对强度（RS）、隐含波动率升幅、或成交额萎缩比例，以提前提示瓶颈逻辑松动。</div></div></div>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$LITE, $COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>CPO基本面恶化风险未充分覆盖</strong></div><div class="finding-detail">报告断言&#x27;CPO光模块基本面逻辑未破&#x27;，但未讨论几个关键风险：(1) 客户自研光模块（如Google、Meta内部团队）可能降低对外部激光器vendor依赖；(2) Broadcom/Mellanox在CPO领域的竞争推进可能加速；(3) Corning Q3指引软若对应数据中心光纤需求放缓，则1.6T光模块的配套需求也可能受拖累。报告仅泛泛提及&#x27;1.6T需求未变&#x27;，缺乏对这些替代方案的否定论证。</div><div class="finding-action">→ 在等待企稳信号期间，应补充研究上述风险的近期证据（如分析师纪要、客户财报电话会），确认供需剪刀差未被侵蚀。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$LITE, $COHR, $AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>流动性踩踏风险未被量化</strong></div><div class="finding-detail">报告提到&#x27;板块系统性恐慌&#x27;但未分析margin call连锁反应或ETF赎回压力。7/28板块单日跌幅-10%+，杠杆ETF和波动率产品可能加剧卖压。如果恐慌持续，即使基本面不变，股价也可能跌至低于报告设定的止损位（LITE $570、COHR $215）以下20%+，导致止损被打穿后反弹。</div><div class="finding-action">→ 建议加入&#x27;流动性压力测试&#x27;：若板块再跌10%，当前止损位是否仍有效？或改用波动率百分位止损（如ATR倍数）而非固定价格。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>成交量阈值缺少时间基准</strong></div><div class="finding-detail">失败信号&#x27;$LITE &lt;$570且成交量&gt;300万股&#x27;中的300万股未明确是否基于前20日平均成交量。当前（2026-07-28）LITE日均成交量未知——若正常日均300万，则信号无效；若日均150万，则&gt;300万有意义。报告缺少此背景。</div><div class="finding-action">→ 建议写明：&#x27;连续两日成交量超过前20日均量的150%且价格&lt;$570&#x27;。</div></div></div>
     </section>
     
   
@@ -372,77 +334,68 @@ footer.app-foot a { color: var(--text-dim); }
   &quot;findings&quot;: [
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;COHR失败信号未量化行业同步条件&quot;,
-      &quot;detail&quot;: &quot;报告中失败信号描述为“COHR收盘跌破$250（止损位）+光纤板块（AAOI、FN）同步破位”，但未定义“同步破位”的量化标准（如跌幅百分比、连续天数等），导致用户无法精确监控该信号。原文仅以文字表述，缺乏可执行指标。&quot;,
-      &quot;actionable&quot;: &quot;补充量化规则：例如“AAOI或FN中至少一只单日跌幅超过5%且COHR跌破$250”或“板块指数（如IPOS）连续2日低于5日均线”。&quot;
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$COHR&quot;],
+      &quot;title&quot;: &quot;CPO基本面恶化风险未充分覆盖&quot;,
+      &quot;detail&quot;: &quot;报告断言&#x27;CPO光模块基本面逻辑未破&#x27;，但未讨论几个关键风险：(1) 客户自研光模块（如Google、Meta内部团队）可能降低对外部激光器vendor依赖；(2) Broadcom/Mellanox在CPO领域的竞争推进可能加速；(3) Corning Q3指引软若对应数据中心光纤需求放缓，则1.6T光模块的配套需求也可能受拖累。报告仅泛泛提及&#x27;1.6T需求未变&#x27;，缺乏对这些替代方案的否定论证。&quot;,
+      &quot;actionable&quot;: &quot;在等待企稳信号期间，应补充研究上述风险的近期证据（如分析师纪要、客户财报电话会），确认供需剪刀差未被侵蚀。&quot;
     },
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
       &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [&quot;$LITE&quot;],
-      &quot;title&quot;: &quot;未讨论竞争对手与替代技术风险&quot;,
-      &quot;detail&quot;: &quot;报告强调LITE的替代难度（评分8）和客户锁定期，但未分析主要竞争对手（如II‑VI/Coherent、Accelink）的产能扩张计划或硅光技术对传统激光器的替代威胁。Barron&#x27;s背书提供了需求侧支持，但供给侧竞争格局缺失，可能低估估值风险。&quot;,
-      &quot;actionable&quot;: &quot;补充核心竞争对手（如Coherent/Lumentum本身？）的产能动态、技术路线图，并评估硅光对CPO激光器需求的长期侵蚀概率。&quot;
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$COHR&quot;, &quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;流动性踩踏风险未被量化&quot;,
+      &quot;detail&quot;: &quot;报告提到&#x27;板块系统性恐慌&#x27;但未分析margin call连锁反应或ETF赎回压力。7/28板块单日跌幅-10%+，杠杆ETF和波动率产品可能加剧卖压。如果恐慌持续，即使基本面不变，股价也可能跌至低于报告设定的止损位（LITE $570、COHR $215）以下20%+，导致止损被打穿后反弹。&quot;,
+      &quot;actionable&quot;: &quot;建议加入&#x27;流动性压力测试&#x27;：若板块再跌10%，当前止损位是否仍有效？或改用波动率百分位止损（如ATR倍数）而非固定价格。&quot;
     },
     {
-      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;severity&quot;: &quot;INFO&quot;,
       &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
-      &quot;title&quot;: &quot;AXTI失败信号不可日常监控&quot;,
-      &quot;detail&quot;: &quot;失败信号完全依赖7/30财报数据（InP收入&lt;30M或积压&lt;80M），用户无法在财报发布前每日观察此信号。虽然财报是高频催化剂，但日常交易中缺少可量化的先行指标（如股价相对强度、期权隐含波动率等），削弱了信号的可操作性。&quot;,
-      &quot;actionable&quot;: &quot;建议增加每日可监控的先行信号：例如AXTI相对COHR/LITE的股价相对强度（RS）、隐含波动率升幅、或成交额萎缩比例，以提前提示瓶颈逻辑松动。&quot;
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;],
+      &quot;title&quot;: &quot;成交量阈值缺少时间基准&quot;,
+      &quot;detail&quot;: &quot;失败信号&#x27;$LITE &lt;$570且成交量&gt;300万股&#x27;中的300万股未明确是否基于前20日平均成交量。当前（2026-07-28）LITE日均成交量未知——若正常日均300万，则信号无效；若日均150万，则&gt;300万有意义。报告缺少此背景。&quot;,
+      &quot;actionable&quot;: &quot;建议写明：&#x27;连续两日成交量超过前20日均量的150%且价格&lt;$570&#x27;。&quot;
     }
   ],
   &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
 }
-```</p><p></p><p>本次审计发现三项WARNING级软性问题，均未触及BLOCKER门槛，故整体结论为“可推进但需谨慎”。</p><p><strong>关键发现解读：</strong>  </p><p>1. <strong>COHR的失败信号缺乏量化标准</strong>——“板块同步破位”是一种经典但模糊的预警，用户容易因主观判断而延误离场。建议将“同步破位”精确化为具体数字条件（如AAOI或FN单日跌超5%且COHR跌破$250），以保证信号的可重复性。  </p><p>2. <strong>LITE的反方论证存在缺口</strong>——报告侧重需求端催化（Barron’s、AI算力修复）和供给瓶颈评分，但对竞争格局（Coherent、II‑VI等对手的产能动态）和技术替代（硅光vs激光器）着墨不足。这是典型的“论点偏向乐观侧”，虽然不影响当前逻辑，但若市场开始交易技术颠覆或份额流失，将形成盲点。  </p><p>3. <strong>AXTI的失败信号时效性局限</strong>——财报数据是滞后而非先行指标。用户在日常持有时无法追踪InP积压订单的实时变化，建议叠加价量行为类先行信号（例如AXTI相对板块的RS跌破关键阈值），增强日常监护能力。  </p><p><strong>整体评价：</strong>  
-报告基本面扎实，三个标的的持仓规则均符合风控要求，核心论点（InP瓶颈、CPO升级周期）有逻辑支撑。上述三项软性问题属于“可优化但非致命”的范畴，建议用户在实盘执行时自行补全量化条件和竞争分析，或等待红队补充工具化监控指标。当前可依据原计划操作，但需对COHR和AXTI的失败信号保持主动警觉。</p><p>```json
+```</p><p></p><p>报告整体质量不错，对板块情绪驱动与基本面分离的判断有逻辑支撑，失败信号也具备可观察性。但存在两个盲点需要警示：一是CPO基本面恶化风险（客户自研、竞品替代）未被认真反驳；二是流动性踩踏可能放大跌幅，导致止损失效。这两个问题不构成BLOCKER（因为当前操作是观望，未实际开仓），但在企稳信号出现后准备入场前，必须补充上述风险分析。另外成交量阈值缺少基准是一个INFO级别的格式问题，建议输出函数自动标注。未发现数据虚构或硬规则违规，允许谨慎按报告计划执行（即继续观望）。</p><p>```json
 {
   &quot;findings&quot;: [
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;RISK_BUDGET&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
       &quot;affected_tickers&quot;: [
+        &quot;$LITE&quot;,
         &quot;$COHR&quot;
       ],
-      &quot;title&quot;: &quot;R:R=1.36（&lt; 1.5）&quot;,
-      &quot;detail&quot;: &quot;入场≈$277.50 · 止损$250.0 · 目标$315.0&quot;,
-      &quot;actionable&quot;: &quot;调整止损/目标价以达到 ≥1.5:1&quot;,
-      &quot;source&quot;: &quot;hard_audit&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;COHR失败信号未量化行业同步条件&quot;,
-      &quot;detail&quot;: &quot;报告中失败信号描述为“COHR收盘跌破$250（止损位）+光纤板块（AAOI、FN）同步破位”，但未定义“同步破位”的量化标准（如跌幅百分比、连续天数等），导致用户无法精确监控该信号。原文仅以文字表述，缺乏可执行指标。&quot;,
-      &quot;actionable&quot;: &quot;补充量化规则：例如“AAOI或FN中至少一只单日跌幅超过5%且COHR跌破$250”或“板块指数（如IPOS）连续2日低于5日均线”。&quot;,
+      &quot;title&quot;: &quot;CPO基本面恶化风险未充分覆盖&quot;,
+      &quot;detail&quot;: &quot;报告断言&#x27;CPO光模块基本面逻辑未破&#x27;，但未讨论几个关键风险：(1) 客户自研光模块（如Google、Meta内部团队）可能降低对外部激光器vendor依赖；(2) Broadcom/Mellanox在CPO领域的竞争推进可能加速；(3) Corning Q3指引软若对应数据中心光纤需求放缓，则1.6T光模块的配套需求也可能受拖累。报告仅泛泛提及&#x27;1.6T需求未变&#x27;，缺乏对这些替代方案的否定论证。&quot;,
+      &quot;actionable&quot;: &quot;在等待企稳信号期间，应补充研究上述风险的近期证据（如分析师纪要、客户财报电话会），确认供需剪刀差未被侵蚀。&quot;,
       &quot;source&quot;: &quot;llm_critic&quot;
     },
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
       &quot;category&quot;: &quot;BLIND_SPOT&quot;,
       &quot;affected_tickers&quot;: [
-        &quot;$LITE&quot;
+        &quot;$LITE&quot;,
+        &quot;$COHR&quot;,
+        &quot;$AXTI&quot;
       ],
-      &quot;title&quot;: &quot;未讨论竞争对手与替代技术风险&quot;,
-      &quot;detail&quot;: &quot;报告强调LITE的替代难度（评分8）和客户锁定期，但未分析主要竞争对手（如II‑VI/Coherent、Accelink）的产能扩张计划或硅光技术对传统激光器的替代威胁。Barron&#x27;s背书提供了需求侧支持，但供给侧竞争格局缺失，可能低估估值风险。&quot;,
-      &quot;actionable&quot;: &quot;补充核心竞争对手（如Coherent/Lumentum本身？）的产能动态、技术路线图，并评估硅光对CPO激光器需求的长期侵蚀概率。&quot;,
+      &quot;title&quot;: &quot;流动性踩踏风险未被量化&quot;,
+      &quot;detail&quot;: &quot;报告提到&#x27;板块系统性恐慌&#x27;但未分析margin call连锁反应或ETF赎回压力。7/28板块单日跌幅-10%+，杠杆ETF和波动率产品可能加剧卖压。如果恐慌持续，即使基本面不变，股价也可能跌至低于报告设定的止损位（LITE $570、COHR $215）以下20%+，导致止损被打穿后反弹。&quot;,
+      &quot;actionable&quot;: &quot;建议加入&#x27;流动性压力测试&#x27;：若板块再跌10%，当前止损位是否仍有效？或改用波动率百分位止损（如ATR倍数）而非固定价格。&quot;,
       &quot;source&quot;: &quot;llm_critic&quot;
     },
     {
-      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;severity&quot;: &quot;INFO&quot;,
       &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
       &quot;affected_tickers&quot;: [
-        &quot;$AXTI&quot;
+        &quot;$LITE&quot;
       ],
-      &quot;title&quot;: &quot;AXTI失败信号不可日常监控&quot;,
-      &quot;detail&quot;: &quot;失败信号完全依赖7/30财报数据（InP收入&lt;30M或积压&lt;80M），用户无法在财报发布前每日观察此信号。虽然财报是高频催化剂，但日常交易中缺少可量化的先行指标（如股价相对强度、期权隐含波动率等），削弱了信号的可操作性。&quot;,
-      &quot;actionable&quot;: &quot;建议增加每日可监控的先行信号：例如AXTI相对COHR/LITE的股价相对强度（RS）、隐含波动率升幅、或成交额萎缩比例，以提前提示瓶颈逻辑松动。&quot;,
+      &quot;title&quot;: &quot;成交量阈值缺少时间基准&quot;,
+      &quot;detail&quot;: &quot;失败信号&#x27;$LITE &lt;$570且成交量&gt;300万股&#x27;中的300万股未明确是否基于前20日平均成交量。当前（2026-07-28）LITE日均成交量未知——若正常日均300万，则信号无效；若日均150万，则&gt;300万有意义。报告缺少此背景。&quot;,
+      &quot;actionable&quot;: &quot;建议写明：&#x27;连续两日成交量超过前20日均量的150%且价格&lt;$570&#x27;。&quot;,
       &quot;source&quot;: &quot;llm_critic&quot;
     }
   ]
@@ -453,7 +406,7 @@ footer.app-foot a { color: var(--text-dim); }
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-07-28 13:10 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-07-28 15:04 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
