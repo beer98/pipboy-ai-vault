@@ -224,105 +224,14 @@ footer.app-foot a { color: var(--text-dim); }
   </section>
   
   
-    <section class="section">
-      <h2>🛡️ 红队审计（按严重级别分级）</h2>
-      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Serenity 信号缺失，Layer 4 不可验</strong></div><div class="finding-detail">报告自述“未能获取到 Serenity (@aleabitoreddit) 最近7天的X帖子与通用新闻（搜索接口返回空）”，Layer 4 只能基于历史规则库推断，无法反映当日真实社交情绪。这是数据源系统性缺失，不是 BLOCKER，但当前板块恰处于情绪驱动回调中，该项缺失会降低交叉验证强度。</div><div class="finding-action">→ 不把 Layer 4 作为入场依据；若必须参考情绪面，请手工核对 X/StockTwits 当日新增讨论后再决策。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$AAOI, $LITE, $COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>“放量企稳”的放量未量化</strong></div><div class="finding-detail">报告失败信号为“AAOI 次日能否连续第2日站上126（5日均价附近）”，以及“AAOI 与 LITE/COHR 同步连续第2日放量收涨”，但未定义“放量”的成交量倍数，也未给出 LITE/COHR 的企稳价格位。该信号无法被严格执行或事后证伪。</div><div class="finding-action">→ 建议补充量化阈值：例如连续2日收盘站上126、当日成交量 ≥ 20日均量1.5倍；并给 LITE/COHR 各设定一个确认价（如站上5日均线）。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$AAOI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AAOI 增发稀释与解禁风险未评估</strong></div><div class="finding-detail">Layer 1 仅写“AAOI 6亿美元增发→隔夜暴跌10%→今日V型反弹+11.2%”，但没有分析增发价格、新增股数、稀释比例或禁售期。把增发视为单纯“情绪利空出尽”是潜在盲点：若增发仍有折价补跌或筹码解禁压力，今日 V 反可能是空头回补而非真正企稳。</div><div class="finding-action">→ 决策前查阅增发条款与最新 10-Q 的股本数；并加入失败信号：若 AAOI 在 3 日内跌破今日低点或增发价，则“利空出尽”证伪。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>全文未引用可验证 URL</strong></div><div class="finding-detail">报告未提供任何外部来源链接（如 AAOI 增发公告、Needham 重申、LITE/COHR 跌幅数据），因此我无法核验数据来源真实性。“5日-17.6%”等数字属于不可审计断言。</div><div class="finding-action">→ 后续报告在关键数字旁附来源 URL 或数据快照时间；本次不作为阻止信号，只降低可追溯性。</div></div></div>
-    </section>
-    
   
     <section class="section">
       <details class="critic">
         <summary>🛡️ 红队自审批注（点击展开）</summary>
-        <div class="critic-body"><p>
+        <div class="critic-body"><p></p><p>
 ```json
 {
-  &quot;findings&quot;: [
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
-      &quot;affected_tickers&quot;: [&quot;*&quot;],
-      &quot;title&quot;: &quot;Serenity 信号缺失，Layer 4 不可验&quot;,
-      &quot;detail&quot;: &quot;报告自述“未能获取到 Serenity (@aleabitoreddit) 最近7天的X帖子与通用新闻（搜索接口返回空）”，Layer 4 只能基于历史规则库推断，无法反映当日真实社交情绪。这是数据源系统性缺失，不是 BLOCKER，但当前板块恰处于情绪驱动回调中，该项缺失会降低交叉验证强度。&quot;,
-      &quot;actionable&quot;: &quot;不把 Layer 4 作为入场依据；若必须参考情绪面，请手工核对 X/StockTwits 当日新增讨论后再决策。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$AAOI&quot;, &quot;$LITE&quot;, &quot;$COHR&quot;],
-      &quot;title&quot;: &quot;“放量企稳”的放量未量化&quot;,
-      &quot;detail&quot;: &quot;报告失败信号为“AAOI 次日能否连续第2日站上126（5日均价附近）”，以及“AAOI 与 LITE/COHR 同步连续第2日放量收涨”，但未定义“放量”的成交量倍数，也未给出 LITE/COHR 的企稳价格位。该信号无法被严格执行或事后证伪。&quot;,
-      &quot;actionable&quot;: &quot;建议补充量化阈值：例如连续2日收盘站上126、当日成交量 ≥ 20日均量1.5倍；并给 LITE/COHR 各设定一个确认价（如站上5日均线）。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [&quot;$AAOI&quot;],
-      &quot;title&quot;: &quot;AAOI 增发稀释与解禁风险未评估&quot;,
-      &quot;detail&quot;: &quot;Layer 1 仅写“AAOI 6亿美元增发→隔夜暴跌10%→今日V型反弹+11.2%”，但没有分析增发价格、新增股数、稀释比例或禁售期。把增发视为单纯“情绪利空出尽”是潜在盲点：若增发仍有折价补跌或筹码解禁压力，今日 V 反可能是空头回补而非真正企稳。&quot;,
-      &quot;actionable&quot;: &quot;决策前查阅增发条款与最新 10-Q 的股本数；并加入失败信号：若 AAOI 在 3 日内跌破今日低点或增发价，则“利空出尽”证伪。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;INFO&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
-      &quot;affected_tickers&quot;: [&quot;*&quot;],
-      &quot;title&quot;: &quot;全文未引用可验证 URL&quot;,
-      &quot;detail&quot;: &quot;报告未提供任何外部来源链接（如 AAOI 增发公告、Needham 重申、LITE/COHR 跌幅数据），因此我无法核验数据来源真实性。“5日-17.6%”等数字属于不可审计断言。&quot;,
-      &quot;actionable&quot;: &quot;后续报告在关键数字旁附来源 URL 或数据快照时间；本次不作为阻止信号，只降低可追溯性。&quot;
-    }
-  ],
-  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
-}
-```</p><p></p><p>本次报告未产生可执行 picks，核心输出是“观望 / 等待确认”。因此我没有给出 BLOCKER——没有实际仓位会被错误触发。</p><p>但有两个 WARNING 需要人类留意：</p><p>1. <strong>AAOI 增发被简化成情绪事件</strong>。报告把“6亿美元增发 → 暴跌 → V反”解读为“利空出尽”，但没有核实增发价格、稀释比例、解禁时间。这是最需要警觉的盲点，因为 V 反也可能是空头回补。
-2. <strong>“放量企稳”不可执行</strong>。126 这个价格锚是好的，但“放量”没有定义，LITE/COHR 也没有给出确认价。建议立刻补成可监控的 checklist。</p><p>另外，Serenity 社交信号缺失是客观系统问题，报告已披露，不构成买入障碍；但 Layer 4 的验证权重应降级。</p><p>总判定：允许按报告纪律继续观望；若报告中后期转为“开仓 LITE/COHR”，必须先满足上述量化条件。</p><p>```json
-{
-  &quot;findings&quot;: [
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;*&quot;
-      ],
-      &quot;title&quot;: &quot;Serenity 信号缺失，Layer 4 不可验&quot;,
-      &quot;detail&quot;: &quot;报告自述“未能获取到 Serenity (@aleabitoreddit) 最近7天的X帖子与通用新闻（搜索接口返回空）”，Layer 4 只能基于历史规则库推断，无法反映当日真实社交情绪。这是数据源系统性缺失，不是 BLOCKER，但当前板块恰处于情绪驱动回调中，该项缺失会降低交叉验证强度。&quot;,
-      &quot;actionable&quot;: &quot;不把 Layer 4 作为入场依据；若必须参考情绪面，请手工核对 X/StockTwits 当日新增讨论后再决策。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$AAOI&quot;,
-        &quot;$LITE&quot;,
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;“放量企稳”的放量未量化&quot;,
-      &quot;detail&quot;: &quot;报告失败信号为“AAOI 次日能否连续第2日站上126（5日均价附近）”，以及“AAOI 与 LITE/COHR 同步连续第2日放量收涨”，但未定义“放量”的成交量倍数，也未给出 LITE/COHR 的企稳价格位。该信号无法被严格执行或事后证伪。&quot;,
-      &quot;actionable&quot;: &quot;建议补充量化阈值：例如连续2日收盘站上126、当日成交量 ≥ 20日均量1.5倍；并给 LITE/COHR 各设定一个确认价（如站上5日均线）。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$AAOI&quot;
-      ],
-      &quot;title&quot;: &quot;AAOI 增发稀释与解禁风险未评估&quot;,
-      &quot;detail&quot;: &quot;Layer 1 仅写“AAOI 6亿美元增发→隔夜暴跌10%→今日V型反弹+11.2%”，但没有分析增发价格、新增股数、稀释比例或禁售期。把增发视为单纯“情绪利空出尽”是潜在盲点：若增发仍有折价补跌或筹码解禁压力，今日 V 反可能是空头回补而非真正企稳。&quot;,
-      &quot;actionable&quot;: &quot;决策前查阅增发条款与最新 10-Q 的股本数；并加入失败信号：若 AAOI 在 3 日内跌破今日低点或增发价，则“利空出尽”证伪。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;INFO&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;*&quot;
-      ],
-      &quot;title&quot;: &quot;全文未引用可验证 URL&quot;,
-      &quot;detail&quot;: &quot;报告未提供任何外部来源链接（如 AAOI 增发公告、Needham 重申、LITE/COHR 跌幅数据），因此我无法核验数据来源真实性。“5日-17.6%”等数字属于不可审计断言。&quot;,
-      &quot;actionable&quot;: &quot;后续报告在关键数字旁附来源 URL 或数据快照时间；本次不作为阻止信号，只降低可追溯性。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    }
-  ]
+  &quot;findings&quot;: []
 }
 ```
 </p></div>
@@ -330,7 +239,7 @@ footer.app-foot a { color: var(--text-dim); }
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-08-24 11:51 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-08-24 13:34 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
