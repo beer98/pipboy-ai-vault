@@ -208,10 +208,10 @@ footer.app-foot a { color: var(--text-dim); }
   
     <section class="banner banner-buy">
       <div class="banner-head">今日核心判断</div>
-      <div class="banner-headline">今天可以下手 2 只</div>
+      <div class="banner-headline">今天可以下手 1 只</div>
       <div class="banner-counts">
-        <span class="count-buy">🟢 BUY <strong>2</strong></span>
-        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-buy">🟢 BUY <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>2</strong></span>
         <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
       </div>
       <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
@@ -221,46 +221,91 @@ footer.app-foot a { color: var(--text-dim); }
   <section class="section">
     <h2>📊 持仓建议</h2>
     <div class="picks-grid">
-    <article class="pick-card verdict-buy">
-      <div class="pick-ribbon">BUY</div>
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$MU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$1004.83</div>
+          <div class="change up">+5.35%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,25.2 L 35.0,38.0 L 70.0,26.6 L 105.0,25.5 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,25.2 L 35.0,38.0 L 70.0,26.6 L 105.0,25.5 L 140.0,2.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +4.8%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:26.8%;width:18.9%" title="入场区 $960-$1000"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $918.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $918</div><div class="marker target" style="left:93.1%" title="止盈 $1100.0"></div><div class="marker-label target-label" style="left:93.1%">target $1100</div><div class="marker current" style="left:48.0%" title="当前 $1004.83"></div><div class="marker-label current-label" style="left:48.0%">$1004.83</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">960-1000</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">Buy拉回/SellPut30</span></div>
+      </div>
+      <div class="pick-thesis">HBM/DRAM/NAND现货定价周期加速+头部AI资本开支确认，21xPE折价三重共振</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 0.5%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>NAND/HBM定价加速+HPE称AI供应链跟不上，HBM现货价高位</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>HBM内存产能瓶颈，DRAM/NAND现货价被定价锁定</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity信号未获取；板块资金共识高，存储定价已是公开主线</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>回调买或SellPut，规避Fed加息对当日的脉冲杀</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>DRAM/NAND合约价周环比转负，或跌破918止损</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
       <div class="pick-head">
         <div>
           <div class="ticker">$MRVL</div>
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$220.67</div>
-          <div class="change up">+5.74%</div>
+          <div class="price">$221.34</div>
+          <div class="change up">+6.05%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,24.9 L 35.0,28.1 L 70.0,38.0 L 105.0,32.0 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,24.9 L 35.0,28.1 L 70.0,38.0 L 105.0,32.0 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 +4.3%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,25.5 L 35.0,28.5 L 70.0,38.0 L 105.0,32.3 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,25.5 L 35.0,28.5 L 70.0,38.0 L 105.0,32.3 L 140.0,2.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +4.6%</div>
       </div>
       
     <div class="zone-bar-wrap">
       <div class="zone-bar">
-        <div class="zone-entry" style="left:26.6%;width:22.9%" title="入场区 $213-$224"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $203.5"></div><div class="marker-label stop-label" style="left:6.9%">stop $203.5</div><div class="marker target" style="left:93.1%" title="止盈 $245.0"></div><div class="marker-label target-label" style="left:93.1%">target $245</div><div class="marker current" style="left:42.6%" title="当前 $220.67"></div><div class="marker-label current-label" style="left:42.6%">$220.67</div>
+        <div class="zone-entry" style="left:22.6%;width:17.2%" title="入场区 $210-$221"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $200.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $200</div><div class="marker target" style="left:93.1%" title="止盈 $255.0"></div><div class="marker-label target-label" style="left:93.1%">target $255</div><div class="marker current" style="left:40.3%" title="当前 $221.34"></div><div class="marker-label current-label" style="left:40.3%">$221.34</div>
       </div>
     </div>
     
       <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">213.00-224.00</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股分三批/回踩SellPut</span></div>
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">210-221</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">Buy long / 10/6前SellPut</span></div>
       </div>
-      <div class="pick-thesis">NVDA $99B股权加注下，Marvell作为AI定制ASIC与光互连DSP龙头，需求可见度最高且技术形态最干净，V回后二次确认</div>
-      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      <div class="pick-thesis">Nvidia $99B股权投资增厚定制ASIC确定性，10/6 Investor Day前置催化</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 0.2%，等回踩</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>NVDA股权投资升至$99B点燃AI链，卖方称Marvell/TSM为淘金赢家</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>定制ASIC+光互连DSP+先进封装交叉出货节点</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>工具故障未取到Serenity/WSB信号，按无KOL+无狂热+基本面强处理</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>动量确认期选正股或回踩SellPut，避免追单日大阳</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>最先在次交易日延续性上看到收盘跌破216且放量跌穿5日均线</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Nvidia港股股权投资至$99B，AI定制硅与数据连接资本开支确定性增厚</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>定制ASIC+数据中心连接(单一超大hyperscaler客户群)瓶颈受益</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>5.9</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>今日反弹属positing解除而非新利好，散户未过热(10日内仍跌3.4%)</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Buy long持有；临近10/6大会可用Sell Put顺事件收割IV</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>跌破$200前低验证反弹失败，或Investor Day指引下修</span></div>
       </div>
     </details>
     
@@ -270,42 +315,42 @@ footer.app-foot a { color: var(--text-dim); }
       <div class="pick-ribbon">BUY</div>
       <div class="pick-head">
         <div>
-          <div class="ticker">$VRT</div>
+          <div class="ticker">$AMAT</div>
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$275.27</div>
-          <div class="change up">+2.37%</div>
+          <div class="price">$455.03</div>
+          <div class="change up">+4.45%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,32.9 L 35.0,38.0 L 70.0,36.6 L 105.0,14.0 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,32.9 L 35.0,38.0 L 70.0,36.6 L 105.0,14.0 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 +6.4%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,28.5 L 70.0,33.9 L 105.0,38.0 L 140.0,7.4 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,28.5 L 70.0,33.9 L 105.0,38.0 L 140.0,7.4" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -0.7%</div>
       </div>
       
     <div class="zone-bar-wrap">
       <div class="zone-bar">
-        <div class="zone-entry" style="left:24.1%;width:19.4%" title="入场区 $268-$277"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $260.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $260</div><div class="marker target" style="left:93.1%" title="止盈 $300.0"></div><div class="marker-label target-label" style="left:93.1%">target $300</div><div class="marker current" style="left:39.8%" title="当前 $275.27"></div><div class="marker-label current-label" style="left:39.8%">$275.27</div>
+        <div class="zone-entry" style="left:28.9%;width:19.2%" title="入场区 $438-$458"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $415.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $415</div><div class="marker target" style="left:93.1%" title="止盈 $505.0"></div><div class="marker-label target-label" style="left:93.1%">target $505</div><div class="marker current" style="left:45.2%" title="当前 $455.03"></div><div class="marker-label current-label" style="left:45.2%">$455.03</div>
       </div>
     </div>
     
       <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">268.00-277.00</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股/SellPut3000Δ</span></div>
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">438-458</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">Buy拉回/分批</span></div>
       </div>
-      <div class="pick-thesis">NVDA资本开支扩产的物理瓶颈在电力与散热，Vertiv作为数据中心电源+液冷龙头独立受益，温和上行提供板块分散</div>
+      <div class="pick-thesis">HBM/NAND资本开支直接利好沉积设备，深回调14%后AI-WFE需求未破坏</div>
       <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI capex扩产的落地约束在电力散热，第三方电源链升温</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>数据中心电源/液冷|电网瓶颈下游环节</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.1</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>工具故障未取到社会信号，按独立板块分散逻辑建仓</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>温和上行期选正股或SellPut收割时间价值</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>最先在capex情绪上看到收盘跌破270连续2日未收复且电源姊妹标的同时走弱</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI-WFE资本开支需求AI驱动，内存/HBM产能扩张设备受益方</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>半导体沉积/检测设备，HBM+内存capex镜像</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>设备本月-14%回调后带量反弹，散户未拥挤追高</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>拉回分批Buy long，容波动设较宽止损(no追单日大阳)</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>连续2日收盘失守$450/20日线证伪重整</span></div>
       </div>
     </details>
     
@@ -315,7 +360,7 @@ footer.app-foot a { color: var(--text-dim); }
   
     <section class="section">
       <h2>📰 最新新闻</h2>
-      <div class="news-grid"><div class="news-card"><h3>$MRVL</h3><ul><li><a href="https://247wallst.com/investing/2026/09/04/qualcomm-lost-a-third-of-its-value-in-3-months-one-wall-street-pro-sees-140-upside-from-here/" target="_blank" rel="noopener">Qualcomm Lost a Third of Its Value in 3 Months. One Wall Street Pro Sees 140% Upside From Here</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.barrons.com/articles/stock-movers-3ea909fc?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Tesla, Lululemon, AMC,  Guidewire, Trade Desk, UiPath, and More Stocks That Explain Today’s Market</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://www.barrons.com/articles/nvidia-stock-hugging-face-ai-b814c729?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Here’s the Real Reason Nvidia Is Buying Hugging Face</a> <span class="news-pub">Barrons.com</span></li></ul></div><div class="news-card"><h3>$VRT</h3><ul><li><a href="https://247wallst.com/investing/2026/09/04/vertiv-vs-schneider-electric-only-one-ai-cooling-stock-deserves-your-money/" target="_blank" rel="noopener">Vertiv vs Schneider Electric. Only One AI Cooling Stock Deserves Your Money</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.fool.com/investing/2026/09/03/vertiv-is-putting-usd1-45-billion-down-for-ai-power-nearly-half-the-price-is-contingent/" target="_blank" rel="noopener">Vertiv Is Putting $1.45 Billion Down for AI Power. Nearly Half the Price Is Contingent.</a> <span class="news-pub">Motley Fool</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/why-vertiv-vrt-stock-today-011918000.html" target="_blank" rel="noopener">Why Vertiv (VRT) Stock Is Up Today</a> <span class="news-pub">StockStory</span></li></ul></div></div>
+      <div class="news-grid"><div class="news-card"><h3>$MU</h3><ul><li><a href="https://www.fool.com/investing/2026/09/04/why-micron-stock-just-popped/" target="_blank" rel="noopener">Why Micron Stock Just Popped</a> <span class="news-pub">Motley Fool</span></li><li><a href="https://www.benzinga.com/markets/prediction-markets/26/09/61631763/micron-sandisk-hot-jobs-report?utm_source=yahooFinance&amp;utm_campaign=partner_feed&amp;utm_medium=referral" target="_blank" rel="noopener">Micron, SanDisk Jump 4% Even as Hot Jobs Report Briefly Flips Fed Hike Odds Above 50%</a> <span class="news-pub">Benzinga Prediction Markets</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/3-growth-stocks-add-roster-151010747.html" target="_blank" rel="noopener">3 Growth Stocks to Add to Your Roster</a> <span class="news-pub">StockStory</span></li></ul></div><div class="news-card"><h3>$MRVL</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/unpacking-q2-earnings-marvell-technology-160610668.html" target="_blank" rel="noopener">Unpacking Q2 Earnings: Marvell Technology (NASDAQ:MRVL) In The Context Of Other Semiconductor Manufacturing Stocks</a> <span class="news-pub">StockStory</span></li><li><a href="https://247wallst.com/investing/2026/09/04/marvell-rises-6-as-beaten-down-ai-silicon-bounces-qualcomm-barely-budges/" target="_blank" rel="noopener">Marvell Rises 6% as Beaten-Down AI Silicon Bounces, Qualcomm Barely Budges</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://247wallst.com/investing/2026/09/04/qualcomm-lost-a-third-of-its-value-in-3-months-one-wall-street-pro-sees-140-upside-from-here/" target="_blank" rel="noopener">Qualcomm Lost a Third of Its Value in 3 Months. One Wall Street Pro Sees 140% Upside From Here</a> <span class="news-pub">24/7 Wall St.</span></li></ul></div><div class="news-card"><h3>$AMAT</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/applied-materials-amat-still-look-230836239.html" target="_blank" rel="noopener">Can Applied Materials (AMAT) Still Look Cheap After A 237% Run?</a> <span class="news-pub">Simply Wall St.</span></li><li><a href="https://www.trefis.com/articles/614235/why-did-applied-materials-stock-nearly-triple-on-single-digit-trailing-revenue-growth/2026-09-03" target="_blank" rel="noopener">Why Did Applied Materials Stock Nearly Triple On Single-Digit Trailing Revenue Growth?</a> <span class="news-pub">Trefis</span></li><li><a href="https://finance.yahoo.com/technology/ai/articles/amat-rides-ai-led-wfe-151900886.html" target="_blank" rel="noopener">AMAT Rides on AI-Led WFE Demand: Can it Sustain the Momentum?</a> <span class="news-pub">Zacks</span></li></ul></div></div>
     </section>
     
   
@@ -334,7 +379,7 @@ footer.app-foot a { color: var(--text-dim); }
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-09-04 15:03 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-09-04 16:36 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
