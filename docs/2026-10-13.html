@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-10-13</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-10-13</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 1 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>2</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$288.1</div>
+          <div class="change up">+1.55%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,26.9 L 70.0,19.0 L 105.0,38.0 L 140.0,37.9 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,26.9 L 70.0,19.0 L 105.0,38.0 L 140.0,37.9" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -13.9%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:24.4%;width:10.9%" title="入场区 $278-$288"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $262.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $262</div><div class="marker target" style="left:93.1%" title="止盈 $341.0"></div><div class="marker-label target-label" style="left:93.1%">target $341</div><div class="marker current" style="left:35.4%" title="当前 $288.1"></div><div class="marker-label current-label" style="left:35.4%">$288.1</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">278.00-288.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">CPO/光模块链中唯一逆势收红且盘中未创新低的激光器龙头，10日回踩至区间下三分之一，资金板块内切换的受益方</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 0.0%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - AI光互联板块系统性获利了结中，COHR逆势红盘显示板块内资金切换</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - CPO 800G/1.6T光模块+激光器，Coherent为核心供应商</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.3</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 社交信号抓取失败，无KOL数据；按拥挤保守处理</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - IV偏高故用正股，避免裸买call的波动损耗</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在COHR收盘价连续2日跌破$273.93上看到板块强势切换失败的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LITE</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$978.02</div>
+          <div class="change down">-1.75%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,18.9 L 70.0,4.1 L 105.0,33.3 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,18.9 L 70.0,4.1 L 105.0,33.3 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -12.0%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:29.4%;width:11.2%" title="入场区 $940-$970"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $880.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $880</div><div class="marker target" style="left:93.1%" title="止盈 $1110.0"></div><div class="marker-label target-label" style="left:93.1%">target $1110</div><div class="marker current" style="left:43.6%" title="当前 $978.02"></div><div class="marker-label current-label" style="left:43.6%">$978.02</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">940.00-970.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（半仓）</span></div>
+      </div>
+      <div class="pick-thesis">800G/1.6T与激光器瓶颈龙头，10日回落13.8%属板块获利了结非逻辑破坏，回踩至前低支撑940附近可半仓埋伏</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 0.8%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - AI光互联板块系统性derisk，LITE自1133高点回落13.8%</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 800G/1.6T光模块与激光器，Lumentum核心瓶颈供应</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 社交信号未获取，且规则库提示CPO板块需按冷却期处理</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 高波动下用正股分批，不做方向性期权</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在LITE收盘跌破$940.27且成交量超5日均值120%上看到前低支撑失效的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$63.81</div>
+          <div class="change up">+2.95%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,18.4 L 70.0,24.9 L 105.0,38.0 L 140.0,34.3 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,18.4 L 70.0,24.9 L 105.0,38.0 L 140.0,34.3" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -20.0%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:21.8%;width:17.8%" title="入场区 $58-$64"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $53.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $53</div><div class="marker target" style="left:93.1%" title="止盈 $82.0"></div><div class="marker-label target-label" style="left:93.1%">target $82</div><div class="marker current" style="left:39.0%" title="当前 $63.81"></div><div class="marker-label current-label" style="left:39.0%">$63.81</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">58.00-64.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（规则库限制仓位）</span></div>
+      </div>
+      <div class="pick-thesis">7N高纯铟镓锗与InP衬底瓶颈，10日二次探底至60后企稳反弹，但受规则库重复情绪冲击条款限制仅观察不主动开仓</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 关键金属链二次探底后企稳，中国出口管制主题持续</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 7N高纯铟镓锗与InP衬底，CPO激光器上游关键材料</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 社交信号未获取；规则库标记为重复性情绪冲击高敏感标的</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 流动性低，禁用期权，仅正股小仓</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在AXTI收盘再度跌破$60.10且次日无法收复上看到二次探底失败的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>全程缺失独立反方论点（看空情景）</strong></div><div class="finding-detail">报告为 COHR/LITE/AXTI 各写了 failure_signal，但没有任何一处系统性「反方论点 / bear case」。failure_signal 只回答『我看错了会先在哪里看到』（观察触发），不等于『为什么可能是错的』（论证对冲）。例如 LITE 论点称 10 日 -13.8% 属『板块级获利了结而非逻辑破坏』，此断言的反方——即『这正是 800G/1.6T 订单能见度恶化被聪明钱先行定价』——从未被列出并反驳。按审计框架『反方完整性：是否覆盖最可能的失败路径』，此项未达标。</div><div class="finding-action">→ 为每个 pick 补一段独立反方：明确写出最可能的失败原因（需求端砍单/客户 inventory digestion/竞争替代），并给出为何当前证据仍支持做多。若写不出，说明当日不应开枪。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>核心论点不可证伪：情绪释放 vs 趋势反转</strong></div><div class="finding-detail">报告的整个立论支点是 Layer 1 结论『今天是 AI 算力链系统性 derisk 日，而非瓶颈加速日』『光互联与 HBM 同步从高位回落 12-16% 是获利了结、不是供应链逻辑破坏』。但该结论完全由价格行为反推（报告自承 web_search 全线失效）。用价格下跌同时解释『情绪释放』与『趋势反转』两种相反假设，等于论点无法被数据证伪——这正是审计框架第一项『核心数据是否能被现有信息证伪』要抓的问题。</div><div class="finding-action">→ 在 web_search/新闻恢复前，把该结论降级为假设，并明确写出：若出现哪条新闻（如大客户资本开支下修、订单取消公告），则假设被证伪。不要把价格反推的结论当作已确立事实写进 thesis_summary。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR, $LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR『唯一强势证据』与自身数据矛盾</strong></div><div class="finding-detail">报告称 COHR 是『唯一逆势收红、板块内唯一强势证据』，并按此给标准仓 12%（高于 LITE 的 9% 半仓）。但同一报告的 10 日数据：COHR 从 341.76 回落至 288 = -15.7%，LITE 从 1133 回落至 977 = -13.8%。COHR 的 10 日跌幅反而比被定性为『技术最弱』的 LITE 更深。结论实际只建立在 COHR 单日 +1.47% 之上（且见下条数据疑点），以一日相对强弱推翻 10 日趋势，证据强度不足以支撑标准仓 &gt; 半仓。</div><div class="finding-action">→ 要么把 COHR 也降到半仓（与 LITE 同档），要么在 Pick 1 中明确写出为何单日相对强度可以覆盖更差的 10 日趋势。否则仓位分配与证据强度不匹配。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$COHR, $LITE, $MU, $AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>未做财报日检查</strong></div><div class="finding-detail">报告为 4 个标的逐一给了入场/止损/目标，但全篇未出现任何一个财报日期（earnings date），也未检查是否有标的处于财报窗口。COHR/LITE/MU/AXTI 作为半导体与材料标的，财报是最大单点风险；在 derisk 日埋伏、若正撞财报窗口，止损很可能被跳空穿透。报告在 Layer 5 只做了期权结构约束，漏掉了事件风险的日历维度。</div><div class="finding-action">→ 在建仓前逐一核对 4 个标的的下次财报日；任一标的落在未来 2 周内，则应缩短持有窗口或推迟开到财报后，并在报告中显式标注。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR, $LITE, $AXTI, $MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Layer 3 财务质量分无任何数据支撑</strong></div><div class="finding-detail">Layer 3 给财务质量分：COHR 7、LITE 6、AXTI 5、MU 8。但按报告自述，web_search 失效、无法取得任何新闻/基本面，报告中也没有引用任何一条财务数字（营收/毛利/现金流/负债）。也就是说这四个分值是凭印象给出，无法复核。框架示例正指出此类问题：『给某标的财务质量 X 分但无 Q 数据支撑』。</div><div class="finding-action">→ 在无财务数据的一轮里，将财务质量维度标为 N/A 并说明数据缺失，或补充可得的基础数据；不要给出无法追溯来源的具体分数。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">RULE_VIOLATION</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 内部自相矛盾：称禁开仓却给入场</strong></div><div class="finding-detail">Layer 4 与 Pick 3 两处明确写 AXTI『规则库要求在 5 次非基本面暴跌后永久停止新开仓』『本次不是推荐开仓』；但同一 Pick 3 又给出『观察触发的入场区间 $58-64』并落仓位 6%。同时『首笔 ≤25% 标准仓位』与 6% 不自洽——若标准仓按硬上限 15%，25%×15%≈3.75%，而非 6%。禁止开仓条款与 6% 的落仓位、以及与 ≤25% 的换算，三者互相打架。</div><div class="finding-action">→ 二选一并写清：严格执行禁开则删除 entry_zone 与 position_pct，仅保留观察条款；若确要保留条件单，则修正 6% 的口径至与『≤25% 标准仓』一致的数值，并说明触发条件。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交/新闻数据全缺，Layer 1 未经确认</strong></div><div class="finding-detail">报告开头与 Layer 4 均自承 web_search / search_serenity / get_ticker_news 全部返回空，Layer 1 催化剂为价格反推、Layer 4 社交信号缺失。按类别定义此为系统问题、不应为 BLOCKER，但确实使 Layer 1 四条催化剂全部处于『未经新闻确认』状态，用户需知晓信号缺失而非确定性结论。</div><div class="finding-action">→ 将本报告视为价格结构层结论，勿把 Layer 1 催化剂当作已确认事实；用 orchestrator 快照中的新闻区与 Serenity 推文区做交叉验证后再决定是否下单。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 失败信号『次日无法收复』未量化</strong></div><div class="finding-detail">AXTI 失败信号为『收盘再度跌破 $60.10 且次日无法收复』。前半段量化明确，但『无法收复』未定义阈值——是收盘 &gt; 前日？还是盘中触及 60.10？对照 COHR（连续 2 日收盘 &lt; 273.93）与 LITE（收盘 &lt; 940.27 且量 &gt;5 日均值 120%）的清晰口径，AXTI 这一条可观察性偏弱。</div><div class="finding-action">→ 把『无法收复』改写为可判定条件，例如『次日收盘仍 &lt; $60.10』或『次日收盘未站上 $63.77』。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>GLW 与 COHR 涨幅同为 +1.47% 疑数据复制错误</strong></div><div class="finding-detail">Layer 1 表格第 4 行写『GLW +1.47%（逆势红盘），COHR 微涨 +1.47%』——两个不同标的涨幅被写成完全相同的数值，且 COHR 的 +1.47% 在 Layer 5 被再次引用为关键强势证据。同一数值重复出现在两个标的上，疑为复制粘贴错误，若属实则 COHR『逆势收红』这一核心论据的数值可靠性存疑。</div><div class="finding-action">→ 用 get_quote 复核 GLW 与 COHR 的当日涨跌幅，修正任一错误数值；若 COHR 实际涨幅不同，重新评估其『唯一强势』定性。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;全程缺失独立反方论点（看空情景）&quot;,
+      &quot;detail&quot;: &quot;报告为 COHR/LITE/AXTI 各写了 failure_signal，但没有任何一处系统性「反方论点 / bear case」。failure_signal 只回答『我看错了会先在哪里看到』（观察触发），不等于『为什么可能是错的』（论证对冲）。例如 LITE 论点称 10 日 -13.8% 属『板块级获利了结而非逻辑破坏』，此断言的反方——即『这正是 800G/1.6T 订单能见度恶化被聪明钱先行定价』——从未被列出并反驳。按审计框架『反方完整性：是否覆盖最可能的失败路径』，此项未达标。&quot;,
+      &quot;actionable&quot;: &quot;为每个 pick 补一段独立反方：明确写出最可能的失败原因（需求端砍单/客户 inventory digestion/竞争替代），并给出为何当前证据仍支持做多。若写不出，说明当日不应开枪。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;核心论点不可证伪：情绪释放 vs 趋势反转&quot;,
+      &quot;detail&quot;: &quot;报告的整个立论支点是 Layer 1 结论『今天是 AI 算力链系统性 derisk 日，而非瓶颈加速日』『光互联与 HBM 同步从高位回落 12-16% 是获利了结、不是供应链逻辑破坏』。但该结论完全由价格行为反推（报告自承 web_search 全线失效）。用价格下跌同时解释『情绪释放』与『趋势反转』两种相反假设，等于论点无法被数据证伪——这正是审计框架第一项『核心数据是否能被现有信息证伪』要抓的问题。&quot;,
+      &quot;actionable&quot;: &quot;在 web_search/新闻恢复前，把该结论降级为假设，并明确写出：若出现哪条新闻（如大客户资本开支下修、订单取消公告），则假设被证伪。不要把价格反推的结论当作已确立事实写进 thesis_summary。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;COHR『唯一强势证据』与自身数据矛盾&quot;,
+      &quot;detail&quot;: &quot;报告称 COHR 是『唯一逆势收红、板块内唯一强势证据』，并按此给标准仓 12%（高于 LITE 的 9% 半仓）。但同一报告的 10 日数据：COHR 从 341.76 回落至 288 = -15.7%，LITE 从 1133 回落至 977 = -13.8%。COHR 的 10 日跌幅反而比被定性为『技术最弱』的 LITE 更深。结论实际只建立在 COHR 单日 +1.47% 之上（且见下条数据疑点），以一日相对强弱推翻 10 日趋势，证据强度不足以支撑标准仓 &gt; 半仓。&quot;,
+      &quot;actionable&quot;: &quot;要么把 COHR 也降到半仓（与 LITE 同档），要么在 Pick 1 中明确写出为何单日相对强度可以覆盖更差的 10 日趋势。否则仓位分配与证据强度不匹配。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;, &quot;$MU&quot;, &quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;未做财报日检查&quot;,
+      &quot;detail&quot;: &quot;报告为 4 个标的逐一给了入场/止损/目标，但全篇未出现任何一个财报日期（earnings date），也未检查是否有标的处于财报窗口。COHR/LITE/MU/AXTI 作为半导体与材料标的，财报是最大单点风险；在 derisk 日埋伏、若正撞财报窗口，止损很可能被跳空穿透。报告在 Layer 5 只做了期权结构约束，漏掉了事件风险的日历维度。&quot;,
+      &quot;actionable&quot;: &quot;在建仓前逐一核对 4 个标的的下次财报日；任一标的落在未来 2 周内，则应缩短持有窗口或推迟开到财报后，并在报告中显式标注。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;, &quot;$AXTI&quot;, &quot;$MU&quot;],
+      &quot;title&quot;: &quot;Layer 3 财务质量分无任何数据支撑&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给财务质量分：COHR 7、LITE 6、AXTI 5、MU 8。但按报告自述，web_search 失效、无法取得任何新闻/基本面，报告中也没有引用任何一条财务数字（营收/毛利/现金流/负债）。也就是说这四个分值是凭印象给出，无法复核。框架示例正指出此类问题：『给某标的财务质量 X 分但无 Q 数据支撑』。&quot;,
+      &quot;actionable&quot;: &quot;在无财务数据的一轮里，将财务质量维度标为 N/A 并说明数据缺失，或补充可得的基础数据；不要给出无法追溯来源的具体分数。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;RULE_VIOLATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 内部自相矛盾：称禁开仓却给入场&quot;,
+      &quot;detail&quot;: &quot;Layer 4 与 Pick 3 两处明确写 AXTI『规则库要求在 5 次非基本面暴跌后永久停止新开仓』『本次不是推荐开仓』；但同一 Pick 3 又给出『观察触发的入场区间 $58-64』并落仓位 6%。同时『首笔 ≤25% 标准仓位』与 6% 不自洽——若标准仓按硬上限 15%，25%×15%≈3.75%，而非 6%。禁止开仓条款与 6% 的落仓位、以及与 ≤25% 的换算，三者互相打架。&quot;,
+      &quot;actionable&quot;: &quot;二选一并写清：严格执行禁开则删除 entry_zone 与 position_pct，仅保留观察条款；若确要保留条件单，则修正 6% 的口径至与『≤25% 标准仓』一致的数值，并说明触发条件。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;社交/新闻数据全缺，Layer 1 未经确认&quot;,
+      &quot;detail&quot;: &quot;报告开头与 Layer 4 均自承 web_search / search_serenity / get_ticker_news 全部返回空，Layer 1 催化剂为价格反推、Layer 4 社交信号缺失。按类别定义此为系统问题、不应为 BLOCKER，但确实使 Layer 1 四条催化剂全部处于『未经新闻确认』状态，用户需知晓信号缺失而非确定性结论。&quot;,
+      &quot;actionable&quot;: &quot;将本报告视为价格结构层结论，勿把 Layer 1 催化剂当作已确认事实；用 orchestrator 快照中的新闻区与 Serenity 推文区做交叉验证后再决定是否下单。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 失败信号『次日无法收复』未量化&quot;,
+      &quot;detail&quot;: &quot;AXTI 失败信号为『收盘再度跌破 $60.10 且次日无法收复』。前半段量化明确，但『无法收复』未定义阈值——是收盘 &gt; 前日？还是盘中触及 60.10？对照 COHR（连续 2 日收盘 &lt; 273.93）与 LITE（收盘 &lt; 940.27 且量 &gt;5 日均值 120%）的清晰口径，AXTI 这一条可观察性偏弱。&quot;,
+      &quot;actionable&quot;: &quot;把『无法收复』改写为可判定条件，例如『次日收盘仍 &lt; $60.10』或『次日收盘未站上 $63.77』。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;GLW 与 COHR 涨幅同为 +1.47% 疑数据复制错误&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格第 4 行写『GLW +1.47%（逆势红盘），COHR 微涨 +1.47%』——两个不同标的涨幅被写成完全相同的数值，且 COHR 的 +1.47% 在 Layer 5 被再次引用为关键强势证据。同一数值重复出现在两个标的上，疑为复制粘贴错误，若属实则 COHR『逆势收红』这一核心论据的数值可靠性存疑。&quot;,
+      &quot;actionable&quot;: &quot;用 get_quote 复核 GLW 与 COHR 的当日涨跌幅，修正任一错误数值；若 COHR 实际涨幅不同，重新评估其『唯一强势』定性。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>总体裁定：PROCEED_WITH_CAUTION。</strong> 未发现任何 BLOCKER 级问题——仓位全在硬上限内（单标的最高 12%、单板块 21%）、止损与 R:R 由代码兜底、也没有被硬数据证伪或被规则库正式条款击穿的情况。但这份报告的<strong>软性论证质量偏薄</strong>，主要缺陷集中在三处：</p><p>1. <strong>缺独立反方论点。</strong> 报告写了 failure_signal，但那是「我错了会先在哪看到」，不是「我为什么可能错」。看空情景（例如 CPO 链订单能见度恶化被先行定价）从未被列出并反驳。这是本轮最大的论证洞。</p><p>2. <strong>核心结论不可证伪。</strong> 「今天的下跌是获利了结不是逻辑破坏」这个判断完全由价格反推——而价格下跌既能解释情绪释放、也能解释趋势反转。在 web_search 恢复前，它只能算假设，不能当已确立事实写进 thesis。</p><p>3. <strong>COHR 的仓位分配与证据强度不匹配。</strong> 报告给 COHR 标准仓 12%（&gt;LITE 的 9%），理由是「唯一逆势收红」。但 COHR 的 10 日跌幅（-15.7%）其实比被它贬为「技术最弱」的 LITE（-13.8%）更深。用一日强弱覆盖更差的十日趋势，证据太薄；再叠加 GLW/COHR 同为 +1.47% 的数据疑点，这条「强势证据」需要复核。</p><p><strong>给用户的动作要点：</strong>
+- 下单前<strong>逐票核对财报日</strong>（本报告完全没查，这是最容易被忽略的跳空风险）。
+- AXTI 那条「禁止新开仓却给 $58-64 入场 + 6%」的<strong>内部矛盾必须先解决</strong>——按字面规则库纪律，不该出现 entry_zone。
+- Layer 1 催化剂与 Layer 4 社交信号均为<strong>缺失/反推</strong>，请务必用 orchestrator 快照的新闻区与 Serenity 区做交叉验证，别把本报告的催化剂表当已确认事实。
+- Layer 3 的分值（尤其财务质量项）在无数据下不可复核，建议按参考而非依据使用。</p><p>一句话：<strong>方向可以跟，但仓位与证据的对应关系要自己重新校准——尤其 COHR 与 AXTI 两票。</strong></p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;全程缺失独立反方论点（看空情景）&quot;,
+      &quot;detail&quot;: &quot;报告为 COHR/LITE/AXTI 各写了 failure_signal，但没有任何一处系统性「反方论点 / bear case」。failure_signal 只回答『我看错了会先在哪里看到』（观察触发），不等于『为什么可能是错的』（论证对冲）。例如 LITE 论点称 10 日 -13.8% 属『板块级获利了结而非逻辑破坏』，此断言的反方——即『这正是 800G/1.6T 订单能见度恶化被聪明钱先行定价』——从未被列出并反驳。按审计框架『反方完整性：是否覆盖最可能的失败路径』，此项未达标。&quot;,
+      &quot;actionable&quot;: &quot;为每个 pick 补一段独立反方：明确写出最可能的失败原因（需求端砍单/客户 inventory digestion/竞争替代），并给出为何当前证据仍支持做多。若写不出，说明当日不应开枪。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;核心论点不可证伪：情绪释放 vs 趋势反转&quot;,
+      &quot;detail&quot;: &quot;报告的整个立论支点是 Layer 1 结论『今天是 AI 算力链系统性 derisk 日，而非瓶颈加速日』『光互联与 HBM 同步从高位回落 12-16% 是获利了结、不是供应链逻辑破坏』。但该结论完全由价格行为反推（报告自承 web_search 全线失效）。用价格下跌同时解释『情绪释放』与『趋势反转』两种相反假设，等于论点无法被数据证伪——这正是审计框架第一项『核心数据是否能被现有信息证伪』要抓的问题。&quot;,
+      &quot;actionable&quot;: &quot;在 web_search/新闻恢复前，把该结论降级为假设，并明确写出：若出现哪条新闻（如大客户资本开支下修、订单取消公告），则假设被证伪。不要把价格反推的结论当作已确立事实写进 thesis_summary。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;COHR『唯一强势证据』与自身数据矛盾&quot;,
+      &quot;detail&quot;: &quot;报告称 COHR 是『唯一逆势收红、板块内唯一强势证据』，并按此给标准仓 12%（高于 LITE 的 9% 半仓）。但同一报告的 10 日数据：COHR 从 341.76 回落至 288 = -15.7%，LITE 从 1133 回落至 977 = -13.8%。COHR 的 10 日跌幅反而比被定性为『技术最弱』的 LITE 更深。结论实际只建立在 COHR 单日 +1.47% 之上（且见下条数据疑点），以一日相对强弱推翻 10 日趋势，证据强度不足以支撑标准仓 &gt; 半仓。&quot;,
+      &quot;actionable&quot;: &quot;要么把 COHR 也降到半仓（与 LITE 同档），要么在 Pick 1 中明确写出为何单日相对强度可以覆盖更差的 10 日趋势。否则仓位分配与证据强度不匹配。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;,
+        &quot;$MU&quot;,
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;未做财报日检查&quot;,
+      &quot;detail&quot;: &quot;报告为 4 个标的逐一给了入场/止损/目标，但全篇未出现任何一个财报日期（earnings date），也未检查是否有标的处于财报窗口。COHR/LITE/MU/AXTI 作为半导体与材料标的，财报是最大单点风险；在 derisk 日埋伏、若正撞财报窗口，止损很可能被跳空穿透。报告在 Layer 5 只做了期权结构约束，漏掉了事件风险的日历维度。&quot;,
+      &quot;actionable&quot;: &quot;在建仓前逐一核对 4 个标的的下次财报日；任一标的落在未来 2 周内，则应缩短持有窗口或推迟开到财报后，并在报告中显式标注。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;,
+        &quot;$AXTI&quot;,
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;Layer 3 财务质量分无任何数据支撑&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给财务质量分：COHR 7、LITE 6、AXTI 5、MU 8。但按报告自述，web_search 失效、无法取得任何新闻/基本面，报告中也没有引用任何一条财务数字（营收/毛利/现金流/负债）。也就是说这四个分值是凭印象给出，无法复核。框架示例正指出此类问题：『给某标的财务质量 X 分但无 Q 数据支撑』。&quot;,
+      &quot;actionable&quot;: &quot;在无财务数据的一轮里，将财务质量维度标为 N/A 并说明数据缺失，或补充可得的基础数据；不要给出无法追溯来源的具体分数。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;RULE_VIOLATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 内部自相矛盾：称禁开仓却给入场&quot;,
+      &quot;detail&quot;: &quot;Layer 4 与 Pick 3 两处明确写 AXTI『规则库要求在 5 次非基本面暴跌后永久停止新开仓』『本次不是推荐开仓』；但同一 Pick 3 又给出『观察触发的入场区间 $58-64』并落仓位 6%。同时『首笔 ≤25% 标准仓位』与 6% 不自洽——若标准仓按硬上限 15%，25%×15%≈3.75%，而非 6%。禁止开仓条款与 6% 的落仓位、以及与 ≤25% 的换算，三者互相打架。&quot;,
+      &quot;actionable&quot;: &quot;二选一并写清：严格执行禁开则删除 entry_zone 与 position_pct，仅保留观察条款；若确要保留条件单，则修正 6% 的口径至与『≤25% 标准仓』一致的数值，并说明触发条件。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;社交/新闻数据全缺，Layer 1 未经确认&quot;,
+      &quot;detail&quot;: &quot;报告开头与 Layer 4 均自承 web_search / search_serenity / get_ticker_news 全部返回空，Layer 1 催化剂为价格反推、Layer 4 社交信号缺失。按类别定义此为系统问题、不应为 BLOCKER，但确实使 Layer 1 四条催化剂全部处于『未经新闻确认』状态，用户需知晓信号缺失而非确定性结论。&quot;,
+      &quot;actionable&quot;: &quot;将本报告视为价格结构层结论，勿把 Layer 1 催化剂当作已确认事实；用 orchestrator 快照中的新闻区与 Serenity 推文区做交叉验证后再决定是否下单。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 失败信号『次日无法收复』未量化&quot;,
+      &quot;detail&quot;: &quot;AXTI 失败信号为『收盘再度跌破 $60.10 且次日无法收复』。前半段量化明确，但『无法收复』未定义阈值——是收盘 &gt; 前日？还是盘中触及 60.10？对照 COHR（连续 2 日收盘 &lt; 273.93）与 LITE（收盘 &lt; 940.27 且量 &gt;5 日均值 120%）的清晰口径，AXTI 这一条可观察性偏弱。&quot;,
+      &quot;actionable&quot;: &quot;把『无法收复』改写为可判定条件，例如『次日收盘仍 &lt; $60.10』或『次日收盘未站上 $63.77』。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;GLW 与 COHR 涨幅同为 +1.47% 疑数据复制错误&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格第 4 行写『GLW +1.47%（逆势红盘），COHR 微涨 +1.47%』——两个不同标的涨幅被写成完全相同的数值，且 COHR 的 +1.47% 在 Layer 5 被再次引用为关键强势证据。同一数值重复出现在两个标的上，疑为复制粘贴错误，若属实则 COHR『逆势收红』这一核心论据的数值可靠性存疑。&quot;,
+      &quot;actionable&quot;: &quot;用 get_quote 复核 GLW 与 COHR 的当日涨跌幅，修正任一错误数值；若 COHR 实际涨幅不同，重新评估其『唯一强势』定性。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-10-13 18:25 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
