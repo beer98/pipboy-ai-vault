@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-10-14</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-10-14</div>
+  </header>
+  
+    <section class="banner banner-watch">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天观察 4 只，等回踩</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>0</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>4</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$269.39</div>
+          <div class="change down">-7.12%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,10.6 L 35.0,2.0 L 70.0,22.5 L 105.0,20.9 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,10.6 L 35.0,2.0 L 70.0,22.5 L 105.0,20.9 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -10.9%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:24.8%;width:10.5%" title="入场区 $245-$255"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $228.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $228</div><div class="marker target" style="left:93.1%" title="止盈 $310.0"></div><div class="marker-label target-label" style="left:93.1%">target $310</div><div class="marker current" style="left:50.4%" title="当前 $269.39"></div><div class="marker-label current-label" style="left:50.4%">$269.39</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">245.00-255.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ</span></div>
+      </div>
+      <div class="pick-thesis">CPO 800G/1.6T 光模块+激光器双料瓶颈，宏观CPI冲击致板块联动回调，基本面未破坏，用Sell Put在更低位置接货</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 5.6%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 9月CPI 3.7%超预期触发加息押注，成长股折现率上行致AI链普跌</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - CPO 800G/1.6T光模块+激光器瓶颈</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 未获取到Serenity/WSB当日信号（工具故障）</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - IV因恐慌抬升，Sell Put收权利金并接更低货</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在MU/AVGO跌破50日均线且COHR收盘跌破$255上看到逻辑破坏</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LITE</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$920.02</div>
+          <div class="change down">-6.88%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,12.8 L 35.0,2.0 L 70.0,23.2 L 105.0,24.7 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,12.8 L 35.0,2.0 L 70.0,23.2 L 105.0,24.7 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -12.3%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:23.5%;width:6.0%" title="入场区 $850-$870"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $795.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $795</div><div class="marker target" style="left:93.1%" title="止盈 $1080.0"></div><div class="marker-label target-label" style="left:93.1%">target $1080</div><div class="marker current" style="left:44.7%" title="当前 $920.02"></div><div class="marker-label current-label" style="left:44.7%">$920.02</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">850.00-870.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ</span></div>
+      </div>
+      <div class="pick-thesis">800G/1.6T光模块龙头，宏观驱动回撤20%至合理估值，与COHR互为板块验证，Sell Put条件建仓</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 5.7%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 加息押注升温致的板块系统性回调，非个股基本面恶化</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 800G/1.6T光模块+InP激光器供应</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 未获取到Serenity/WSB当日信号（工具故障）</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 恐慌IV高企，卖put兼具收租与低吸</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在COHR与LITE双双收盘跌破今日低点且成交量较5日均值放大&gt;20%上看到板块破坏</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$62.85</div>
+          <div class="change down">-2.76%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,13.9 L 70.0,38.0 L 105.0,28.1 L 140.0,34.8 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,13.9 L 70.0,38.0 L 105.0,28.1 L 140.0,34.8" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -12.3%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:19.2%;width:12.3%" title="入场区 $58-$62"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $54.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $54</div><div class="marker target" style="left:93.1%" title="止盈 $82.0"></div><div class="marker-label target-label" style="left:93.1%">target $82</div><div class="marker current" style="left:34.1%" title="当前 $62.85"></div><div class="marker-label current-label" style="left:34.1%">$62.85</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">58.00-62.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">7N高纯铟/镓/锗+InP衬底唯一西方受益标的，但10日回撤29%且命中冷却期反规则，今日仅观察</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 1.4%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 中国关键金属出口管制主线，叠加当日宏观恐慌错杀</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 7N高纯铟/镓/锗+InP衬底</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.6</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 未获取到Serenity信号；该标的已多次触发冷却期反规则</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 期权链薄，仅用正股且需先解除冷却</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在AXTI跌破$60.05且中国出口管制出现放松信号上看到瓶颈证伪</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LEU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$123.06</div>
+          <div class="change down">-8.17%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.7 L 35.0,2.0 L 70.0,15.2 L 105.0,17.2 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.7 L 35.0,2.0 L 70.0,15.2 L 105.0,17.2 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -13.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:20.4%;width:13.5%" title="入场区 $112-$120"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $104.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $104</div><div class="marker target" style="left:93.1%" title="止盈 $155.0"></div><div class="marker-label target-label" style="left:93.1%">target $155</div><div class="marker current" style="left:39.1%" title="当前 $123.06"></div><div class="marker-label current-label" style="left:39.1%">$123.06</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">112.00-120.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">美国HALEU唯一商业供应商，核能瓶颈极强但估值无安全垫、流动性薄，宏观恐慌日仅观察</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 2.6%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 加息冲击下高估值标的领跌，核能主题无个股利空</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 浓缩铀/HALEU西方唯一供应商</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:20%;background:var(--avoid)"></span></span><span class="score-val">2</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 未获取到Serenity/WSB当日信号（工具故障）</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 期权链流动性不足，仅正股且等待企稳</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在LEU成交量持续萎缩至&lt;40万股/日上看到流动性枯竭无法建仓</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+  
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;卖Put未核查财报日，恐裸卖过财报&quot;,
+      &quot;detail&quot;: &quot;候选1 COHR 建议 Sell Cash-Secured Put（~35 DTE，行权价 $245–255），候选2 LITE 同为 30–45 DTE SellPut（$850–870）。Layer 1 只提到 JPM/BofA/Morgan Stanley 的银行财报季，全文未列出 COHR/LITE 自身财报日期。从 scan_date 2026-10-14 起 35 DTE 约覆盖到 11 月中，历史上 COHR（财季 Q1）与 LITE 的财报均落在 10 月底–11 月初，大概率落入卖方窗口。规则库将「财报日裸卖期权」列为需阻止下单的风险类型，而本报告在推荐裸卖 Put 前完全未做该检查。&quot;,
+      &quot;actionable&quot;: &quot;下单前查 COHR/LITE 实际财报日；若落在 30–45 DTE 窗口内，改用财报后到期的期权，或改裸卖 put 为正股等待。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;COHR失败信号与入场区重叠，非逻辑破坏&quot;,
+      &quot;detail&quot;: &quot;候选1 失败信号为「COHR 收盘价跌破 $255」，但同一个候选的入场/行权区正是 $245–255——$255 恰好是入场区上沿。对 Sell Cash-Secured Put 结构而言，价格跌到 $255 下方属于预期内的接货区间，而非「CPO 800G/1.6T 瓶颈逻辑破坏」。该信号把「正常回撤」误标为「论点证伪」，无法起到失败预警作用。&quot;,
+      &quot;actionable&quot;: &quot;价格阈值下移到结构性支撑（如报告自己的 stop $228 或更低），并保留 MU/AVGO 跌破 50 日均线这一类基本面/龙头联动条件作为逻辑破坏线。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$COHR&quot;],
+      &quot;title&quot;: &quot;LITE失败信号过近且与COHR互相矛盾&quot;,
+      &quot;detail&quot;: &quot;候选2 失败信号为「COHR 与 LITE 双双收盘跌破今日低点（$914 / $269）且成交量较 5 日均值放大 &gt;20%」。但 LITE 现价 $918.40，$914 仅低 0.5%，属日内噪音而非论点破坏；更严重的是此处给 COHR 的破坏阈值为 $269，而候选1 自身给出 COHR 的逻辑破坏线为 $255——同一标的在报告内出现 $269 与 $255 两个互相矛盾的「破坏」阈值。&quot;,
+      &quot;actionable&quot;: &quot;统一 COHR 的逻辑破坏价位，LITE 信号锚定到更深支撑位（而非「破今日低点」），并保留成交量/龙头联动作为附加确认。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;“无个股利空”在新闻工具失效下被断言&quot;,
+      &quot;detail&quot;: &quot;Layer 2 表格对 LITE / COHR / MU / VRT / ETN / AXTI / LEU 全部标注「无个股利空」，并据此将当日定性为「指数级 beta flush」。但同一报告的「工具故障披露」与「数据完整性声明」明确 web_search 与 get_ticker_news 全部返回空。在无法获取个股新闻的前提下，无法证实「无个股利空」，而该假设是整篇「不追跌、不逆势加仓」结论的承重墙。&quot;,
+      &quot;actionable&quot;: &quot;把「无个股利空」降级为「未核实」；在任一标的下单前手动确认无 SEC 调查 / 裁员 / 指引下调 / 大客户砍单等个体利空。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;, &quot;$COHR&quot;, &quot;$LITE&quot;, &quot;$LEU&quot;],
+      &quot;title&quot;: &quot;财务/估值分无数据支撑，不可证伪&quot;,
+      &quot;detail&quot;: &quot;Layer 3 评分表给出 AXTI 财务 5、COHR 7、LITE 7、LEU 4；AXTI 估值 7、LEU 估值 4，但全文未引用任何一季营收/毛利率/现金/债务或估值倍数（PE/PS/EV）。LEU 的「估值无安全垫、财务质量弱、流动性薄」同样只有结论没有数据。这些分项无法被现有信息证伪，也无法支撑「基本面瓶颈逻辑未破坏」的核心判断。&quot;,
+      &quot;actionable&quot;: &quot;在评分旁附最近一季营收、毛利率、现金、债务与对应估值倍数；无数据的分项显式标为「待补」，不要给具体分数。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;:</p><p>```json
+{
+  &quot;findings&quot;: []
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-10-14 15:54 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
