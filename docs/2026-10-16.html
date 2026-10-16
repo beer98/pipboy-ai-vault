@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-10-16</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-10-16</div>
+  </header>
+  
+    <section class="banner banner-watch">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天观察 1 只，等回踩</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>0</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>1</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$VRT</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$209.82</div>
+          <div class="change down">-1.47%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,4.5 L 70.0,22.1 L 105.0,32.0 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,4.5 L 70.0,22.1 L 105.0,32.0 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -12.3%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:21.9%;width:15.0%" title="入场区 $200-$208"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $192.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $192</div><div class="marker target" style="left:93.1%" title="止盈 $238.0"></div><div class="marker-label target-label" style="left:93.1%">target $238</div><div class="marker current" style="left:40.3%" title="当前 $209.82"></div><div class="marker-label current-label" style="left:40.3%">$209.82</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">200.00-208.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股 或 SellPut30Δ</span></div>
+      </div>
+      <div class="pick-thesis">AI complex 去杠杆中唯一未被污染的数据中心电源/冷却瓶颈节点，相对强度突出，资金轮换受益方</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 0.9%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - AI光互联/HBM系统性去杠杆，资金轮换至电力冷却节点</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 数据中心电源与液冷（AI capex 必花节点）</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.1</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - Serenity/WSB 信号未获取（搜索工具失效，未编造）</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 高IV优先卖方收权利金，低IV则正股</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在 VRT 相对强度上看到跑输 ETN 且单日跌超4% 的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>「相对抗跌=轮换受益」逻辑跳跃</strong></div><div class="finding-detail">Layer 5 称『资金正从高 β optics/HBM 轮换到现金流稳定的电力/冷却瓶颈』，但唯一证据是当日 VRT -1.54%、ETN -1.50%，而对比组用的是 LITE/COHR 的 10 日 -23.6%/-29.0% —— 1 日数据对比 10 日数据，时间窗口不对等，无法证明『轮换』。报告 Layer 2 自己写着电力冷却『尚未被纳入抛售』，恰恰说明这是**低 beta 滞后**而非资金流入；系统性 de-grossing 的后段通常轮到未跌的低波动标的补跌。</div><div class="finding-action">→ 把该论点降级为『低 beta 防御属性』而非『轮换受益』；要求至少 5 日 VRT/ETN 相对强度 + 成交量或资金流数据支撑后才可称轮换，否则视为 1 日噪音。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>VRT 评分卡无任何数据支撑</strong></div><div class="finding-detail">scorecard 给出 shears 8 / substitutability 8 / valuation 7 / financials 8 / options 7，但全文未引用 VRT 任何财务数字（营收、backlog、margin、客户集中度）或估值倍数，也未引用任何 IV 数据；报告开头已声明 web_search 与 search_serenity 全部失效。在零基本面输入下给出 financials 8/10 与 valuation 7/10（并配文『估值 no-frothy』），属于无依据断言。</div><div class="finding-action">→ 补齐 VRT 最近季度营收/backlog/订单同比与 forward P/E 后再定分；在数据到位前，financials 与 valuation 两项应标注『未验证』并保守下调。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>未披露 VRT 财报日，却给出 SellPut 结构</strong></div><div class="finding-detail">Layer 5 结构栏为『正股 或 SellPut30Δ（IV 偏高时优先 SellPut）』，但全文未提及 VRT 下一次财报日期。VRT 历史 Q3 财报多在 10 月下旬，距扫描日 2026-10-16 可能仅数个交易日；在财报窗口内卖 put 的损益分布与正股完全不同（IV crush 与 gap 风险不对称）。报告也没有给出任何事件日历替代（Layer 1 全部为价格推导，无一条日历型催化剂）。</div><div class="finding-action">→ 下单前先确认 VRT 财报日；若落在持有窗口内，只用正股、且仓位从 8% 下调，禁用 SellPut 结构。用户应自行核对公司 IR 日历。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>「capex 指引未见下修」与数据声明矛盾</strong></div><div class="finding-detail">Layer 2 供应链图顶部写『终端 AI capex（未变，Hyperscaler 指引未见下修证据）』，但报告第 3 行明确声明 web_search / search_serenity 全部返回 no results，未获取任何新闻原文。因此『未见下修证据』实际等于『看不到任何证据』。整个『这是 de-grossing 而非基本面恶化』的核心定性（Layer 1 第 5 条『今日为普跌延续日，非单一利空』）建立在这个未验证前提上。</div><div class="finding-action">→ 将该定性显式标注为『未验证假设』；并设定可验证触发器：一旦出现任何 hyperscaler capex 下修/订单推迟的公开消息，立即冻结全部多头计划，而非按当前 SOP 的『等 CPO 连 2 日放量收阳』。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$VRT, *</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>失败信号阈值未量化、未与主论点挂钩</strong></div><div class="finding-detail">VRT 失败信号为『跑输 ETN 且单日跌超 4%』——『跑输』未定义幅度（低几个百分点？同为收盘价？），且未与真正的主论点（资金轮换）挂钩：若轮换逻辑成立，应同时观察 optics 是否止跌、VRT 是否放量，而非只对 ETN 一个参照。另外现价 209.67 距止损 192 已 8.4%，而触发条件写在『单日跌 4%』，两套退出逻辑（信号退出 vs 止损退出）关系未说明。全局信号『≥2 只核心标的单日跌幅 &gt;5%』中『核心标的』清单未定义，用户无法日常监控。</div><div class="finding-action">→ 改写为可执行阈值：『VRT 收盘跌幅 − ETN 收盘跌幅 ≥ 2pct 且 VRT 单日 &gt;4%』；补一条『放量跌破入场区下沿 200 则放弃建仓』；在报告内固定列出全局监控的 5 只核心标的代码。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>扫描面过窄，日历型催化剂全缺</strong></div><div class="finding-detail">Layer 1/2 只覆盖 optics、HBM、关键金属、电力冷却四个节点，未提及先进封装/CoWoS、半导体测试设备、网络交换与铜连接、以及任何非 AI 板块的避险/轮动。催化剂表 5 条全部由价格推导，无一条日历型事件（本周财报密度、FOMC/CPI、板块权重股财报）。在当日搜索工具全失效的情况下，这属于可避免的盲区——日历数据不依赖 web_search。</div><div class="finding-action">→ 用户自行补一份本周期财报日历（至少 VRT / ETN / MU 及任一 hyperscaler）与宏观数据日历，再决定是否在事件前建立 VRT 头寸。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>全文无可核验外部来源</strong></div><div class="finding-detail">报告引用『规则库反规则（提出日 2026-07-15 / 2026-07-28 系列）』、『AXTI 在本系统台账中已被标注 5 次以上同类 event』均无 rule ID 或台账记录 ID；价格与趋势数据虽标注来自 get_quote / get_chart_summary，但无源链接。因此本次审计无法对『数据来源真实性』作出判断（不是发现造假，是无法验证）。</div><div class="finding-action">→ 报告输出时附带 rule ID / 台账 event ID / 数据调用时间戳，便于事后追溯。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交信号缺失下仍给 attention_inverse 6</strong></div><div class="finding-detail">Layer 4 已如实标注 Serenity/WSB 未获取（未编造，符合纪律），但 scorecard 仍给出 attention_inverse 6 与 options 7 —— 这两项在社交与期权链数据均缺失的情况下无法支撑。属系统工具限制，非报告错误。</div><div class="finding-action">→ 将这两项标注为『未验证/不参与加权』，或在综合评分中明确披露权重被剔除。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;「相对抗跌=轮换受益」逻辑跳跃&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称『资金正从高 β optics/HBM 轮换到现金流稳定的电力/冷却瓶颈』，但唯一证据是当日 VRT -1.54%、ETN -1.50%，而对比组用的是 LITE/COHR 的 10 日 -23.6%/-29.0% —— 1 日数据对比 10 日数据，时间窗口不对等，无法证明『轮换』。报告 Layer 2 自己写着电力冷却『尚未被纳入抛售』，恰恰说明这是<strong>低 beta 滞后</strong>而非资金流入；系统性 de-grossing 的后段通常轮到未跌的低波动标的补跌。&quot;,
+      &quot;actionable&quot;: &quot;把该论点降级为『低 beta 防御属性』而非『轮换受益』；要求至少 5 日 VRT/ETN 相对强度 + 成交量或资金流数据支撑后才可称轮换，否则视为 1 日噪音。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;VRT 评分卡无任何数据支撑&quot;,
+      &quot;detail&quot;: &quot;scorecard 给出 shears 8 / substitutability 8 / valuation 7 / financials 8 / options 7，但全文未引用 VRT 任何财务数字（营收、backlog、margin、客户集中度）或估值倍数，也未引用任何 IV 数据；报告开头已声明 web_search 与 search_serenity 全部失效。在零基本面输入下给出 financials 8/10 与 valuation 7/10（并配文『估值 no-frothy』），属于无依据断言。&quot;,
+      &quot;actionable&quot;: &quot;补齐 VRT 最近季度营收/backlog/订单同比与 forward P/E 后再定分；在数据到位前，financials 与 valuation 两项应标注『未验证』并保守下调。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;未披露 VRT 财报日，却给出 SellPut 结构&quot;,
+      &quot;detail&quot;: &quot;Layer 5 结构栏为『正股 或 SellPut30Δ（IV 偏高时优先 SellPut）』，但全文未提及 VRT 下一次财报日期。VRT 历史 Q3 财报多在 10 月下旬，距扫描日 2026-10-16 可能仅数个交易日；在财报窗口内卖 put 的损益分布与正股完全不同（IV crush 与 gap 风险不对称）。报告也没有给出任何事件日历替代（Layer 1 全部为价格推导，无一条日历型催化剂）。&quot;,
+      &quot;actionable&quot;: &quot;下单前先确认 VRT 财报日；若落在持有窗口内，只用正股、且仓位从 8% 下调，禁用 SellPut 结构。用户应自行核对公司 IR 日历。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;「capex 指引未见下修」与数据声明矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 2 供应链图顶部写『终端 AI capex（未变，Hyperscaler 指引未见下修证据）』，但报告第 3 行明确声明 web_search / search_serenity 全部返回 no results，未获取任何新闻原文。因此『未见下修证据』实际等于『看不到任何证据』。整个『这是 de-grossing 而非基本面恶化』的核心定性（Layer 1 第 5 条『今日为普跌延续日，非单一利空』）建立在这个未验证前提上。&quot;,
+      &quot;actionable&quot;: &quot;将该定性显式标注为『未验证假设』；并设定可验证触发器：一旦出现任何 hyperscaler capex 下修/订单推迟的公开消息，立即冻结全部多头计划，而非按当前 SOP 的『等 CPO 连 2 日放量收阳』。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;, &quot;*&quot;],
+      &quot;title&quot;: &quot;失败信号阈值未量化、未与主论点挂钩&quot;,
+      &quot;detail&quot;: &quot;VRT 失败信号为『跑输 ETN 且单日跌超 4%』——『跑输』未定义幅度（低几个百分点？同为收盘价？），且未与真正的主论点（资金轮换）挂钩：若轮换逻辑成立，应同时观察 optics 是否止跌、VRT 是否放量，而非只对 ETN 一个参照。另外现价 209.67 距止损 192 已 8.4%，而触发条件写在『单日跌 4%』，两套退出逻辑（信号退出 vs 止损退出）关系未说明。全局信号『≥2 只核心标的单日跌幅 &gt;5%』中『核心标的』清单未定义，用户无法日常监控。&quot;,
+      &quot;actionable&quot;: &quot;改写为可执行阈值：『VRT 收盘跌幅 − ETN 收盘跌幅 ≥ 2pct 且 VRT 单日 &gt;4%』；补一条『放量跌破入场区下沿 200 则放弃建仓』；在报告内固定列出全局监控的 5 只核心标的代码。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;扫描面过窄，日历型催化剂全缺&quot;,
+      &quot;detail&quot;: &quot;Layer 1/2 只覆盖 optics、HBM、关键金属、电力冷却四个节点，未提及先进封装/CoWoS、半导体测试设备、网络交换与铜连接、以及任何非 AI 板块的避险/轮动。催化剂表 5 条全部由价格推导，无一条日历型事件（本周财报密度、FOMC/CPI、板块权重股财报）。在当日搜索工具全失效的情况下，这属于可避免的盲区——日历数据不依赖 web_search。&quot;,
+      &quot;actionable&quot;: &quot;用户自行补一份本周期财报日历（至少 VRT / ETN / MU 及任一 hyperscaler）与宏观数据日历，再决定是否在事件前建立 VRT 头寸。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;全文无可核验外部来源&quot;,
+      &quot;detail&quot;: &quot;报告引用『规则库反规则（提出日 2026-07-15 / 2026-07-28 系列）』、『AXTI 在本系统台账中已被标注 5 次以上同类 event』均无 rule ID 或台账记录 ID；价格与趋势数据虽标注来自 get_quote / get_chart_summary，但无源链接。因此本次审计无法对『数据来源真实性』作出判断（不是发现造假，是无法验证）。&quot;,
+      &quot;actionable&quot;: &quot;报告输出时附带 rule ID / 台账 event ID / 数据调用时间戳，便于事后追溯。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;社交信号缺失下仍给 attention_inverse 6&quot;,
+      &quot;detail&quot;: &quot;Layer 4 已如实标注 Serenity/WSB 未获取（未编造，符合纪律），但 scorecard 仍给出 attention_inverse 6 与 options 7 —— 这两项在社交与期权链数据均缺失的情况下无法支撑。属系统工具限制，非报告错误。&quot;,
+      &quot;actionable&quot;: &quot;将这两项标注为『未验证/不参与加权』，或在综合评分中明确披露权重被剔除。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>结论：不阻止下单，但今日的 $VRT 只能当作「低波动防御仓」买，不能当作「轮换受益仓」买。</strong></p><p>整体看，这份报告在<strong>纪律层面是合格的</strong>：AXTI/CPO 主动触发反规则剔除、明确列出「今日不做清单」、明确标注搜索工具失效且拒绝编造社交信号——这些是最容易出事的地方，它守住了。仓位 8%、止损明确、R:R 硬规则已过，我不重复。</p><p>软性上真正值得警觉的是三件事：</p><p>1. <strong>论点的时间窗口作弊</strong>。用 VRT 的「1 日 -1.54%」去对比 LITE/COHR 的「10 日 -23.6%/-29.0%」，这不足以推出「资金轮换」。更麻烦的是报告自己写了电力冷却「尚未被纳入抛售」——这是<strong>还没轮到</strong>，不是<strong>被选中</strong>。在系统性 de-grossing 里，低 β 滞后补跌是标准剧本。买 VRT 可以，但理由应该是「AI capex 相关、波动低于 optics、有止损」，而不是「轮换受益」。</p><p>2. <strong>财报日缺席 + SellPut 结构</strong>。这是本次审计里我最不舒服的一条。报告给了「SellPut30Δ」选项却没提 VRT 的财报日，而 VRT 历史上 Q3 财报就在 10 月下旬。我没有把它升级为 BLOCKER，因为「财报日裸卖期权」属硬规则管辖、且我无法确认具体日期；但用户下单前必须自己查一次 IR 日历。<strong>财报在窗口内 → 只做正股，且减仓。</strong></p><p>3. <strong>「capex 未变」是空的</strong>。报告开头承认所有搜索失效，Layer 2 却写「Hyperscaler 指引未见下修证据」。这不是撒谎，是把「看不见」写成了「没问题」。整套「这是去杠杆不是基本面恶化」的定性全靠这一条撑着。请把它读作：<strong>还没有证据说基本面坏了，但也没有证据说基本面没坏。</strong></p><p>失败信号的量化程度打了折扣（「跑输 ETN」没定义幅度），扫描覆盖面偏窄（无日历型催化剂、无 CoWoS/测试设备/非 AI 板块）。这些都是 WARNING 级，不构成阻止理由。</p><p><strong>给用户的可执行清单：</strong>
+- 下单前查 VRT 财报日；在窗口内则只用正股 + 减仓，禁用 SellPut。
+- 把 VRT 的持有理由改写为「防御 + 明确止损」，不要相信「轮换」叙事。
+- 把「Hyperscaler capex 未下修」当作未验证假设，一旦有下修新闻，无条件冻结全部多头，不要等 CPO 放量收阳的信号。
+- 自己补一份本周期财报日历，别依赖当日的 Layer 1。</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;「相对抗跌=轮换受益」逻辑跳跃&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称『资金正从高 β optics/HBM 轮换到现金流稳定的电力/冷却瓶颈』，但唯一证据是当日 VRT -1.54%、ETN -1.50%，而对比组用的是 LITE/COHR 的 10 日 -23.6%/-29.0% —— 1 日数据对比 10 日数据，时间窗口不对等，无法证明『轮换』。报告 Layer 2 自己写着电力冷却『尚未被纳入抛售』，恰恰说明这是<strong>低 beta 滞后</strong>而非资金流入；系统性 de-grossing 的后段通常轮到未跌的低波动标的补跌。&quot;,
+      &quot;actionable&quot;: &quot;把该论点降级为『低 beta 防御属性』而非『轮换受益』；要求至少 5 日 VRT/ETN 相对强度 + 成交量或资金流数据支撑后才可称轮换，否则视为 1 日噪音。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;VRT 评分卡无任何数据支撑&quot;,
+      &quot;detail&quot;: &quot;scorecard 给出 shears 8 / substitutability 8 / valuation 7 / financials 8 / options 7，但全文未引用 VRT 任何财务数字（营收、backlog、margin、客户集中度）或估值倍数，也未引用任何 IV 数据；报告开头已声明 web_search 与 search_serenity 全部失效。在零基本面输入下给出 financials 8/10 与 valuation 7/10（并配文『估值 no-frothy』），属于无依据断言。&quot;,
+      &quot;actionable&quot;: &quot;补齐 VRT 最近季度营收/backlog/订单同比与 forward P/E 后再定分；在数据到位前，financials 与 valuation 两项应标注『未验证』并保守下调。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;未披露 VRT 财报日，却给出 SellPut 结构&quot;,
+      &quot;detail&quot;: &quot;Layer 5 结构栏为『正股 或 SellPut30Δ（IV 偏高时优先 SellPut）』，但全文未提及 VRT 下一次财报日期。VRT 历史 Q3 财报多在 10 月下旬，距扫描日 2026-10-16 可能仅数个交易日；在财报窗口内卖 put 的损益分布与正股完全不同（IV crush 与 gap 风险不对称）。报告也没有给出任何事件日历替代（Layer 1 全部为价格推导，无一条日历型催化剂）。&quot;,
+      &quot;actionable&quot;: &quot;下单前先确认 VRT 财报日；若落在持有窗口内，只用正股、且仓位从 8% 下调，禁用 SellPut 结构。用户应自行核对公司 IR 日历。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;「capex 指引未见下修」与数据声明矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 2 供应链图顶部写『终端 AI capex（未变，Hyperscaler 指引未见下修证据）』，但报告第 3 行明确声明 web_search / search_serenity 全部返回 no results，未获取任何新闻原文。因此『未见下修证据』实际等于『看不到任何证据』。整个『这是 de-grossing 而非基本面恶化』的核心定性（Layer 1 第 5 条『今日为普跌延续日，非单一利空』）建立在这个未验证前提上。&quot;,
+      &quot;actionable&quot;: &quot;将该定性显式标注为『未验证假设』；并设定可验证触发器：一旦出现任何 hyperscaler capex 下修/订单推迟的公开消息，立即冻结全部多头计划，而非按当前 SOP 的『等 CPO 连 2 日放量收阳』。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;,
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;失败信号阈值未量化、未与主论点挂钩&quot;,
+      &quot;detail&quot;: &quot;VRT 失败信号为『跑输 ETN 且单日跌超 4%』——『跑输』未定义幅度（低几个百分点？同为收盘价？），且未与真正的主论点（资金轮换）挂钩：若轮换逻辑成立，应同时观察 optics 是否止跌、VRT 是否放量，而非只对 ETN 一个参照。另外现价 209.67 距止损 192 已 8.4%，而触发条件写在『单日跌 4%』，两套退出逻辑（信号退出 vs 止损退出）关系未说明。全局信号『≥2 只核心标的单日跌幅 &gt;5%』中『核心标的』清单未定义，用户无法日常监控。&quot;,
+      &quot;actionable&quot;: &quot;改写为可执行阈值：『VRT 收盘跌幅 − ETN 收盘跌幅 ≥ 2pct 且 VRT 单日 &gt;4%』；补一条『放量跌破入场区下沿 200 则放弃建仓』；在报告内固定列出全局监控的 5 只核心标的代码。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;扫描面过窄，日历型催化剂全缺&quot;,
+      &quot;detail&quot;: &quot;Layer 1/2 只覆盖 optics、HBM、关键金属、电力冷却四个节点，未提及先进封装/CoWoS、半导体测试设备、网络交换与铜连接、以及任何非 AI 板块的避险/轮动。催化剂表 5 条全部由价格推导，无一条日历型事件（本周财报密度、FOMC/CPI、板块权重股财报）。在当日搜索工具全失效的情况下，这属于可避免的盲区——日历数据不依赖 web_search。&quot;,
+      &quot;actionable&quot;: &quot;用户自行补一份本周期财报日历（至少 VRT / ETN / MU 及任一 hyperscaler）与宏观数据日历，再决定是否在事件前建立 VRT 头寸。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;全文无可核验外部来源&quot;,
+      &quot;detail&quot;: &quot;报告引用『规则库反规则（提出日 2026-07-15 / 2026-07-28 系列）』、『AXTI 在本系统台账中已被标注 5 次以上同类 event』均无 rule ID 或台账记录 ID；价格与趋势数据虽标注来自 get_quote / get_chart_summary，但无源链接。因此本次审计无法对『数据来源真实性』作出判断（不是发现造假，是无法验证）。&quot;,
+      &quot;actionable&quot;: &quot;报告输出时附带 rule ID / 台账 event ID / 数据调用时间戳，便于事后追溯。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;社交信号缺失下仍给 attention_inverse 6&quot;,
+      &quot;detail&quot;: &quot;Layer 4 已如实标注 Serenity/WSB 未获取（未编造，符合纪律），但 scorecard 仍给出 attention_inverse 6 与 options 7 —— 这两项在社交与期权链数据均缺失的情况下无法支撑。属系统工具限制，非报告错误。&quot;,
+      &quot;actionable&quot;: &quot;将这两项标注为『未验证/不参与加权』，或在综合评分中明确披露权重被剔除。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-10-16 15:26 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
