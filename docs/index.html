@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>瓶颈猎手 · 2026-10-21</title>
+<title>瓶颈猎手 · 2026-10-22</title>
 <style>
 :root {
   --bg: #F8F6F1;
@@ -203,43 +203,401 @@ footer.app-foot a { color: var(--text-dim); }
       <h1>瓶颈猎手</h1>
       <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
     </div>
-    <div class="date">2026-10-21</div>
+    <div class="date">2026-10-22</div>
   </header>
   
-    <section class="banner banner-avoid">
+    <section class="banner banner-watch">
       <div class="banner-head">今日核心判断</div>
-      <div class="banner-headline">今天什么都不要做</div>
+      <div class="banner-headline">今天观察 3 只，等回踩</div>
       <div class="banner-counts">
         <span class="count-buy">🟢 BUY <strong>0</strong></span>
-        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>3</strong></span>
         <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
       </div>
-      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      <div class="audit-stat">🔁 系统自审 2 轮（修复 BLOCKER 后重写） · 全部通过</div>
       
     </section>
     
   <section class="section">
     <h2>📊 持仓建议</h2>
-    <div class="picks-grid"><p class="text-dim">无候选标的</p></div>
+    <div class="picks-grid">
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$HUBB</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$440.65</div>
+          <div class="change down">-4.31%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,7.7 L 35.0,2.0 L 70.0,10.3 L 105.0,8.2 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,7.7 L 35.0,2.0 L 70.0,10.3 L 105.0,8.2 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -4.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:33.9%;width:10.1%" title="入场区 $460-$472"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $428.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $428</div><div class="marker target" style="left:93.1%" title="止盈 $530.0"></div><div class="marker-label target-label" style="left:93.1%">target $530</div><div class="marker current" style="left:17.6%" title="当前 $440.65"></div><div class="marker-label current-label" style="left:17.6%">$440.65</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">460.00-472.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（无期权结构；期权链流动性中等，不做杠杆叠加）</span></div>
+      </div>
+      <div class="pick-thesis">电网变压器 lead time&gt;2 年，AI 数据中心+老化电网双驱动；今日 -4.19% 为全链条最抗跌（COHR -10.51%、GEV -9.96%），10 日趋势仅 -6.94% vs COHR -33.37%，相对强度即资金选择；但今日创 10 日新低，补跌或未完成，故不建仓只等触发</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 低于入场区 4.2%</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>全链条 AI capex 折现率重估下，变压器刚性瓶颈标的成资金避风港，跌幅仅板块一半</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>变压器/配电设备，lead time 超 2 年的物理产能约束，非叙事驱动</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>search_serenity 与 get_ticker_news 本轮全部返回空，社交验证缺失，按最保守档处理（半仓以下、且需价格触发）</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>不用期权，直接正股，避免在新闻源失效日叠加杠杆</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>HUBB 跑输 ETN 超 2pct/日 → 避风港属性失效，论点作废</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">FROZEN</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$208.81</div>
+          <div class="change down">-10.27%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,7.8 L 35.0,8.9 L 70.0,9.2 L 105.0,2.0 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,7.8 L 35.0,8.9 L 70.0,9.2 L 105.0,2.0 L 140.0,38.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -10.3%</div>
+      </div>
+      
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">nil</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">无（Sell Put 已删除；正股/买 Call/价差在冷却期内一律禁止）</span></div>
+      </div>
+      <div class="pick-thesis">CPO 激光器/光模块垂直整合瓶颈逻辑仍成立，今日 -10.51%（10 日 -33.37%）属全链条同步去杠杆而非个股裂缝（GEV -9.96% 佐证）；但受 CPO 板块冷却期约束 + 技术分 2/10 未达入围线，今日及冷却期内禁止任何开仓形式</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 入场区间未指定</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Meta capex 信用化定价 + LRCX 设备供应链约束（后者本轮 web_search 失败，未验证，置信度低）</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 800G/1.6T 光模块 + InP 激光器，垂直整合供应</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity/WSB 数据均抓取失败，社交验证缺失</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>不适用——冷却期内任何新增敞口（含卖 Put 被指派路径）均违反规则</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>LITE 跌幅持续小于 COHR 超 3pct/日，说明 COHR 有个股层面隐藏问题</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">FROZEN</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$53.27</div>
+          <div class="change down">-7.61%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,13.5 L 70.0,12.1 L 105.0,2.0 L 140.0,29.7 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,13.5 L 70.0,12.1 L 105.0,2.0 L 140.0,29.7" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +3.5%</div>
+      </div>
+      
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">nil</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">无</span></div>
+      </div>
+      <div class="pick-thesis">7N 高纯铟/镓/锗 + InP 衬底瓶颈逻辑未破坏，但 10 日 -22.49%、30 日级别回撤仍在 60% 量级，历史已触发 ≥5 次重复性情绪冲击条款，其中一条已升级为永久停止新开仓</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 入场区间未指定</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>中国出口管制下的铟/镓/锗供应链重构（长期逻辑不变）</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>InP 衬底 → CPO 激光器上游</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>抓取失败</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>不适用</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若 InP 需求逻辑被证伪或管制取消，则论点作废</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
   </section>
   
   
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$HUBB, $COHR, $ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Layer3 评分表与正文算术自相矛盾</strong></div><div class="finding-detail">Layer 3 表格给 HUBB 总分 6.75、COHR 6.60、ETN 6.55；但正文计算写 HUBB=6.70、COHR=6.90，按表内权重复算：HUBB=2.40+1.40+0.90+0.80+0.40+0.60+0.20=6.70，COHR=2.40+1.60+1.05+0.60+0.20+0.90+0.15=6.90，ETN=6.60。三行表格值全部与正确算术不符，且表格里的 6.60 恰好等于 ETN 的实算值、6.75 恰好接近 HUBB 实算——存在总分错位填入的痕迹。‘今日无标的达 7.0’这一核心结论虽有正文算术支撑，但表格作为对外展示的评分卡不可复核，削弱整个入围判断的可信度。</div><div class="finding-action">→ 统一表格与正文的分值，逐格复算并标注每个维度的打分理由（当前仅给分数不给依据）；表格总分必须等于加权求和。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>冷却期前提可能已过期，冻结依据存疑</strong></div><div class="finding-detail">Layer 5 称板块冷却期‘处于激活状态’，触发事件为 7/21、7/24、7/28 三次非基本面 miss；但所引反规则原文是‘冷却期不少于 10 个交易日’。7/28 触发距今日 10/22 已约 60 个交易日，报告未提供 8/11 之后任何新的板块级触发事件，却直接沿用‘仍激活’的断言。若冷却期实际已自然失效，COHR 的冻结就只剩‘技术分 2/10 未达 7.0’这一条理由，上一轮删除 Sell Put 的规则依据也会动摇（方向虽保守、不构成下单风险，但推理链断裂）。</div><div class="finding-action">→ 在报告中明确列出冷却期内每一次（7/28 之后）的新触发日期与事件；若无法举证，应改写为‘基于技术形态与拥挤度自动排除’，而非挂靠已过期的冷却期条款。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>‘GEV 同跌即排除个股问题’是逻辑跳跃</strong></div><div class="finding-detail">Layer 1 断言：‘如果是 COHR 自身财报/订单问题，GEV 不该同步崩 10%……这排除了 COHR 有个股问题的假设’。该推理不成立——板块 beta 与个股 idiosyncratic 冲击可叠加，两只票同跌无法排除任何一只存在自身问题（GEV -9.96% 也可能有自己的原因）。而这条被排除的假设恰恰是 COHR 反方第 2 条（LITE 跌幅持续小于 COHR 即个股裂缝）想检验的对象，等于用一个站不住的推理提前关掉了最关键的失败路径。</div><div class="finding-action">→ 改为‘同步下跌降低了纯个股事件的可能性，但不能排除叠加’，并保留对 COHR 相对 LITE 逐日跟踪作为唯一检验手段。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$HUBB, $COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>财报日历完全缺失，HUBB 触发即撞财报 gap</strong></div><div class="finding-detail">报告全程未提任何标的的财报日期。HUBB（$441.19，触发线 $460）与 COHR 的 Q3/Q1 财报通常落在 10 月底至 11 月初，今日已是 10/22。HUBB 的触发条件是‘站回 $460 且强于 ETN’，一旦在财报前 1-3 天触发，用户将按报告直接以正股入场、止损 $428 承接财报跳空，而报告对此零提示。止损 $428 距入场 $460-472 仅 7-9%，一次财报 gap 即可穿透。</div><div class="finding-action">→ 在 HUBB/COHR 条目补充下一次财报日期；触发条件增加‘距财报 ≥5 个交易日’过滤，或明确财报前触发需减半仓。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>宏观催化剂漏掉财报季/事件日历</strong></div><div class="finding-detail">Layer 1 把今日定性为‘AI 资产负债表去杠杆’，归因到 Meta 表外结构与 LRCX 设备约束，但 10 月下旬正是大型科技股财报密集窗口，报告未提及本周/下周任何财报或 FOMC/CPI 等事件日历。‘全链条同步去杠杆’的一个更朴素解释是财报季前的仓位调整，报告完全没把这个候选归因纳入比较，等于跳过了最容易被验证的宏观催化剂。</div><div class="finding-action">→ 在 Layer 1 补充本周宏观事件日历（Mag7 财报、FOMC、CPI），并把‘财报前降仓’列为与‘信用化定价’并列的候选归因。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>自述‘新闻全失败’却给出具体基本面归因</strong></div><div class="finding-detail">报告反复声明‘web_search 与 get_ticker_news 几乎全部返回空’‘宏观归因只能基于价格结构推断’，但 Layer 1 第 1 条又给出确定性表述‘Meta 类表外结构被重新审视’。该归因既无来源、无日期，也未像 LRCX 那样标注‘未验证’，与报告自身的置信度声明直接冲突。这属于把无来源的具体事件当作已确认催化剂陈述。</div><div class="finding-action">→ 对‘Meta 表外结构’同样加注‘未验证/低置信度’，或直接删除，只保留可被价格结构支撑的表述。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 失败信号纯叙事、不可监控</strong></div><div class="finding-detail">AXTI 的 failure_signal 写作‘若 InP 需求逻辑被证伪或管制取消，则论点作废’——无阈值、无频率、无数据源，用户无法日常盯。对比 HUBB 的‘跑输 ETN 超 2pct/日’才是可观测指标。AXTI 虽今日不开仓，但作为观察名单成员，其退出条件不可量化意味着无法判断何时应彻底放弃该标的。</div><div class="finding-action">→ 改写为可观测阈值，例如：连续 5 日收盘低于某一价位 / 中国出口管制政策出现官方撤销公告 / InP 衬底现货报价环比回落 X%。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">RULE_VIOLATION</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>‘永久停止新开仓’与解冻条件并存自相矛盾</strong></div><div class="finding-detail">Layer 5 称 AXTI 反规则‘已有一条升级为永久停止新开仓’，但同日 JSON 的 unfreeze_conditions 又写‘连续 2 个交易日放量企稳即可重新纳入讨论’。若‘永久’成立，则不应存在任何解冻路径；若存在解冻路径，则‘永久停止’的定性有误。二者不能同时为真，报告未说明哪条为准。</div><div class="finding-action">→ 核对规则库原文：若为永久禁令，删除 unfreeze_conditions 并标注‘永不重新开仓’；若可解冻，改正 Layer 5 的‘永久’措辞并写明解冻频次。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$HUBB</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>HUBB 核心论点无数据支撑且内部矛盾</strong></div><div class="finding-detail">HUBB 的核心论点是‘变压器 lead time &gt; 2 年、物理产能刚性’，财务维度打 8/10、估值 6/10，但报告全篇未引用任何具体财务数字（营收/积压订单/毛利率/在手订单额）。Layer 2 一边称‘HUBB 是今日链上唯一结构完整的标的/资金避风港’，一边又写‘补跌可能才第一天’——避风港与刚开始补跌两个判断同时成立，论点自相冲突。无数字的核心论据无法被证伪。</div><div class="finding-action">→ 补充至少一项可证伪的硬数据（如最近季度 backlog 同比、变压器订单交付周期、毛利率），并明确‘避风港’与‘补跌未完’哪个是主导判断。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR 失败信号‘持续’未定义天数</strong></div><div class="finding-detail">COHR failure_signal：‘LITE 跌幅持续小于 COHR 超 3pct/日’——‘持续’无天数定义，用户无法确定连续几日算触发。</div><div class="finding-action">→ 明确为‘连续 3 个交易日’等具体天数。</div></div></div>
+    </section>
+    
   
     <section class="section">
       <details class="critic">
         <summary>🛡️ 红队自审批注（点击展开）</summary>
-        <div class="critic-body"><p></p><p>
+        <div class="critic-body"><p>
 ```json
 {
-  &quot;findings&quot;: []
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$HUBB&quot;, &quot;$COHR&quot;, &quot;$ETN&quot;],
+      &quot;title&quot;: &quot;Layer3 评分表与正文算术自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 3 表格给 HUBB 总分 6.75、COHR 6.60、ETN 6.55；但正文计算写 HUBB=6.70、COHR=6.90，按表内权重复算：HUBB=2.40+1.40+0.90+0.80+0.40+0.60+0.20=6.70，COHR=2.40+1.60+1.05+0.60+0.20+0.90+0.15=6.90，ETN=6.60。三行表格值全部与正确算术不符，且表格里的 6.60 恰好等于 ETN 的实算值、6.75 恰好接近 HUBB 实算——存在总分错位填入的痕迹。‘今日无标的达 7.0’这一核心结论虽有正文算术支撑，但表格作为对外展示的评分卡不可复核，削弱整个入围判断的可信度。&quot;,
+      &quot;actionable&quot;: &quot;统一表格与正文的分值，逐格复算并标注每个维度的打分理由（当前仅给分数不给依据）；表格总分必须等于加权求和。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;冷却期前提可能已过期，冻结依据存疑&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称板块冷却期‘处于激活状态’，触发事件为 7/21、7/24、7/28 三次非基本面 miss；但所引反规则原文是‘冷却期不少于 10 个交易日’。7/28 触发距今日 10/22 已约 60 个交易日，报告未提供 8/11 之后任何新的板块级触发事件，却直接沿用‘仍激活’的断言。若冷却期实际已自然失效，COHR 的冻结就只剩‘技术分 2/10 未达 7.0’这一条理由，上一轮删除 Sell Put 的规则依据也会动摇（方向虽保守、不构成下单风险，但推理链断裂）。&quot;,
+      &quot;actionable&quot;: &quot;在报告中明确列出冷却期内每一次（7/28 之后）的新触发日期与事件；若无法举证，应改写为‘基于技术形态与拥挤度自动排除’，而非挂靠已过期的冷却期条款。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;‘GEV 同跌即排除个股问题’是逻辑跳跃&quot;,
+      &quot;detail&quot;: &quot;Layer 1 断言：‘如果是 COHR 自身财报/订单问题，GEV 不该同步崩 10%……这排除了 COHR 有个股问题的假设’。该推理不成立——板块 beta 与个股 idiosyncratic 冲击可叠加，两只票同跌无法排除任何一只存在自身问题（GEV -9.96% 也可能有自己的原因）。而这条被排除的假设恰恰是 COHR 反方第 2 条（LITE 跌幅持续小于 COHR 即个股裂缝）想检验的对象，等于用一个站不住的推理提前关掉了最关键的失败路径。&quot;,
+      &quot;actionable&quot;: &quot;改为‘同步下跌降低了纯个股事件的可能性，但不能排除叠加’，并保留对 COHR 相对 LITE 逐日跟踪作为唯一检验手段。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$HUBB&quot;, &quot;$COHR&quot;],
+      &quot;title&quot;: &quot;财报日历完全缺失，HUBB 触发即撞财报 gap&quot;,
+      &quot;detail&quot;: &quot;报告全程未提任何标的的财报日期。HUBB（$441.19，触发线 $460）与 COHR 的 Q3/Q1 财报通常落在 10 月底至 11 月初，今日已是 10/22。HUBB 的触发条件是‘站回 $460 且强于 ETN’，一旦在财报前 1-3 天触发，用户将按报告直接以正股入场、止损 $428 承接财报跳空，而报告对此零提示。止损 $428 距入场 $460-472 仅 7-9%，一次财报 gap 即可穿透。&quot;,
+      &quot;actionable&quot;: &quot;在 HUBB/COHR 条目补充下一次财报日期；触发条件增加‘距财报 ≥5 个交易日’过滤，或明确财报前触发需减半仓。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;宏观催化剂漏掉财报季/事件日历&quot;,
+      &quot;detail&quot;: &quot;Layer 1 把今日定性为‘AI 资产负债表去杠杆’，归因到 Meta 表外结构与 LRCX 设备约束，但 10 月下旬正是大型科技股财报密集窗口，报告未提及本周/下周任何财报或 FOMC/CPI 等事件日历。‘全链条同步去杠杆’的一个更朴素解释是财报季前的仓位调整，报告完全没把这个候选归因纳入比较，等于跳过了最容易被验证的宏观催化剂。&quot;,
+      &quot;actionable&quot;: &quot;在 Layer 1 补充本周宏观事件日历（Mag7 财报、FOMC、CPI），并把‘财报前降仓’列为与‘信用化定价’并列的候选归因。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;自述‘新闻全失败’却给出具体基本面归因&quot;,
+      &quot;detail&quot;: &quot;报告反复声明‘web_search 与 get_ticker_news 几乎全部返回空’‘宏观归因只能基于价格结构推断’，但 Layer 1 第 1 条又给出确定性表述‘Meta 类表外结构被重新审视’。该归因既无来源、无日期，也未像 LRCX 那样标注‘未验证’，与报告自身的置信度声明直接冲突。这属于把无来源的具体事件当作已确认催化剂陈述。&quot;,
+      &quot;actionable&quot;: &quot;对‘Meta 表外结构’同样加注‘未验证/低置信度’，或直接删除，只保留可被价格结构支撑的表述。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 失败信号纯叙事、不可监控&quot;,
+      &quot;detail&quot;: &quot;AXTI 的 failure_signal 写作‘若 InP 需求逻辑被证伪或管制取消，则论点作废’——无阈值、无频率、无数据源，用户无法日常盯。对比 HUBB 的‘跑输 ETN 超 2pct/日’才是可观测指标。AXTI 虽今日不开仓，但作为观察名单成员，其退出条件不可量化意味着无法判断何时应彻底放弃该标的。&quot;,
+      &quot;actionable&quot;: &quot;改写为可观测阈值，例如：连续 5 日收盘低于某一价位 / 中国出口管制政策出现官方撤销公告 / InP 衬底现货报价环比回落 X%。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;RULE_VIOLATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;‘永久停止新开仓’与解冻条件并存自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称 AXTI 反规则‘已有一条升级为永久停止新开仓’，但同日 JSON 的 unfreeze_conditions 又写‘连续 2 个交易日放量企稳即可重新纳入讨论’。若‘永久’成立，则不应存在任何解冻路径；若存在解冻路径，则‘永久停止’的定性有误。二者不能同时为真，报告未说明哪条为准。&quot;,
+      &quot;actionable&quot;: &quot;核对规则库原文：若为永久禁令，删除 unfreeze_conditions 并标注‘永不重新开仓’；若可解冻，改正 Layer 5 的‘永久’措辞并写明解冻频次。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$HUBB&quot;],
+      &quot;title&quot;: &quot;HUBB 核心论点无数据支撑且内部矛盾&quot;,
+      &quot;detail&quot;: &quot;HUBB 的核心论点是‘变压器 lead time &gt; 2 年、物理产能刚性’，财务维度打 8/10、估值 6/10，但报告全篇未引用任何具体财务数字（营收/积压订单/毛利率/在手订单额）。Layer 2 一边称‘HUBB 是今日链上唯一结构完整的标的/资金避风港’，一边又写‘补跌可能才第一天’——避风港与刚开始补跌两个判断同时成立，论点自相冲突。无数字的核心论据无法被证伪。&quot;,
+      &quot;actionable&quot;: &quot;补充至少一项可证伪的硬数据（如最近季度 backlog 同比、变压器订单交付周期、毛利率），并明确‘避风港’与‘补跌未完’哪个是主导判断。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;COHR 失败信号‘持续’未定义天数&quot;,
+      &quot;detail&quot;: &quot;COHR failure_signal：‘LITE 跌幅持续小于 COHR 超 3pct/日’——‘持续’无天数定义，用户无法确定连续几日算触发。&quot;,
+      &quot;actionable&quot;: &quot;明确为‘连续 3 个交易日’等具体天数。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
 }
-```
-</p></div>
+```</p><p></p><p><strong>先说结论：这份报告今天是 NO_TRADE，四只票全部 `execute_today: false`，所以没有人会因为它的缺陷被套。这也是为什么我把所有问题压在 WARNING/INFO，没有动用 BLOCKER——BLOCKER 是留给“今天照做就会亏钱”的，而今天它让人不动手。</strong></p><p>### 我认为真正值得你盯的三个点</p><p>1. <strong>评分表算错了，而且错向混乱。</strong> Layer 3 表格里 HUBB 6.75、COHR 6.60、ETN 6.55，正文算术却是 6.70、6.90、6.60。我逐格复算过，<strong>表格三行全错</strong>，而表格里的 6.60 恰好是 ETN 的正确值——这是典型的“总分填错行”。结论“今日无票达 7.0”碰巧仍成立（因为正确值也都 &lt;7），但一套算不对的评分卡不配当“替我说今天不该买”的理由。</p><p>2. <strong>冷却期可能早就到期了。</strong> 它用 7/21-7/28 的 miss 触发“不少于 10 个交易日”的冷却，可今天是 10/22，隔了约 60 个交易日，中间拿不出任何新触发。也就是说 COHR 的“规则冻结”很可能站不住，真正排除 COHR 的只剩技术分 2/10。这不影响今天的安全（都是不买），但<strong>意味着这套报告的规则推理在下一份里可能给出错误的方向</strong>。</p><p>3. <strong>财报日期一个字没提，这是最危险的盲点。</strong> HUBB 触发线 $460、止损 $428，间距仅 7-9%；HUBB 和 COHR 的财报大概率就在未来 1-2 周。一次财报跳空就能把 $428 止损直接穿透。今天不买没事，<strong>明天若真触发 $460，用户会踩到这个雷</strong>。</p><p>### 反方观点质量</p><p>反方第 1 条（“如果我不建仓是错的，信号是 HUBB 放量收复 $460 且 GEV 反弹 &gt;3%”）——这几乎就是多头触发条件的复读，<strong>不算反方</strong>，是给自己留的漂亮话。真正的反方应该问：“如果‘这不是个股问题’判断错了呢？”“如果去杠杆持续数周、$460 永远不回来，空仓等触发是不是另一种形式错过？”这两个失败路径都没覆盖。此外“GEV 同跌 10% 即排除 COHR 个股问题”是硬逻辑跳跃，同跌无法排除任何单只票的自身问题。</p><p>### 数据诚实度</p><p>该表扬的：把所有新闻/社交源失败都白纸黑字列出来了，没编造信号。该批评的：<strong>声明“只能基于价格结构推断”的同时，却抛出了“Meta 类表外结构被重新审视”这种具体的无源基本面归因</strong>——LRCX 那条老老实实标了“未验证”，Meta 这条没标，双标。</p><p><strong>红队建议：今天照报告执行（空仓观察）是安全的。但下一版必须修好评分表算术、补上财报日历、重审 COHR 冷却期的有效日期，否则下一次“触发”那天，这套报告会把人送进财报 gap。</strong></p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$HUBB&quot;
+      ],
+      &quot;title&quot;: &quot;7 维评分缺 7 项&quot;,
+      &quot;detail&quot;: &quot;缺失维度: shears, substitutability, valuation, financials, technicals, options, attention_inverse&quot;,
+      &quot;actionable&quot;: &quot;补全所有维度评分（0-10 整数）&quot;,
+      &quot;source&quot;: &quot;hard_audit&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;7 维评分缺 7 项&quot;,
+      &quot;detail&quot;: &quot;缺失维度: shears, substitutability, valuation, financials, technicals, options, attention_inverse&quot;,
+      &quot;actionable&quot;: &quot;补全所有维度评分（0-10 整数）&quot;,
+      &quot;source&quot;: &quot;hard_audit&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;7 维评分缺 7 项&quot;,
+      &quot;detail&quot;: &quot;缺失维度: shears, substitutability, valuation, financials, technicals, options, attention_inverse&quot;,
+      &quot;actionable&quot;: &quot;补全所有维度评分（0-10 整数）&quot;,
+      &quot;source&quot;: &quot;hard_audit&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$HUBB&quot;,
+        &quot;$COHR&quot;,
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;Layer3 评分表与正文算术自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 3 表格给 HUBB 总分 6.75、COHR 6.60、ETN 6.55；但正文计算写 HUBB=6.70、COHR=6.90，按表内权重复算：HUBB=2.40+1.40+0.90+0.80+0.40+0.60+0.20=6.70，COHR=2.40+1.60+1.05+0.60+0.20+0.90+0.15=6.90，ETN=6.60。三行表格值全部与正确算术不符，且表格里的 6.60 恰好等于 ETN 的实算值、6.75 恰好接近 HUBB 实算——存在总分错位填入的痕迹。‘今日无标的达 7.0’这一核心结论虽有正文算术支撑，但表格作为对外展示的评分卡不可复核，削弱整个入围判断的可信度。&quot;,
+      &quot;actionable&quot;: &quot;统一表格与正文的分值，逐格复算并标注每个维度的打分理由（当前仅给分数不给依据）；表格总分必须等于加权求和。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;冷却期前提可能已过期，冻结依据存疑&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称板块冷却期‘处于激活状态’，触发事件为 7/21、7/24、7/28 三次非基本面 miss；但所引反规则原文是‘冷却期不少于 10 个交易日’。7/28 触发距今日 10/22 已约 60 个交易日，报告未提供 8/11 之后任何新的板块级触发事件，却直接沿用‘仍激活’的断言。若冷却期实际已自然失效，COHR 的冻结就只剩‘技术分 2/10 未达 7.0’这一条理由，上一轮删除 Sell Put 的规则依据也会动摇（方向虽保守、不构成下单风险，但推理链断裂）。&quot;,
+      &quot;actionable&quot;: &quot;在报告中明确列出冷却期内每一次（7/28 之后）的新触发日期与事件；若无法举证，应改写为‘基于技术形态与拥挤度自动排除’，而非挂靠已过期的冷却期条款。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;‘GEV 同跌即排除个股问题’是逻辑跳跃&quot;,
+      &quot;detail&quot;: &quot;Layer 1 断言：‘如果是 COHR 自身财报/订单问题，GEV 不该同步崩 10%……这排除了 COHR 有个股问题的假设’。该推理不成立——板块 beta 与个股 idiosyncratic 冲击可叠加，两只票同跌无法排除任何一只存在自身问题（GEV -9.96% 也可能有自己的原因）。而这条被排除的假设恰恰是 COHR 反方第 2 条（LITE 跌幅持续小于 COHR 即个股裂缝）想检验的对象，等于用一个站不住的推理提前关掉了最关键的失败路径。&quot;,
+      &quot;actionable&quot;: &quot;改为‘同步下跌降低了纯个股事件的可能性，但不能排除叠加’，并保留对 COHR 相对 LITE 逐日跟踪作为唯一检验手段。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$HUBB&quot;,
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;财报日历完全缺失，HUBB 触发即撞财报 gap&quot;,
+      &quot;detail&quot;: &quot;报告全程未提任何标的的财报日期。HUBB（$441.19，触发线 $460）与 COHR 的 Q3/Q1 财报通常落在 10 月底至 11 月初，今日已是 10/22。HUBB 的触发条件是‘站回 $460 且强于 ETN’，一旦在财报前 1-3 天触发，用户将按报告直接以正股入场、止损 $428 承接财报跳空，而报告对此零提示。止损 $428 距入场 $460-472 仅 7-9%，一次财报 gap 即可穿透。&quot;,
+      &quot;actionable&quot;: &quot;在 HUBB/COHR 条目补充下一次财报日期；触发条件增加‘距财报 ≥5 个交易日’过滤，或明确财报前触发需减半仓。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;宏观催化剂漏掉财报季/事件日历&quot;,
+      &quot;detail&quot;: &quot;Layer 1 把今日定性为‘AI 资产负债表去杠杆’，归因到 Meta 表外结构与 LRCX 设备约束，但 10 月下旬正是大型科技股财报密集窗口，报告未提及本周/下周任何财报或 FOMC/CPI 等事件日历。‘全链条同步去杠杆’的一个更朴素解释是财报季前的仓位调整，报告完全没把这个候选归因纳入比较，等于跳过了最容易被验证的宏观催化剂。&quot;,
+      &quot;actionable&quot;: &quot;在 Layer 1 补充本周宏观事件日历（Mag7 财报、FOMC、CPI），并把‘财报前降仓’列为与‘信用化定价’并列的候选归因。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;自述‘新闻全失败’却给出具体基本面归因&quot;,
+      &quot;detail&quot;: &quot;报告反复声明‘web_search 与 get_ticker_news 几乎全部返回空’‘宏观归因只能基于价格结构推断’，但 Layer 1 第 1 条又给出确定性表述‘Meta 类表外结构被重新审视’。该归因既无来源、无日期，也未像 LRCX 那样标注‘未验证’，与报告自身的置信度声明直接冲突。这属于把无来源的具体事件当作已确认催化剂陈述。&quot;,
+      &quot;actionable&quot;: &quot;对‘Meta 表外结构’同样加注‘未验证/低置信度’，或直接删除，只保留可被价格结构支撑的表述。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 失败信号纯叙事、不可监控&quot;,
+      &quot;detail&quot;: &quot;AXTI 的 failure_signal 写作‘若 InP 需求逻辑被证伪或管制取消，则论点作废’——无阈值、无频率、无数据源，用户无法日常盯。对比 HUBB 的‘跑输 ETN 超 2pct/日’才是可观测指标。AXTI 虽今日不开仓，但作为观察名单成员，其退出条件不可量化意味着无法判断何时应彻底放弃该标的。&quot;,
+      &quot;actionable&quot;: &quot;改写为可观测阈值，例如：连续 5 日收盘低于某一价位 / 中国出口管制政策出现官方撤销公告 / InP 衬底现货报价环比回落 X%。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;RULE_VIOLATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;‘永久停止新开仓’与解冻条件并存自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 5 称 AXTI 反规则‘已有一条升级为永久停止新开仓’，但同日 JSON 的 unfreeze_conditions 又写‘连续 2 个交易日放量企稳即可重新纳入讨论’。若‘永久’成立，则不应存在任何解冻路径；若存在解冻路径，则‘永久停止’的定性有误。二者不能同时为真，报告未说明哪条为准。&quot;,
+      &quot;actionable&quot;: &quot;核对规则库原文：若为永久禁令，删除 unfreeze_conditions 并标注‘永不重新开仓’；若可解冻，改正 Layer 5 的‘永久’措辞并写明解冻频次。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$HUBB&quot;
+      ],
+      &quot;title&quot;: &quot;HUBB 核心论点无数据支撑且内部矛盾&quot;,
+      &quot;detail&quot;: &quot;HUBB 的核心论点是‘变压器 lead time &gt; 2 年、物理产能刚性’，财务维度打 8/10、估值 6/10，但报告全篇未引用任何具体财务数字（营收/积压订单/毛利率/在手订单额）。Layer 2 一边称‘HUBB 是今日链上唯一结构完整的标的/资金避风港’，一边又写‘补跌可能才第一天’——避风港与刚开始补跌两个判断同时成立，论点自相冲突。无数字的核心论据无法被证伪。&quot;,
+      &quot;actionable&quot;: &quot;补充至少一项可证伪的硬数据（如最近季度 backlog 同比、变压器订单交付周期、毛利率），并明确‘避风港’与‘补跌未完’哪个是主导判断。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;COHR 失败信号‘持续’未定义天数&quot;,
+      &quot;detail&quot;: &quot;COHR failure_signal：‘LITE 跌幅持续小于 COHR 超 3pct/日’——‘持续’无天数定义，用户无法确定连续几日算触发。&quot;,
+      &quot;actionable&quot;: &quot;明确为‘连续 3 个交易日’等具体天数。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```</p></div>
       </details>
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-10-21 17:36 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-10-22 15:59 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
