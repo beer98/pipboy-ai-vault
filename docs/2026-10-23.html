@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-10-23</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-10-23</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 1 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$MU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$887.18</div>
+          <div class="change up">+4.91%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,7.5 L 35.0,13.1 L 70.0,2.0 L 105.0,38.0 L 140.0,18.7 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,7.5 L 35.0,13.1 L 70.0,2.0 L 105.0,38.0 L 140.0,18.7" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -2.0%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:23.8%;width:23.1%" title="入场区 $858-$888"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $836.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $836</div><div class="marker target" style="left:93.1%" title="止盈 $948.0"></div><div class="marker-label target-label" style="left:93.1%">target $948</div><div class="marker current" style="left:46.3%" title="当前 $887.18"></div><div class="marker-label current-label" style="left:46.3%">$887.18</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">858.00-888.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">Meta融资恐慌错杀内存龙头，但DRAM/HBM四年供给缺口是硬事实，今日+4.81%收于日内高点显示真实买盘；唯一未被反规则否决的高分瓶颈标的</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Dell CEO称内存短缺是4年问题、2027更紧；Meta融资担忧引发AI链系统性抛售错杀</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>HBM3E/DRAM晶圆产能，新建产能需4年，2029-2030才落地</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:20%;background:var(--avoid)"></span></span><span class="score-val">2</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity 10/16力挺MU内存链；散户情绪27/100极度看空=逆向利多</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>IV已被板块杀跌推高，正股保留灵活性应对下周FOMC+PCE</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>如果错了，最先在DRAM现货合约价月度环比上看到由正转平或转负(≤0%)的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>唯一“硬事实”是转述的单一高管引语</strong></div><div class="finding-detail">Layer 1 催化剂 #2 把“DRAM/HBM 供给缺口 4 年说”定性为“强利多/硬供给事实”，整份报告的核心多头逻辑（Layer 5 第 2 点“内存下跌是被带着跌的，而它自身有独立硬事实支撑”）全部压在这一条上。但该事实的唯一出处是 Layer 4 所述 Serenity 10/16 帖子中转述的 Dell CEO 发言（“这是个 4 年的问题，因为供给就是不够”），报告没有给出财报电话会原文/纪要链接，也没有任何可量化佐证（位元供给增速、HBM 交期、渠道库存周数、三大厂 capex 指引）。一条二手引语不足以支撑“现金流端硬事实”的定性。</div><div class="finding-action">→ 入场前补 1–2 个量化源（TrendForce/集邦 DRAM 合约价与供需缺口预测、Dell 或 Micron 财报电话会原文、HBM 交期）；若拿不到，把“硬事实”改写为“单一管理层观点”，并相应下调仓位或改为半仓试错。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>用盘前高点当“真实买盘”确认，自相矛盾</strong></div><div class="finding-detail">开篇明确写“今天盘前多数 AI 半导体股在反弹……取决于 9:30 后现货交易能否守住”，并把今日定性为“验证日”；但 Layer 3 与 Layer 5 第 4 点却把“$886.33（+4.81%）、收在日内高点附近（$891.89）”直接当作“真实买盘”证据，并据此在 $858–$888 布区间。所述“日内区间 $858.34–$891.89”实为盘前区间，盘前成交量稀薄，无法区分真空拉升与真实承接。同一份报告前后对同一数据给出相反的解释力。</div><div class="finding-action">→ 把“真实买盘”降级为待验证假设：入场触发条件加入开盘后确认（例如 9:30–10:30 站稳 $878 上方且成交量 ≥20 日均量 1.5 倍），否则只在区间下沿 $858–$866 小仓挂单。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>$948 目标误标为“38.2% 回撤”</strong></div><div class="finding-detail">Layer 5 结构与 JSON 中目标价 $948 的依据写作“10 日跌幅 38.2% 回撤 + 前期密集成交区”。以报告自述的 10 日高 $1,002.51、低 $849.25 计算，38.2% 回撤位 ≈ $908；50% ≈ $926；61.8% ≈ $944。$948 约等于 64% 回撤，与标注的 38.2% 不符；若以 sparkline 起点 $988.88 为锚，$948 更是约 70.7% 回撤。“前期密集成交区”亦无任何成交量分布数据支撑。目标位依据被错误标注会直接扭曲用户对上行空间的预期。</div><div class="finding-action">→ 把目标价依据改写为“约 62% 回撤位 / 具体密集成交区（附成交量分布图或数据）”，或把目标下调至 $908–$926 区间，并据此重新核算风险回报。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>失败信号月度+付费墙，与 5.7% 止损节奏冲突</strong></div><div class="finding-detail">报告的失效判据是“DRAM 现货合约价（DXI 指数）月度环比 ≤0%”。问题有三：(1) DXI 属 TrendForce 付费/延后数据，散户无法“日常监控”，与用户日常可操作性要求不符；(2) 月频信号与 10% 仓位 + $836 止损（较现价 $886.33 仅 -5.7%，且仅在 10 日低点 $849.25 下方 1.5%）严重不同步——在板块单日可跌 6.7% 的环境里，价格止损会先被打掉，失效信号根本来不及发声；(3) 信号未定义触发后的动作（减仓多少、是否清仓）。报告自己也把 LITE 标记为“止损被洗高敏感标的”，却对 MU 用了同样贴身的止损。</div><div class="finding-action">→ 补一条日频可观测代理（如 SOX 相对强弱、MU 20 日相对强度、南亚科/三星月度营收快报、TrendForce 免费快讯的 DRAM 现货报价方向），并写明：DXI 环比转平→减半、转负→清仓；同时把止损放宽至 10 日低点下方 2.5–3% 或按 ATR 设定，避免被日内噪音洗出。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>反方遗漏中国产能与 HBM4 竞争路径</strong></div><div class="finding-detail">Layer 5“反方观点（必须听的两条）”只覆盖 (1) Meta 式 FCF 转负的估值二次重定价、(2) 三星/海力士 2026 底提前扩产。缺少两条更可能的失败路径：(a) 中国长鑫（CXMT）/国产 DRAM 产能爬坡与国产替代节奏——这是“4 年缺口”叙事最直接的证伪源，报告在 Layer 1 #6 提到中国关键金属管制却完全没有把它对应到内存的供给侧风险；(b) HBM4 认证窗口与 SK 海力士/三星份额争夺，若 MU 掉出某一代主供，叙事与盈利会同时受损。此外报告全程未提及 MU 自身财报日期与指引风险（财季窗口临近时 10% 正股需承担财报 gap）。</div><div class="finding-action">→ 把 CXMT 产能/良率进展与 HBM4 认证节点补入反方清单并设定复核日期；同时在 Layer 5 标注 MU 下次财报日，若落在持仓期内则把仓位降至 5–7% 或改用限风险结构。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交验证引用的推文时间与正文不符</strong></div><div class="finding-detail">Layer 4 称“Serenity 最近可得帖子（10/16）”，但唯一给出的 status 链接为 x.com/aleabitoreddit/status/2034422243594530857，按 X snowflake ID 反推时间戳约为 2026-03-19，而非 10/16；而被标为“Serenity 10/16 内存帖”的另一条链接只是个人主页（x.com/aleabitoreddit），并不指向任何具体帖子。也就是说，支撑唯一执行标的的社会验证证据可能是 7 个月前的旧帖，而非近期观点，“与今日 Layer 1 催化剂 #2 完全吻合”的时效性未经证实。</div><div class="finding-action">→ 换成可直接打开的推文永久链接并核对发布时间；若确实是 3 月的旧帖，需重新评估其在今日（板块已单周 -22%~-26%）的参考价值，不应作为多头确认。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>WSB/散户原文缺失，情绪支柱仅剩单一来源</strong></div><div class="finding-detail">Layer 4 明确声明“搜索工具本次返回空，未取得 WSB 当日帖子数据”，情绪维度以 ChipSentiment 复合分 27/100（Cool）替代，并据此得出“恐慌读数不是狂热 → 对 MU 是逆向利多窗口”。该结论目前只有单一第三方来源支撑，且同一段又写“34 只标的 33 跌 1 涨”，与开篇“今日盘前多数 AI 半导体股在反弹（MU +4.81%、LITE +4.83%）”口径不一（前者应为 10/22 收盘数据）。数据本身可用，但“逆向利多”的证据强度弱于报告语气。</div><div class="finding-action">→ 下单前手工核对一次 r/wallstreetbets 与 r/stocks 当日 daily thread，确认散户不是“已抄底”状态；并在报告中明确标注情绪分的采样时点（收盘 vs 盘前）。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$LITE, $COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>观察名单涨跌幅与所述起止价对不上</strong></div><div class="finding-detail">Layer 3 中 LITE 写“10 日 -21.93%，从 $1,102 跌到 $736 再反弹到 $777”，但 $1,102→$777 为 -29.5%；-21.93% 对应的起点应约 $995。COHR 写“10 日 -26.3%，$288 → $207.82”，而 $288→$207.82 为 -27.9%，且同段现价写 $212.26（$288→$212.26 才等于 -26.3%）。两处均属 10 日序列转录不一致。因二者仅为观察名单、不建仓，故不构成实质风险，但会削弱报告的量化可信度。</div><div class="finding-action">→ 统一 10 日序列的起止锚点与现价口径，重跑 LITE/COHR 的涨跌幅并复核技术形态评分（当前 LITE 3 分、COHR 2 分依赖该序列）。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;唯一“硬事实”是转述的单一高管引语&quot;,
+      &quot;detail&quot;: &quot;Layer 1 催化剂 #2 把“DRAM/HBM 供给缺口 4 年说”定性为“强利多/硬供给事实”，整份报告的核心多头逻辑（Layer 5 第 2 点“内存下跌是被带着跌的，而它自身有独立硬事实支撑”）全部压在这一条上。但该事实的唯一出处是 Layer 4 所述 Serenity 10/16 帖子中转述的 Dell CEO 发言（“这是个 4 年的问题，因为供给就是不够”），报告没有给出财报电话会原文/纪要链接，也没有任何可量化佐证（位元供给增速、HBM 交期、渠道库存周数、三大厂 capex 指引）。一条二手引语不足以支撑“现金流端硬事实”的定性。&quot;,
+      &quot;actionable&quot;: &quot;入场前补 1–2 个量化源（TrendForce/集邦 DRAM 合约价与供需缺口预测、Dell 或 Micron 财报电话会原文、HBM 交期）；若拿不到，把“硬事实”改写为“单一管理层观点”，并相应下调仓位或改为半仓试错。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;用盘前高点当“真实买盘”确认，自相矛盾&quot;,
+      &quot;detail&quot;: &quot;开篇明确写“今天盘前多数 AI 半导体股在反弹……取决于 9:30 后现货交易能否守住”，并把今日定性为“验证日”；但 Layer 3 与 Layer 5 第 4 点却把“$886.33（+4.81%）、收在日内高点附近（$891.89）”直接当作“真实买盘”证据，并据此在 $858–$888 布区间。所述“日内区间 $858.34–$891.89”实为盘前区间，盘前成交量稀薄，无法区分真空拉升与真实承接。同一份报告前后对同一数据给出相反的解释力。&quot;,
+      &quot;actionable&quot;: &quot;把“真实买盘”降级为待验证假设：入场触发条件加入开盘后确认（例如 9:30–10:30 站稳 $878 上方且成交量 ≥20 日均量 1.5 倍），否则只在区间下沿 $858–$866 小仓挂单。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;$948 目标误标为“38.2% 回撤”&quot;,
+      &quot;detail&quot;: &quot;Layer 5 结构与 JSON 中目标价 $948 的依据写作“10 日跌幅 38.2% 回撤 + 前期密集成交区”。以报告自述的 10 日高 $1,002.51、低 $849.25 计算，38.2% 回撤位 ≈ $908；50% ≈ $926；61.8% ≈ $944。$948 约等于 64% 回撤，与标注的 38.2% 不符；若以 sparkline 起点 $988.88 为锚，$948 更是约 70.7% 回撤。“前期密集成交区”亦无任何成交量分布数据支撑。目标位依据被错误标注会直接扭曲用户对上行空间的预期。&quot;,
+      &quot;actionable&quot;: &quot;把目标价依据改写为“约 62% 回撤位 / 具体密集成交区（附成交量分布图或数据）”，或把目标下调至 $908–$926 区间，并据此重新核算风险回报。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;失败信号月度+付费墙，与 5.7% 止损节奏冲突&quot;,
+      &quot;detail&quot;: &quot;报告的失效判据是“DRAM 现货合约价（DXI 指数）月度环比 ≤0%”。问题有三：(1) DXI 属 TrendForce 付费/延后数据，散户无法“日常监控”，与用户日常可操作性要求不符；(2) 月频信号与 10% 仓位 + $836 止损（较现价 $886.33 仅 -5.7%，且仅在 10 日低点 $849.25 下方 1.5%）严重不同步——在板块单日可跌 6.7% 的环境里，价格止损会先被打掉，失效信号根本来不及发声；(3) 信号未定义触发后的动作（减仓多少、是否清仓）。报告自己也把 LITE 标记为“止损被洗高敏感标的”，却对 MU 用了同样贴身的止损。&quot;,
+      &quot;actionable&quot;: &quot;补一条日频可观测代理（如 SOX 相对强弱、MU 20 日相对强度、南亚科/三星月度营收快报、TrendForce 免费快讯的 DRAM 现货报价方向），并写明：DXI 环比转平→减半、转负→清仓；同时把止损放宽至 10 日低点下方 2.5–3% 或按 ATR 设定，避免被日内噪音洗出。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;反方遗漏中国产能与 HBM4 竞争路径&quot;,
+      &quot;detail&quot;: &quot;Layer 5“反方观点（必须听的两条）”只覆盖 (1) Meta 式 FCF 转负的估值二次重定价、(2) 三星/海力士 2026 底提前扩产。缺少两条更可能的失败路径：(a) 中国长鑫（CXMT）/国产 DRAM 产能爬坡与国产替代节奏——这是“4 年缺口”叙事最直接的证伪源，报告在 Layer 1 #6 提到中国关键金属管制却完全没有把它对应到内存的供给侧风险；(b) HBM4 认证窗口与 SK 海力士/三星份额争夺，若 MU 掉出某一代主供，叙事与盈利会同时受损。此外报告全程未提及 MU 自身财报日期与指引风险（财季窗口临近时 10% 正股需承担财报 gap）。&quot;,
+      &quot;actionable&quot;: &quot;把 CXMT 产能/良率进展与 HBM4 认证节点补入反方清单并设定复核日期；同时在 Layer 5 标注 MU 下次财报日，若落在持仓期内则把仓位降至 5–7% 或改用限风险结构。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;社交验证引用的推文时间与正文不符&quot;,
+      &quot;detail&quot;: &quot;Layer 4 称“Serenity 最近可得帖子（10/16）”，但唯一给出的 status 链接为 x.com/aleabitoreddit/status/2034422243594530857，按 X snowflake ID 反推时间戳约为 2026-03-19，而非 10/16；而被标为“Serenity 10/16 内存帖”的另一条链接只是个人主页（x.com/aleabitoreddit），并不指向任何具体帖子。也就是说，支撑唯一执行标的的社会验证证据可能是 7 个月前的旧帖，而非近期观点，“与今日 Layer 1 催化剂 #2 完全吻合”的时效性未经证实。&quot;,
+      &quot;actionable&quot;: &quot;换成可直接打开的推文永久链接并核对发布时间；若确实是 3 月的旧帖，需重新评估其在今日（板块已单周 -22%~-26%）的参考价值，不应作为多头确认。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;WSB/散户原文缺失，情绪支柱仅剩单一来源&quot;,
+      &quot;detail&quot;: &quot;Layer 4 明确声明“搜索工具本次返回空，未取得 WSB 当日帖子数据”，情绪维度以 ChipSentiment 复合分 27/100（Cool）替代，并据此得出“恐慌读数不是狂热 → 对 MU 是逆向利多窗口”。该结论目前只有单一第三方来源支撑，且同一段又写“34 只标的 33 跌 1 涨”，与开篇“今日盘前多数 AI 半导体股在反弹（MU +4.81%、LITE +4.83%）”口径不一（前者应为 10/22 收盘数据）。数据本身可用，但“逆向利多”的证据强度弱于报告语气。&quot;,
+      &quot;actionable&quot;: &quot;下单前手工核对一次 r/wallstreetbets 与 r/stocks 当日 daily thread，确认散户不是“已抄底”状态；并在报告中明确标注情绪分的采样时点（收盘 vs 盘前）。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$COHR&quot;],
+      &quot;title&quot;: &quot;观察名单涨跌幅与所述起止价对不上&quot;,
+      &quot;detail&quot;: &quot;Layer 3 中 LITE 写“10 日 -21.93%，从 $1,102 跌到 $736 再反弹到 $777”，但 $1,102→$777 为 -29.5%；-21.93% 对应的起点应约 $995。COHR 写“10 日 -26.3%，$288 → $207.82”，而 $288→$207.82 为 -27.9%，且同段现价写 $212.26（$288→$212.26 才等于 -26.3%）。两处均属 10 日序列转录不一致。因二者仅为观察名单、不建仓，故不构成实质风险，但会削弱报告的量化可信度。&quot;,
+      &quot;actionable&quot;: &quot;统一 10 日序列的起止锚点与现价口径，重跑 LITE/COHR 的涨跌幅并复核技术形态评分（当前 LITE 3 分、COHR 2 分依赖该序列）。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>结论：可以下单，但不是报告想要的那种下单方式。</strong></p><p>没有 BLOCKER。$MU 的论点没有被硬数据证伪，规则库的排除（AXTI 冷却期、CPO 板块冷却）也属代码兜底范围，我不重复审。但有 6 条 WARNING 集中打在同一个标的上，指向同一个元问题：<strong>这份报告的说服力主要来自叙述密度，而非数据密度。</strong></p><p>三个最该被注意的点：</p><p>1. <strong>“硬事实”其实是软证据。</strong> 整条 thesis 的支点是 Dell CEO 那句“4 年的问题”，而它出现在报告里的形态是“某 KOL 转述的、日期存疑的一条推文”。报告把“恐慌是估值端的、供给缺口是现金流端的”这个漂亮二分法建立在一句二手引语上。真正的硬数据——位元供给增速、HBM 交期、库存周数、三大厂 capex——一个都没有。这不代表论点是错的，但代表它目前的证据等级是“观点”而非“事实”。</p><p>2. <strong>同一份报告对同一个数字给了相反的解释。</strong> 开篇说“这是验证日，取决于 9:30 后能否守住”；Layer 5 却把盘前 +4.81%、贴在盘前高点的价格当成“真实买盘”的第 4 条证据。盘前拉升本来就是最容易失真的读数。这不是格式问题，是把尚未验证的东西当成已验证来用——恰好是当日报告自己警告过的错误</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;唯一“硬事实”是转述的单一高管引语&quot;,
+      &quot;detail&quot;: &quot;Layer 1 催化剂 #2 把“DRAM/HBM 供给缺口 4 年说”定性为“强利多/硬供给事实”，整份报告的核心多头逻辑（Layer 5 第 2 点“内存下跌是被带着跌的，而它自身有独立硬事实支撑”）全部压在这一条上。但该事实的唯一出处是 Layer 4 所述 Serenity 10/16 帖子中转述的 Dell CEO 发言（“这是个 4 年的问题，因为供给就是不够”），报告没有给出财报电话会原文/纪要链接，也没有任何可量化佐证（位元供给增速、HBM 交期、渠道库存周数、三大厂 capex 指引）。一条二手引语不足以支撑“现金流端硬事实”的定性。&quot;,
+      &quot;actionable&quot;: &quot;入场前补 1–2 个量化源（TrendForce/集邦 DRAM 合约价与供需缺口预测、Dell 或 Micron 财报电话会原文、HBM 交期）；若拿不到，把“硬事实”改写为“单一管理层观点”，并相应下调仓位或改为半仓试错。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;用盘前高点当“真实买盘”确认，自相矛盾&quot;,
+      &quot;detail&quot;: &quot;开篇明确写“今天盘前多数 AI 半导体股在反弹……取决于 9:30 后现货交易能否守住”，并把今日定性为“验证日”；但 Layer 3 与 Layer 5 第 4 点却把“$886.33（+4.81%）、收在日内高点附近（$891.89）”直接当作“真实买盘”证据，并据此在 $858–$888 布区间。所述“日内区间 $858.34–$891.89”实为盘前区间，盘前成交量稀薄，无法区分真空拉升与真实承接。同一份报告前后对同一数据给出相反的解释力。&quot;,
+      &quot;actionable&quot;: &quot;把“真实买盘”降级为待验证假设：入场触发条件加入开盘后确认（例如 9:30–10:30 站稳 $878 上方且成交量 ≥20 日均量 1.5 倍），否则只在区间下沿 $858–$866 小仓挂单。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;$948 目标误标为“38.2% 回撤”&quot;,
+      &quot;detail&quot;: &quot;Layer 5 结构与 JSON 中目标价 $948 的依据写作“10 日跌幅 38.2% 回撤 + 前期密集成交区”。以报告自述的 10 日高 $1,002.51、低 $849.25 计算，38.2% 回撤位 ≈ $908；50% ≈ $926；61.8% ≈ $944。$948 约等于 64% 回撤，与标注的 38.2% 不符；若以 sparkline 起点 $988.88 为锚，$948 更是约 70.7% 回撤。“前期密集成交区”亦无任何成交量分布数据支撑。目标位依据被错误标注会直接扭曲用户对上行空间的预期。&quot;,
+      &quot;actionable&quot;: &quot;把目标价依据改写为“约 62% 回撤位 / 具体密集成交区（附成交量分布图或数据）”，或把目标下调至 $908–$926 区间，并据此重新核算风险回报。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;失败信号月度+付费墙，与 5.7% 止损节奏冲突&quot;,
+      &quot;detail&quot;: &quot;报告的失效判据是“DRAM 现货合约价（DXI 指数）月度环比 ≤0%”。问题有三：(1) DXI 属 TrendForce 付费/延后数据，散户无法“日常监控”，与用户日常可操作性要求不符；(2) 月频信号与 10% 仓位 + $836 止损（较现价 $886.33 仅 -5.7%，且仅在 10 日低点 $849.25 下方 1.5%）严重不同步——在板块单日可跌 6.7% 的环境里，价格止损会先被打掉，失效信号根本来不及发声；(3) 信号未定义触发后的动作（减仓多少、是否清仓）。报告自己也把 LITE 标记为“止损被洗高敏感标的”，却对 MU 用了同样贴身的止损。&quot;,
+      &quot;actionable&quot;: &quot;补一条日频可观测代理（如 SOX 相对强弱、MU 20 日相对强度、南亚科/三星月度营收快报、TrendForce 免费快讯的 DRAM 现货报价方向），并写明：DXI 环比转平→减半、转负→清仓；同时把止损放宽至 10 日低点下方 2.5–3% 或按 ATR 设定，避免被日内噪音洗出。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;反方遗漏中国产能与 HBM4 竞争路径&quot;,
+      &quot;detail&quot;: &quot;Layer 5“反方观点（必须听的两条）”只覆盖 (1) Meta 式 FCF 转负的估值二次重定价、(2) 三星/海力士 2026 底提前扩产。缺少两条更可能的失败路径：(a) 中国长鑫（CXMT）/国产 DRAM 产能爬坡与国产替代节奏——这是“4 年缺口”叙事最直接的证伪源，报告在 Layer 1 #6 提到中国关键金属管制却完全没有把它对应到内存的供给侧风险；(b) HBM4 认证窗口与 SK 海力士/三星份额争夺，若 MU 掉出某一代主供，叙事与盈利会同时受损。此外报告全程未提及 MU 自身财报日期与指引风险（财季窗口临近时 10% 正股需承担财报 gap）。&quot;,
+      &quot;actionable&quot;: &quot;把 CXMT 产能/良率进展与 HBM4 认证节点补入反方清单并设定复核日期；同时在 Layer 5 标注 MU 下次财报日，若落在持仓期内则把仓位降至 5–7% 或改用限风险结构。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;社交验证引用的推文时间与正文不符&quot;,
+      &quot;detail&quot;: &quot;Layer 4 称“Serenity 最近可得帖子（10/16）”，但唯一给出的 status 链接为 x.com/aleabitoreddit/status/2034422243594530857，按 X snowflake ID 反推时间戳约为 2026-03-19，而非 10/16；而被标为“Serenity 10/16 内存帖”的另一条链接只是个人主页（x.com/aleabitoreddit），并不指向任何具体帖子。也就是说，支撑唯一执行标的的社会验证证据可能是 7 个月前的旧帖，而非近期观点，“与今日 Layer 1 催化剂 #2 完全吻合”的时效性未经证实。&quot;,
+      &quot;actionable&quot;: &quot;换成可直接打开的推文永久链接并核对发布时间；若确实是 3 月的旧帖，需重新评估其在今日（板块已单周 -22%~-26%）的参考价值，不应作为多头确认。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;WSB/散户原文缺失，情绪支柱仅剩单一来源&quot;,
+      &quot;detail&quot;: &quot;Layer 4 明确声明“搜索工具本次返回空，未取得 WSB 当日帖子数据”，情绪维度以 ChipSentiment 复合分 27/100（Cool）替代，并据此得出“恐慌读数不是狂热 → 对 MU 是逆向利多窗口”。该结论目前只有单一第三方来源支撑，且同一段又写“34 只标的 33 跌 1 涨”，与开篇“今日盘前多数 AI 半导体股在反弹（MU +4.81%、LITE +4.83%）”口径不一（前者应为 10/22 收盘数据）。数据本身可用，但“逆向利多”的证据强度弱于报告语气。&quot;,
+      &quot;actionable&quot;: &quot;下单前手工核对一次 r/wallstreetbets 与 r/stocks 当日 daily thread，确认散户不是“已抄底”状态；并在报告中明确标注情绪分的采样时点（收盘 vs 盘前）。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LITE&quot;,
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;观察名单涨跌幅与所述起止价对不上&quot;,
+      &quot;detail&quot;: &quot;Layer 3 中 LITE 写“10 日 -21.93%，从 $1,102 跌到 $736 再反弹到 $777”，但 $1,102→$777 为 -29.5%；-21.93% 对应的起点应约 $995。COHR 写“10 日 -26.3%，$288 → $207.82”，而 $288→$207.82 为 -27.9%，且同段现价写 $212.26（$288→$212.26 才等于 -26.3%）。两处均属 10 日序列转录不一致。因二者仅为观察名单、不建仓，故不构成实质风险，但会削弱报告的量化可信度。&quot;,
+      &quot;actionable&quot;: &quot;统一 10 日序列的起止锚点与现价口径，重跑 LITE/COHR 的涨跌幅并复核技术形态评分（当前 LITE 3 分、COHR 2 分依赖该序列）。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-10-23 15:49 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
