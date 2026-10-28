@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-10-28</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-10-28</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 2 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>2</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>1</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$62.67</div>
+          <div class="change up">+7.63%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,36.3 L 70.0,22.7 L 105.0,16.4 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,36.3 L 70.0,22.7 L 105.0,16.4 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +21.6%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:28.9%;width:12.4%" title="入场区 $60.5-$63.5"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $55.2"></div><div class="marker-label stop-label" style="left:6.9%">stop $55.2</div><div class="marker target" style="left:93.1%" title="止盈 $76.0"></div><div class="marker-label target-label" style="left:93.1%">target $76</div><div class="marker current" style="left:37.9%" title="当前 $62.67"></div><div class="marker-label current-label" style="left:37.9%">$62.67</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">60.50-63.50</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股分批（区间下沿50%限价 + 突破63.11后50%）</span></div>
+      </div>
+      <div class="pick-thesis">SK海力士+630%利润验证光通讯需求爆发，InP衬底/高纯铟镓锗受中国管制卡脖子，AXTI突破10日新高且无KOL拥挤</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>SK海力士Q3营业利润+630%，CPO/光通讯上游需求确认</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>InP衬底与7N高纯铟/镓/锗，CPO激光器必需上游</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity抓取失败；市值41亿、散户冷淡，属无KOL高价值象限</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>OI偏薄，不用卖方结构，仅正股分批</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>成交量跌破约400万股且收盘失守$58.23，则突破为假</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$VRT</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$237.48</div>
+          <div class="change up">+12.52%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,36.9 L 35.0,38.0 L 70.0,33.4 L 105.0,26.1 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,36.9 L 35.0,38.0 L 70.0,33.4 L 105.0,26.1 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +21.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:18.8%;width:37.2%" title="入场区 $215-$240"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $207.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $207</div><div class="marker target" style="left:93.1%" title="止盈 $265.0"></div><div class="marker-label target-label" style="left:93.1%">target $265</div><div class="marker current" style="left:52.2%" title="当前 $237.48"></div><div class="marker-label current-label" style="left:52.2%">$237.48</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">215.00-240.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ（30-45DTE，行权价约$215）</span></div>
+      </div>
+      <div class="pick-thesis">数据中心液冷/电源产能刚性，财报gap-up 12%后IV高企，用卖put在gap下沿接货而非追高</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>油价$116推高电力成本，数据中心冷却与供电改造加速</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>AI数据中心液冷与电源分配，产能交付周期长</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.6</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:20%;background:var(--avoid)"></span></span><span class="score-val">2</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>全华尔街覆盖、散户追动量，拥挤度高只能做卖方</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>gap-up 12%后IV高位，卖方收割时间价值</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>backlog/book-to-bill跌破1.0x，则订单见顶</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$MU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$966.45</div>
+          <div class="change up">+2.60%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,31.1 L 70.0,22.5 L 105.0,14.3 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,31.1 L 70.0,22.5 L 105.0,14.3 L 140.0,2.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +12.8%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:27.9%;width:12.6%" title="入场区 $905-$935"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $855.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $855</div><div class="marker target" style="left:93.1%" title="止盈 $1060.0"></div><div class="marker-label target-label" style="left:93.1%">target $1060</div><div class="marker current" style="left:53.8%" title="当前 $966.45"></div><div class="marker-label current-label" style="left:53.8%">$966.45</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">905.00-935.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股限价回踩单（不市价追）</span></div>
+      </div>
+      <div class="pick-thesis">HBM售罄至2027的最强剪刀差，但今日已在高位，仅在回踩10日均价区挂限价单</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 3.4%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>SK海力士营业利润+630%，HBM/DRAM供给极端紧张</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>HBM3E/HBM4内存，AI加速器必需且产能售罄</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.6</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:10%;background:var(--avoid)"></span></span><span class="score-val">1</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>极度拥挤，机构全覆盖，利好消息可能已出尽</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>不做结构，仅限价正股，避免追高</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>DRAM现货合约价月度环比转负，则周期见顶</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU, $AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>SK海力士利润数字量级存疑未核对</strong></div><div class="finding-detail">Layer 1 表格 #1 写「营业利润同比 +630% 至 83.33 万亿韩元（$62.4B）」。83.33 万亿韩元约合 $62B，若为单季营业利润，其量级已超过 NVDA 单季总营收，对一个季度而言极不合理——该数字更可能是营收/累计口径或换算环节出错。这条数据是 Layer 3 给 $MU 剪刀差 10 分、$AXTI 9 分的核心依据（Layer 5 论点亦复述「SK海力士+630%利润验证光通讯需求爆发」），一旦口径被误读，两只票的瓶颈强度评分与今日主攻方向都需要重估。</div><div class="finding-action">→ 下单前回查 SK 海力士官方 IR 原文，确认 83.33 万亿韩元是营收 / 营业利润 / 累计值，以及 +630% 的基数年份；若为误读，把 MU/AXTI 的 shears 分数下调并重新排序。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 财报日期未核查，裸跨财报</strong></div><div class="finding-detail">Layer 5 AXTI 反方第 2 条自认「若 Q3 财报不及预期，估值支撑极薄」，但全文没有给出 AXTI 的财报日期。AXT 历年 Q3 财报落在 10 月底至 11 月初，也就是说 7% 正股敞口很可能在数日内跨财报。报告中「止损 $55.20」对跳空无保护力（今日 +7.62%、成交 6.18M 股的动量票，财报 gap 常见 ±15%）。</div><div class="finding-action">→ 先查 AXTI 确认的 Q3 财报日期；若在 14 天内，将仓位从 7% 降至 3% 以下，或改为财报后再建仓 / 用买入 put 替代部分正股。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 反方未覆盖最可能的失败路径</strong></div><div class="finding-detail">Layer 5 给 AXTI 的两条反方是「中国放松镓/锗/铟管制」与「Q3 财报不及预期」，都没触及需求端本身。报告自己把逻辑链写成「InP 衬底是 CPO 激光器必需」，那么最可能的失败路径是 CPO 采用节奏推迟 / 硅光或其他激光器方案降低 InP 单机用量——这条完全缺失。另外 Layer 5 规则库小节记录了 AXTI 有「10+ 条」反规则（含 2026-07-15「30日内≥5次中性暴跌」），却只用一句「今日是正向动量，不触发暴跌条款」带过，未把「该票历史上 +7% 后数日内回吐」列为反方论点。</div><div class="finding-action">→ 补一条需求端反方：CPO 渗透延迟或 InP 用量下降 → AXTI 剪刀差 9 分不成立；并把历史 30 日内多次暴跌的实测回吐幅度写进止损依据。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>VRT 失败信号不可日常监控</strong></div><div class="finding-detail">Layer 5 给的失败信号是「backlog/book-to-bill 指引（下季财报）跌破 1.0x」，但建立的是 30–45 DTE 卖方 put——信号频率（季度）远慢于持仓周期（周），用户在 DTE 内根本看不到该信号，等于这笔仓位没有可观测的失败预警。对比 AXTI（成交量 + 收盘价，日频）与 MU（月报），VRT 是三只里唯一完全没有日频信号的。</div><div class="finding-action">→ 补一个日频信号，例如：收盘跌破 $220（put 行权价上方）或跌破 20 日均线，或 IV 分位回落至某阈值；季度 backlog 只能作为长期论点验证，不能作为持仓失败信号。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>VRT 卖put退出逻辑自相矛盾</strong></div><div class="finding-detail">Layer 5 VRT 同时写「止损 $207」和「若被行权则在 $215 接货（低于 10 日均价，符合瓶颈逻辑）」。若标的跌到 207，$215 的 CSP 已深度实值，此时「止损」= 高价买回并实现亏损，和「愿意在 215 接货」的意图直接冲突。此外 entry_zone 写「$225–$240」对卖方结构是无意义的——那是标的价格区间，不是期权入场条件（期权入场应写 IV 分位 / Delta / 行权价）。</div><div class="finding-action">→ 二选一定死：① 真愿意接货 → 删掉 207 止损，改为「单一标的接货后占用敞口不超过总资金 X%」；② 不愿接货 → 给出买回触发价与最大可承受亏损金额，并删掉「接货」表述。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>三笔仓位实为同一因子，capex指引是共同gap风险</strong></div><div class="finding-detail">AXTI(Critical Minerals 7%)、VRT(Power Grid 6%)、MU(AI/HBM 5%) 板块标签不同，但驱动是同一个：hyperscaler AI capex。Layer 1 自己写明「MSFT/GOOGL 盘后财报是 Q4 hyperscaler capex 指引的直接来源，明日 CPO/电力/HBM 全链 capex 重定价」，然而 Layer 5 三个失败信号与反方全部没有覆盖「今晚 capex 指引不及预期 → 三只同时 gap down」这一共同路径。合计 18% 实为单一因子敞口，板块分散是标签层面的，不是风险层面的。</div><div class="finding-action">→ 要么把 18% 总敞口压到 10% 以内过夜，要么在 14:00 ET FOMC 与盘后财报之前只保留挂单不成交（MU 的方式），并明确写出「capex 指引不及预期」时的统一处置。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>把数据缺口当作加分项，且与前文自相矛盾</strong></div><div class="finding-detail">Layer 4 写「Serenity 抓取失败 → 按无 KOL 信号处理，这在方法论上给 AXTI 加分（最高价值象限）」，同一段又写「历史抓取显示其公开论点长期重仓 $AXTI（500%+ 未实现收益）」。既然已知该 KOL 长期重仓 AXTI，实际状态是「已知有 KOL 持仓、近期信号未知」，不是「无 KOL 拥挤」。用抓取失败来提升 attention_inverse 的 8 分，属于把不确定性当成利好，方向错了。</div><div class="finding-action">→ 把 AXTI 的 attention_inverse 从 8 分降到 5 分左右（已知有知名 KOL 重仓即构成拥挤），并在论点中明确「KOL 近期信号缺失」是减分项而非加分项。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">$AXTI, $VRT, $MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交维度数据全空，Layer 4 实为盘面反推</strong></div><div class="finding-detail">数据说明段落已声明「DDG 多次空结果、Nitter 无有效推文、WSB daily thread 抓取失败」。Layer 4 的三个 attention_inverse 分数（AXTI 8 / VRT 2 / MU 1）中，只有 MU、VRT 是靠「QQQ +1.72% vs SPY +0.66% + VRT 成交 12M 股」的盘面反推，AXTI 的 8 分没有任何一手数据来源。该维度虽只占 5% 权重，但报告把它当成 AXTI「最高价值象限」的判定支点，权重被实质性放大。</div><div class="finding-action">→ 在 AXTI 论点中标注 attention_inverse 为「估算、无一手数据」，并降低其在结论中的权重；不要把「无 KOL 数据」写成象限判定的决定性依据。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>MU 失败信号指标混写且非日常可监控</strong></div><div class="finding-detail">Layer 5 MU 失败信号写「DRAM 现货合约价月度环比转负（TrendForce 月报）」——「现货价」与「合约价」是两个不同指标（前者日频波动、后者月度议价），混在一个条件里导致判定标准不清。且 TrendForce 月报需订阅、有滞后，用户无法「日常监控」。该仓位是 5% 正股限价单，持仓周期以周计，月频滞后指标起不到止损预警作用。</div><div class="finding-action">→ 拆成两条：① 日常可监控的价格信号（如收盘跌破 $849.25 或 20 日均线即减仓）；② 月频的 TrendForce 合约价作为论点验证，不作为持仓失败信号。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>估值/财务评分无具体数据支撑</strong></div><div class="finding-detail">Layer 3 给 AXTI 估值安全垫 5 分，理由只写「$4.1B 市值，PS 高」，没有给出 PS/EV 倍数、也没有可比公司；财务质量 5 分理由「仍亏损/微利」，全文没有任何最新季度营收、毛利率、现金余额数据。这意味着这两项评分既无法被证实也无法被证伪，与报告其它部分（如 MU 的 $1.09T 市值、LITE 的 10 日轨迹）的数据密度不匹配。</div><div class="finding-action">→ 补 AXTI 最近一期营收/毛利率/现金与 PS 倍数；若拿不到，就把这两项的评分标注为「无数据默认值」，并说明其对 7.35 总分的敏感度（例如财务质量若给 3 分则总分跌破 7.0）。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$AXTI, $VRT, $MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>「不追涨」原则执行标准不一致</strong></div><div class="finding-detail">同一份报告对三个标的用了三套标准：AXTI（+7.62% 创 10 日新高）允许「50% 突破 $63.11 后追」；VRT（gap-up 12.46%）因「不追涨」改为卖方；MU（$966.79 接近 979.8 日高）因「区间上沿」只挂限价。三者本质都是「已在阶段高位」，处理方式却互斥，报告未给出区分口径。</div><div class="finding-action">→ 写出一条可复核的追涨阈值（例如：距 20 日均线偏离 &gt;X% 或当日涨幅 &gt;Y% 则禁止市价追），三个标的按同一条标准重新判定。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Anthropic亏损数字量级同样存疑</strong></div><div class="finding-detail">Layer 1 表格 #5 写「Anthropic H1 2026 净亏 $80.7B / 收入 $16.3B」——净亏为收入的 5 倍，量级异常，疑为算力承诺、累计投入或其它口径被当成期间净亏。该条属于宏观叙事，不直接进入三个 picks 的论点，但与 SK 海力士数字同源（同一批搜索/抓取），一并说明本报告 Layer 1 的数字未经二次核验。</div><div class="finding-action">→ 回查原始来源确认口径；若无法确认，从 Layer 1 中删除或标注「未核实」，避免用未核实的叙事支撑「AI 资本开支叙事获证」的判断。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;, &quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;SK海力士利润数字量级存疑未核对&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格 #1 写「营业利润同比 +630% 至 83.33 万亿韩元（$62.4B）」。83.33 万亿韩元约合 $62B，若为单季营业利润，其量级已超过 NVDA 单季总营收，对一个季度而言极不合理——该数字更可能是营收/累计口径或换算环节出错。这条数据是 Layer 3 给 $MU 剪刀差 10 分、$AXTI 9 分的核心依据（Layer 5 论点亦复述「SK海力士+630%利润验证光通讯需求爆发」），一旦口径被误读，两只票的瓶颈强度评分与今日主攻方向都需要重估。&quot;,
+      &quot;actionable&quot;: &quot;下单前回查 SK 海力士官方 IR 原文，确认 83.33 万亿韩元是营收 / 营业利润 / 累计值，以及 +630% 的基数年份；若为误读，把 MU/AXTI 的 shears 分数下调并重新排序。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 财报日期未核查，裸跨财报&quot;,
+      &quot;detail&quot;: &quot;Layer 5 AXTI 反方第 2 条自认「若 Q3 财报不及预期，估值支撑极薄」，但全文没有给出 AXTI 的财报日期。AXT 历年 Q3 财报落在 10 月底至 11 月初，也就是说 7% 正股敞口很可能在数日内跨财报。报告中「止损 $55.20」对跳空无保护力（今日 +7.62%、成交 6.18M 股的动量票，财报 gap 常见 ±15%）。&quot;,
+      &quot;actionable&quot;: &quot;先查 AXTI 确认的 Q3 财报日期；若在 14 天内，将仓位从 7% 降至 3% 以下，或改为财报后再建仓 / 用买入 put 替代部分正股。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 反方未覆盖最可能的失败路径&quot;,
+      &quot;detail&quot;: &quot;Layer 5 给 AXTI 的两条反方是「中国放松镓/锗/铟管制」与「Q3 财报不及预期」，都没触及需求端本身。报告自己把逻辑链写成「InP 衬底是 CPO 激光器必需」，那么最可能的失败路径是 CPO 采用节奏推迟 / 硅光或其他激光器方案降低 InP 单机用量——这条完全缺失。另外 Layer 5 规则库小节记录了 AXTI 有「10+ 条」反规则（含 2026-07-15「30日内≥5次中性暴跌」），却只用一句「今日是正向动量，不触发暴跌条款」带过，未把「该票历史上 +7% 后数日内回吐」列为反方论点。&quot;,
+      &quot;actionable&quot;: &quot;补一条需求端反方：CPO 渗透延迟或 InP 用量下降 → AXTI 剪刀差 9 分不成立；并把历史 30 日内多次暴跌的实测回吐幅度写进止损依据。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;VRT 失败信号不可日常监控&quot;,
+      &quot;detail&quot;: &quot;Layer 5 给的失败信号是「backlog/book-to-bill 指引（下季财报）跌破 1.0x」，但建立的是 30–45 DTE 卖方 put——信号频率（季度）远慢于持仓周期（周），用户在 DTE 内根本看不到该信号，等于这笔仓位没有可观测的失败预警。对比 AXTI（成交量 + 收盘价，日频）与 MU（月报），VRT 是三只里唯一完全没有日频信号的。&quot;,
+      &quot;actionable&quot;: &quot;补一个日频信号，例如：收盘跌破 $220（put 行权价上方）或跌破 20 日均线，或 IV 分位回落至某阈值；季度 backlog 只能作为长期论点验证，不能作为持仓失败信号。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$VRT&quot;],
+      &quot;title&quot;: &quot;VRT 卖put退出逻辑自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 5 VRT 同时写「止损 $207」和「若被行权则在 $215 接货（低于 10 日均价，符合瓶颈逻辑）」。若标的跌到 207，$215 的 CSP 已深度实值，此时「止损」= 高价买回并实现亏损，和「愿意在 215 接货」的意图直接冲突。此外 entry_zone 写「$225–$240」对卖方结构是无意义的——那是标的价格区间，不是期权入场条件（期权入场应写 IV 分位 / Delta / 行权价）。&quot;,
+      &quot;actionable&quot;: &quot;二选一定死：① 真愿意接货 → 删掉 207 止损，改为「单一标的接货后占用敞口不超过总资金 X%」；② 不愿接货 → 给出买回触发价与最大可承受亏损金额，并删掉「接货」表述。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;三笔仓位实为同一因子，capex指引是共同gap风险&quot;,
+      &quot;detail&quot;: &quot;AXTI(Critical Minerals 7%)、VRT(Power Grid 6%)、MU(AI/HBM 5%) 板块标签不同，但驱动是同一个：hyperscaler AI capex。Layer 1 自己写明「MSFT/GOOGL 盘后财报是 Q4 hyperscaler capex 指引的直接来源，明日 CPO/电力/HBM 全链 capex 重定价」，然而 Layer 5 三个失败信号与反方全部没有覆盖「今晚 capex 指引不及预期 → 三只同时 gap down」这一共同路径。合计 18% 实为单一因子敞口，板块分散是标签层面的，不是风险层面的。&quot;,
+      &quot;actionable&quot;: &quot;要么把 18% 总敞口压到 10% 以内过夜，要么在 14:00 ET FOMC 与盘后财报之前只保留挂单不成交（MU 的方式），并明确写出「capex 指引不及预期」时的统一处置。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;把数据缺口当作加分项，且与前文自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 4 写「Serenity 抓取失败 → 按无 KOL 信号处理，这在方法论上给 AXTI 加分（最高价值象限）」，同一段又写「历史抓取显示其公开论点长期重仓 $AXTI（500%+ 未实现收益）」。既然已知该 KOL 长期重仓 AXTI，实际状态是「已知有 KOL 持仓、近期信号未知」，不是「无 KOL 拥挤」。用抓取失败来提升 attention_inverse 的 8 分，属于把不确定性当成利好，方向错了。&quot;,
+      &quot;actionable&quot;: &quot;把 AXTI 的 attention_inverse 从 8 分降到 5 分左右（已知有知名 KOL 重仓即构成拥挤），并在论点中明确「KOL 近期信号缺失」是减分项而非加分项。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;, &quot;$VRT&quot;, &quot;$MU&quot;],
+      &quot;title&quot;: &quot;社交维度数据全空，Layer 4 实为盘面反推&quot;,
+      &quot;detail&quot;: &quot;数据说明段落已声明「DDG 多次空结果、Nitter 无有效推文、WSB daily thread 抓取失败」。Layer 4 的三个 attention_inverse 分数（AXTI 8 / VRT 2 / MU 1）中，只有 MU、VRT 是靠「QQQ +1.72% vs SPY +0.66% + VRT 成交 12M 股」的盘面反推，AXTI 的 8 分没有任何一手数据来源。该维度虽只占 5% 权重，但报告把它当成 AXTI「最高价值象限」的判定支点，权重被实质性放大。&quot;,
+      &quot;actionable&quot;: &quot;在 AXTI 论点中标注 attention_inverse 为「估算、无一手数据」，并降低其在结论中的权重；不要把「无 KOL 数据」写成象限判定的决定性依据。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;MU 失败信号指标混写且非日常可监控&quot;,
+      &quot;detail&quot;: &quot;Layer 5 MU 失败信号写「DRAM 现货合约价月度环比转负（TrendForce 月报）」——「现货价」与「合约价」是两个不同指标（前者日频波动、后者月度议价），混在一个条件里导致判定标准不清。且 TrendForce 月报需订阅、有滞后，用户无法「日常监控」。该仓位是 5% 正股限价单，持仓周期以周计，月频滞后指标起不到止损预警作用。&quot;,
+      &quot;actionable&quot;: &quot;拆成两条：① 日常可监控的价格信号（如收盘跌破 $849.25 或 20 日均线即减仓）；② 月频的 TrendForce 合约价作为论点验证，不作为持仓失败信号。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;估值/财务评分无具体数据支撑&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给 AXTI 估值安全垫 5 分，理由只写「$4.1B 市值，PS 高」，没有给出 PS/EV 倍数、也没有可比公司；财务质量 5 分理由「仍亏损/微利」，全文没有任何最新季度营收、毛利率、现金余额数据。这意味着这两项评分既无法被证实也无法被证伪，与报告其它部分（如 MU 的 $1.09T 市值、LITE 的 10 日轨迹）的数据密度不匹配。&quot;,
+      &quot;actionable&quot;: &quot;补 AXTI 最近一期营收/毛利率/现金与 PS 倍数；若拿不到，就把这两项的评分标注为「无数据默认值」，并说明其对 7.35 总分的敏感度（例如财务质量若给 3 分则总分跌破 7.0）。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;, &quot;$VRT&quot;, &quot;$MU&quot;],
+      &quot;title&quot;: &quot;「不追涨」原则执行标准不一致&quot;,
+      &quot;detail&quot;: &quot;同一份报告对三个标的用了三套标准：AXTI（+7.62% 创 10 日新高）允许「50% 突破 $63.11 后追」；VRT（gap-up 12.46%）因「不追涨」改为卖方；MU（$966.79 接近 979.8 日高）因「区间上沿」只挂限价。三者本质都是「已在阶段高位」，处理方式却互斥，报告未给出区分口径。&quot;,
+      &quot;actionable&quot;: &quot;写出一条可复核的追涨阈值（例如：距 20 日均线偏离 &gt;X% 或当日涨幅 &gt;Y% 则禁止市价追），三个标的按同一条标准重新判定。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;Anthropic亏损数字量级同样存疑&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格 #5 写「Anthropic H1 2026 净亏 $80.7B / 收入 $16.3B」——净亏为收入的 5 倍，量级异常，疑为算力承诺、累计投入或其它口径被当成期间净亏。该条属于宏观叙事，不直接进入三个 picks 的论点，但与 SK 海力士数字同源（同一批搜索/抓取），一并说明本报告 Layer 1 的数字未经二次核验。&quot;,
+      &quot;actionable&quot;: &quot;回查原始来源确认口径；若无法确认，从 Layer 1 中删除或标注「未核实」，避免用未核实的叙事支撑「AI 资本开支叙事获证」的判断。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>结论：可以下单，但三笔都要先做小改动，不要按报告原文照抄执行。</strong></p><p>今天这份报告的<strong>结构</strong>是合格的：宏观—节点—评分—社交—结构五层齐全，反方都写了 2 条，失败信号每笔都给了，规则库里那些 AXTI 反规则也主动摊开说明了。问题不在框架，在<strong>几个具体数字和退出逻辑的含金量</strong>。</p><p><strong>最该先处理的三件事：</strong></p><p>1. <strong>SK 海力士那个数字</strong>。83.33 万亿韩元 ≈ $62B 的<strong>单季营业利润</strong>，量级上超过 NVDA 一个季度的全部营收，很难想象是一家存储厂一个季度的营业利润。这更可能是营收口径、累计口径，或者换算环节串位。而它是 MU 拿到 shears 10 分、AXTI 拿到 9 分、整个&quot;今天是三重事件叠加日&quot;叙事的支点。<strong>下单前花两分钟回查官方 IR</strong>。同批出现的 Anthropic &quot;净亏 $80.7B / 收入 $16.3B&quot;（亏 5 倍收入）也是同一类量级异常，说明 Layer 1 的数字没过二次核验——这不是致命伤，但它告诉你这份报告里哪些数字可以直接用、哪些必须先核。</p><p>2. <strong>AXTI 很可能在几天内跨财报</strong>。报告自己写了&quot;若 Q3 财报不及预期，估值支撑极薄&quot;，却从头到尾没给财报日期。AXT 的 Q3 历来在 10 月底—11 月初。你拿着 7% 正股、止损设在 -10.5%、标的今天刚放量突破 +7.62%——这是最典型的财报 gap 组合，止损单</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;,
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;SK海力士利润数字量级存疑未核对&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格 #1 写「营业利润同比 +630% 至 83.33 万亿韩元（$62.4B）」。83.33 万亿韩元约合 $62B，若为单季营业利润，其量级已超过 NVDA 单季总营收，对一个季度而言极不合理——该数字更可能是营收/累计口径或换算环节出错。这条数据是 Layer 3 给 $MU 剪刀差 10 分、$AXTI 9 分的核心依据（Layer 5 论点亦复述「SK海力士+630%利润验证光通讯需求爆发」），一旦口径被误读，两只票的瓶颈强度评分与今日主攻方向都需要重估。&quot;,
+      &quot;actionable&quot;: &quot;下单前回查 SK 海力士官方 IR 原文，确认 83.33 万亿韩元是营收 / 营业利润 / 累计值，以及 +630% 的基数年份；若为误读，把 MU/AXTI 的 shears 分数下调并重新排序。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 财报日期未核查，裸跨财报&quot;,
+      &quot;detail&quot;: &quot;Layer 5 AXTI 反方第 2 条自认「若 Q3 财报不及预期，估值支撑极薄」，但全文没有给出 AXTI 的财报日期。AXT 历年 Q3 财报落在 10 月底至 11 月初，也就是说 7% 正股敞口很可能在数日内跨财报。报告中「止损 $55.20」对跳空无保护力（今日 +7.62%、成交 6.18M 股的动量票，财报 gap 常见 ±15%）。&quot;,
+      &quot;actionable&quot;: &quot;先查 AXTI 确认的 Q3 财报日期；若在 14 天内，将仓位从 7% 降至 3% 以下，或改为财报后再建仓 / 用买入 put 替代部分正股。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 反方未覆盖最可能的失败路径&quot;,
+      &quot;detail&quot;: &quot;Layer 5 给 AXTI 的两条反方是「中国放松镓/锗/铟管制」与「Q3 财报不及预期」，都没触及需求端本身。报告自己把逻辑链写成「InP 衬底是 CPO 激光器必需」，那么最可能的失败路径是 CPO 采用节奏推迟 / 硅光或其他激光器方案降低 InP 单机用量——这条完全缺失。另外 Layer 5 规则库小节记录了 AXTI 有「10+ 条」反规则（含 2026-07-15「30日内≥5次中性暴跌」），却只用一句「今日是正向动量，不触发暴跌条款」带过，未把「该票历史上 +7% 后数日内回吐」列为反方论点。&quot;,
+      &quot;actionable&quot;: &quot;补一条需求端反方：CPO 渗透延迟或 InP 用量下降 → AXTI 剪刀差 9 分不成立；并把历史 30 日内多次暴跌的实测回吐幅度写进止损依据。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;VRT 失败信号不可日常监控&quot;,
+      &quot;detail&quot;: &quot;Layer 5 给的失败信号是「backlog/book-to-bill 指引（下季财报）跌破 1.0x」，但建立的是 30–45 DTE 卖方 put——信号频率（季度）远慢于持仓周期（周），用户在 DTE 内根本看不到该信号，等于这笔仓位没有可观测的失败预警。对比 AXTI（成交量 + 收盘价，日频）与 MU（月报），VRT 是三只里唯一完全没有日频信号的。&quot;,
+      &quot;actionable&quot;: &quot;补一个日频信号，例如：收盘跌破 $220（put 行权价上方）或跌破 20 日均线，或 IV 分位回落至某阈值；季度 backlog 只能作为长期论点验证，不能作为持仓失败信号。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;VRT 卖put退出逻辑自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 5 VRT 同时写「止损 $207」和「若被行权则在 $215 接货（低于 10 日均价，符合瓶颈逻辑）」。若标的跌到 207，$215 的 CSP 已深度实值，此时「止损」= 高价买回并实现亏损，和「愿意在 215 接货」的意图直接冲突。此外 entry_zone 写「$225–$240」对卖方结构是无意义的——那是标的价格区间，不是期权入场条件（期权入场应写 IV 分位 / Delta / 行权价）。&quot;,
+      &quot;actionable&quot;: &quot;二选一定死：① 真愿意接货 → 删掉 207 止损，改为「单一标的接货后占用敞口不超过总资金 X%」；② 不愿接货 → 给出买回触发价与最大可承受亏损金额，并删掉「接货」表述。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;三笔仓位实为同一因子，capex指引是共同gap风险&quot;,
+      &quot;detail&quot;: &quot;AXTI(Critical Minerals 7%)、VRT(Power Grid 6%)、MU(AI/HBM 5%) 板块标签不同，但驱动是同一个：hyperscaler AI capex。Layer 1 自己写明「MSFT/GOOGL 盘后财报是 Q4 hyperscaler capex 指引的直接来源，明日 CPO/电力/HBM 全链 capex 重定价」，然而 Layer 5 三个失败信号与反方全部没有覆盖「今晚 capex 指引不及预期 → 三只同时 gap down」这一共同路径。合计 18% 实为单一因子敞口，板块分散是标签层面的，不是风险层面的。&quot;,
+      &quot;actionable&quot;: &quot;要么把 18% 总敞口压到 10% 以内过夜，要么在 14:00 ET FOMC 与盘后财报之前只保留挂单不成交（MU 的方式），并明确写出「capex 指引不及预期」时的统一处置。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;把数据缺口当作加分项，且与前文自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 4 写「Serenity 抓取失败 → 按无 KOL 信号处理，这在方法论上给 AXTI 加分（最高价值象限）」，同一段又写「历史抓取显示其公开论点长期重仓 $AXTI（500%+ 未实现收益）」。既然已知该 KOL 长期重仓 AXTI，实际状态是「已知有 KOL 持仓、近期信号未知」，不是「无 KOL 拥挤」。用抓取失败来提升 attention_inverse 的 8 分，属于把不确定性当成利好，方向错了。&quot;,
+      &quot;actionable&quot;: &quot;把 AXTI 的 attention_inverse 从 8 分降到 5 分左右（已知有知名 KOL 重仓即构成拥挤），并在论点中明确「KOL 近期信号缺失」是减分项而非加分项。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;,
+        &quot;$VRT&quot;,
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;社交维度数据全空，Layer 4 实为盘面反推&quot;,
+      &quot;detail&quot;: &quot;数据说明段落已声明「DDG 多次空结果、Nitter 无有效推文、WSB daily thread 抓取失败」。Layer 4 的三个 attention_inverse 分数（AXTI 8 / VRT 2 / MU 1）中，只有 MU、VRT 是靠「QQQ +1.72% vs SPY +0.66% + VRT 成交 12M 股」的盘面反推，AXTI 的 8 分没有任何一手数据来源。该维度虽只占 5% 权重，但报告把它当成 AXTI「最高价值象限」的判定支点，权重被实质性放大。&quot;,
+      &quot;actionable&quot;: &quot;在 AXTI 论点中标注 attention_inverse 为「估算、无一手数据」，并降低其在结论中的权重；不要把「无 KOL 数据」写成象限判定的决定性依据。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;MU 失败信号指标混写且非日常可监控&quot;,
+      &quot;detail&quot;: &quot;Layer 5 MU 失败信号写「DRAM 现货合约价月度环比转负（TrendForce 月报）」——「现货价」与「合约价」是两个不同指标（前者日频波动、后者月度议价），混在一个条件里导致判定标准不清。且 TrendForce 月报需订阅、有滞后，用户无法「日常监控」。该仓位是 5% 正股限价单，持仓周期以周计，月频滞后指标起不到止损预警作用。&quot;,
+      &quot;actionable&quot;: &quot;拆成两条：① 日常可监控的价格信号（如收盘跌破 $849.25 或 20 日均线即减仓）；② 月频的 TrendForce 合约价作为论点验证，不作为持仓失败信号。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;估值/财务评分无具体数据支撑&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给 AXTI 估值安全垫 5 分，理由只写「$4.1B 市值，PS 高」，没有给出 PS/EV 倍数、也没有可比公司；财务质量 5 分理由「仍亏损/微利」，全文没有任何最新季度营收、毛利率、现金余额数据。这意味着这两项评分既无法被证实也无法被证伪，与报告其它部分（如 MU 的 $1.09T 市值、LITE 的 10 日轨迹）的数据密度不匹配。&quot;,
+      &quot;actionable&quot;: &quot;补 AXTI 最近一期营收/毛利率/现金与 PS 倍数；若拿不到，就把这两项的评分标注为「无数据默认值」，并说明其对 7.35 总分的敏感度（例如财务质量若给 3 分则总分跌破 7.0）。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;,
+        &quot;$VRT&quot;,
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;「不追涨」原则执行标准不一致&quot;,
+      &quot;detail&quot;: &quot;同一份报告对三个标的用了三套标准：AXTI（+7.62% 创 10 日新高）允许「50% 突破 $63.11 后追」；VRT（gap-up 12.46%）因「不追涨」改为卖方；MU（$966.79 接近 979.8 日高）因「区间上沿」只挂限价。三者本质都是「已在阶段高位」，处理方式却互斥，报告未给出区分口径。&quot;,
+      &quot;actionable&quot;: &quot;写出一条可复核的追涨阈值（例如：距 20 日均线偏离 &gt;X% 或当日涨幅 &gt;Y% 则禁止市价追），三个标的按同一条标准重新判定。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;Anthropic亏损数字量级同样存疑&quot;,
+      &quot;detail&quot;: &quot;Layer 1 表格 #5 写「Anthropic H1 2026 净亏 $80.7B / 收入 $16.3B」——净亏为收入的 5 倍，量级异常，疑为算力承诺、累计投入或其它口径被当成期间净亏。该条属于宏观叙事，不直接进入三个 picks 的论点，但与 SK 海力士数字同源（同一批搜索/抓取），一并说明本报告 Layer 1 的数字未经二次核验。&quot;,
+      &quot;actionable&quot;: &quot;回查原始来源确认口径；若无法确认，从 Layer 1 中删除或标注「未核实」，避免用未核实的叙事支撑「AI 资本开支叙事获证」的判断。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-10-28 17:15 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
