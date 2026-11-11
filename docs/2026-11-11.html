@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-11-11</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-11-11</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 1 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>1</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$240.11</div>
+          <div class="change up">+10.29%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,26.2 L 70.0,9.6 L 105.0,15.0 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,26.2 L 70.0,9.6 L 105.0,15.0 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +41.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:31.4%;width:9.1%" title="入场区 $232-$242"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $205.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $205</div><div class="marker target" style="left:93.1%" title="止盈 $300.0"></div><div class="marker-label target-label" style="left:93.1%">target $300</div><div class="marker current" style="left:38.8%" title="当前 $240.11"></div><div class="marker-label current-label" style="left:38.8%">$240.11</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">232.00-242.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ / 35DTE $215行权价</span></div>
+      </div>
+      <div class="pick-thesis">光互联垂直整合龙头，200亿美元PhotonLink订单锁定五年产能，数据中心营收+79% YoY，距6月高点-48%但基本面远强于当时</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>CoreWeave Q3超预期并落地融资方案，AI资本开支付费疑虑被打消，光互联板块全线反弹</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>800G/1.6T光模块+scale-across跨数据中心互联，激光器与光引擎垂直整合</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity信号抓取失败未获取；卖方26位覆盖共识$372，Bernstein重申$350，已被充分定价</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>财报后加板块恐慌双高IV，卖put收权利金且被行权即低位建仓</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若错了，最先在COHR季度营运现金流看到2月财报仍为负值且库存同比再增超20%的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LITE</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$669.27</div>
+          <div class="change up">+12.48%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,31.5 L 70.0,18.5 L 105.0,20.9 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,31.5 L 70.0,18.5 L 105.0,20.9 L 140.0,2.0" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +31.3%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:26.1%;width:9.6%" title="入场区 $620-$650"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $560.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $560</div><div class="marker target" style="left:93.1%" title="止盈 $830.0"></div><div class="marker-label target-label" style="left:93.1%">target $830</div><div class="marker current" style="left:41.8%" title="当前 $669.27"></div><div class="marker-label current-label" style="left:41.8%">$669.27</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">620.00-650.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股分两批建仓</span></div>
+      </div>
+      <div class="pick-thesis">激光器与光引擎纯正瓶颈标的，深度受益800G/1.6T光模块ramp，10日回撤27%后出现恐慌后首根放量反弹，回踩即机会</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 3.0%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>CoreWeave财报重燃AI交易，Lumentum单日涨12.6%，光通信板块在11月5-6恐慌抛售后首度放量反攻</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 800G/1.6T光模块的激光器与光引擎环节，替代难度高且产能受晶圆约束</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity信号抓取失败未获取；散户投机资金今日涌向AAOI而非LITE，LITE相对冷淡反而健康</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>十日振幅达45%波动率过高，卖出期权风险大，改用正股分批</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若错了，最先在LITE日成交量看到次日缩量至今日467万股的50%以下且收盘跌破596的变化</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+    <section class="section">
+      <h2>📰 最新新闻</h2>
+      <div class="news-grid"><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/analysts-just-slashed-price-targets-175854284.html" target="_blank" rel="noopener">Analysts Just Slashed Their Price Targets on These 5 Stocks</a> <span class="news-pub">Insider Monkey</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/cohr-stock-gains-10-strong-171800598.html" target="_blank" rel="noopener">COHR Stock Gains 10% After Strong Q1 Earnings: Is it Still a Buy?</a> <span class="news-pub">Zacks</span></li><li><a href="https://www.tikr.com/blog/bernsteins-350-target-says-coherents-selloff-went-too-far?ref=yahoofinance&amp;tlnk=yf-261111-v567rr4j" target="_blank" rel="noopener">Bernstein’s $350 Target Says Coherent’s Selloff Went Too Far</a> <span class="news-pub">TIKR</span></li></ul></div><div class="news-card"><h3>$LITE</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/analysts-just-slashed-price-targets-175854284.html" target="_blank" rel="noopener">Analysts Just Slashed Their Price Targets on These 5 Stocks</a> <span class="news-pub">Insider Monkey</span></li><li><a href="https://www.investors.com/market-trend/stock-market-today/dow-jones-sp500-nasdaq-coreweave-earnings-crwv-nvidia-stock-nvda/?src=A00220&amp;yptr=yahoo" target="_blank" rel="noopener">Stock Market Today: Nasdaq Soars On AI Rally, But This Major Tech Gets Left Out (Live Coverage)</a> <span class="news-pub">Investor&#x27;s Business Daily</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/cohr-stock-gains-10-strong-171800598.html" target="_blank" rel="noopener">COHR Stock Gains 10% After Strong Q1 Earnings: Is it Still a Buy?</a> <span class="news-pub">Zacks</span></li></ul></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>$200亿订单2028才放量，与35DTE不匹配</strong></div><div class="finding-detail">Layer 1 与推荐论点把「PhotonLink 约 $200 亿 / 5 年大单」作为 COHR 的核心多头锚点（『订单是对产能的锁定』），但报告自己写明『2028 初开始放量』。而交易结构是 Sell Put 30Δ / 35 DTE（约一个多月）。远期订单无法为未来 1–2 个月的价格提供任何基本面支撑，真正的近期锚点应是已发生的『数据中心 +79% YoY、占总营收 82%』与『scale-across DCI 超 $2 亿』。用 2028 才兑现的订单来强化短线交易，是逻辑时间尺度的错配。</div><div class="finding-action">→ 把论点权重重排：近期催化聚焦已发生的数据中心分部增长与 DCI 订单，$200 亿订单只作为长期期权价值陈述，不作为短线持仓的失败/成功判据。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR, $LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>反方未覆盖CPO对可插拔模块的替代</strong></div><div class="finding-detail">Layer 2 供给链图把板块直接标注为『AI/CPO』，但两只票的论点（Layer 2 与两只推荐）全部围绕『800G/1.6T 可插拔光模块 + 光引擎』展开。CPO（共封装光学）恰恰是可插拔模块的结构性技术替代路径——一旦 CPO 渗透加速，COHR/LITE 的模块与光引擎收入会被同链条玩家以不同形态重构。两份反方各仅 2 条（COHR：现金流、利率；LITE：趋势、无独立催化），均未触及这一最可能的长期失败路径，反方偏稻草人。</div><div class="finding-action">→ 补充 CPO 渗透时间线与对 2027–2028 模块/DCI 收入的潜在侵蚀评估，再判断当前估值安全垫是否成立。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$COHR, $LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>客户预付款被当利好，未审视循环融资风险</strong></div><div class="finding-detail">Layer 1 把 CoreWeave 的『合约融资 + 客户预付款』方案直接解读为『AI 扩张的钱从哪来』的问题被正面回应，视为最强催化。但客户预付款本身可能是供应商融资（vendor financing）式的循环结构——账面繁荣而非终端真实需求。Layer 3 给 COHR 财务质量 6 分、列出库存从 $25.8 亿增至 $33.4 亿却未把这层风险与『预付款催化』联系，反方第 1 条只说『钱回不来』而未质疑需求真实性。此外 COHR/LITE 高度依赖少数超大客户 capex，客户集中度风险完全未讨论。</div><div class="finding-action">→ 明确区分『终端真实需求』与『客户融资堆出的账面需求』；跟踪超大客户 capex 指引与预付款/应收账结构，而非仅凭单季 beat 确认需求。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR失败信号在持仓期内不可观测</strong></div><div class="finding-detail">COHR 的失败检测信号是『2 月财报仍为负值（&lt; 0）且库存同比再增 &gt;20%』。2 月财报距今日（2026-11-11）约 3 个月，而持仓是 35 DTE（约一个多月）。也就是说整个持仓期内该信号完全无法触发或监控，不满足『可量化、用户能日常监控』的要求——它更像是事后的论点体检，而非交易期的退出纪律。对比 LITE 的『次日缩量至 467 万股 50% 以下且收盘跌破 596』（每日可观测、且 596 在入场 620–650 与止损 560 之间，逻辑自洽），COHR 这一项明显偏弱。</div><div class="finding-action">→ 为 COHR 增加持仓期内可周度监控的替代信号，如库存周转天数、DSO/应收账款增速、或板块内订单取消/交付延迟新闻；把现金流信号标注为『季度级、非交易期信号』。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR, $LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>同一交易日数据多处口径不一致</strong></div><div class="finding-detail">LITE『10 日回撤』两个数字打架：Layer 1 写『LITE 10 日从 $919 → $509，回撤 -45%』，而 Layer 5 与 JSON reasoning 写『10 日仍在 -27% 的下跌通道』/『10日回撤-27%』。同日涨幅也有三套：Layer 1 写 LITE +11%、Layer 4 写 +14%、Layer 5 写 +12.6%；COHR Layer 1 写 +7%（盘中）、Layer 4 写 +12%。这些口径直接影响止损位、回撤幅度判断与 R:R 可信度，说明底层数据抓取未统一。</div><div class="finding-action">→ 统一数据源与时间窗口（明确是『盘中 vs 收盘』、『10 日 vs 月内』），重新校准 LITE 回撤幅度与两只票的当日涨幅，再定入场/止损。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR止损理由自相矛盾</strong></div><div class="finding-detail">COHR 推荐写止损 $205 的理由是『低于 10 日低点 $160 之上的关键结构位』——这句话本身自相矛盾：若 10 日低点真是 $160，则 $205 实际高于该低点，止损落在近期波动区间内，极易被噪音扫掉，而非报告所称的『规避历史止损被洗区间』。若 $160 并非 10 日低点（很可能是引用错误或旧数据），则整个止损论证的前提失效。结合『距 6 月高点 -48%』（对应高点约 $456）与入场 $232–242，$160 这个数字与上下文难以自洽。</div><div class="finding-action">→ 核实 10 日低点究竟是哪个价位，重新论证 $205 止损为何在此、以及为何不会被盘中噪音触发；若 $160 属实需说明它与收盘价确认制的配合逻辑。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Serenity/KOL维度完全缺失</strong></div><div class="finding-detail">Layer 1 与 Layer 4 明确披露 search_serenity 三次调用（无关键词 / CPO / LITE COHR optical bottleneck）全部返回空，本报告不含 Layer 4 KOL 交叉验证且已正确声明『请勿解读为他没有提及』。这是系统抓取限制（Nitter/DuckDuckGo 回退失败），非论点缺陷，报告处理合规。仅提示用户：社交维度置信度需下调，判断完全依赖公开新闻 + 卖方评级。</div><div class="finding-action">→ 无需操作；若需 KOL 信号，另行用替代渠道人工补查。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">$COHR, $LITE, $VRT</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>部分来源域名可疑/引用不落地</strong></div><div class="finding-detail">催化剂 2 引用 flexi-news.com（非主流财经站，内容为『global stock sell-off deepens』），可靠性存疑；VRT 评分项用『FPS（应为 FCF）据 Zacks 标题 1 个月内下滑 42%』——仅引用标题、未给具体数值，且『FPS』术语错误。PhotonLink 的 $200 亿订单亦无一手公告链接，仅夹在 COHR 段落叙述中，无法验证交易对手真实性。</div><div class="finding-action">→ 对可交易标的（COHR/LITE）的关键事实（PhotonLink 订单、营收/EPS）尽量回溯到公司公告或主流财经一手来源；VRT 的 FCF 下滑引用具体财报数字而非标题。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;$200亿订单2028才放量，与35DTE不匹配&quot;,
+      &quot;detail&quot;: &quot;Layer 1 与推荐论点把「PhotonLink 约 $200 亿 / 5 年大单」作为 COHR 的核心多头锚点（『订单是对产能的锁定』），但报告自己写明『2028 初开始放量』。而交易结构是 Sell Put 30Δ / 35 DTE（约一个多月）。远期订单无法为未来 1–2 个月的价格提供任何基本面支撑，真正的近期锚点应是已发生的『数据中心 +79% YoY、占总营收 82%』与『scale-across DCI 超 $2 亿』。用 2028 才兑现的订单来强化短线交易，是逻辑时间尺度的错配。&quot;,
+      &quot;actionable&quot;: &quot;把论点权重重排：近期催化聚焦已发生的数据中心分部增长与 DCI 订单，$200 亿订单只作为长期期权价值陈述，不作为短线持仓的失败/成功判据。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;反方未覆盖CPO对可插拔模块的替代&quot;,
+      &quot;detail&quot;: &quot;Layer 2 供给链图把板块直接标注为『AI/CPO』，但两只票的论点（Layer 2 与两只推荐）全部围绕『800G/1.6T 可插拔光模块 + 光引擎』展开。CPO（共封装光学）恰恰是可插拔模块的结构性技术替代路径——一旦 CPO 渗透加速，COHR/LITE 的模块与光引擎收入会被同链条玩家以不同形态重构。两份反方各仅 2 条（COHR：现金流、利率；LITE：趋势、无独立催化），均未触及这一最可能的长期失败路径，反方偏稻草人。&quot;,
+      &quot;actionable&quot;: &quot;补充 CPO 渗透时间线与对 2027–2028 模块/DCI 收入的潜在侵蚀评估，再判断当前估值安全垫是否成立。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;客户预付款被当利好，未审视循环融资风险&quot;,
+      &quot;detail&quot;: &quot;Layer 1 把 CoreWeave 的『合约融资 + 客户预付款』方案直接解读为『AI 扩张的钱从哪来』的问题被正面回应，视为最强催化。但客户预付款本身可能是供应商融资（vendor financing）式的循环结构——账面繁荣而非终端真实需求。Layer 3 给 COHR 财务质量 6 分、列出库存从 $25.8 亿增至 $33.4 亿却未把这层风险与『预付款催化』联系，反方第 1 条只说『钱回不来』而未质疑需求真实性。此外 COHR/LITE 高度依赖少数超大客户 capex，客户集中度风险完全未讨论。&quot;,
+      &quot;actionable&quot;: &quot;明确区分『终端真实需求』与『客户融资堆出的账面需求』；跟踪超大客户 capex 指引与预付款/应收账结构，而非仅凭单季 beat 确认需求。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;COHR失败信号在持仓期内不可观测&quot;,
+      &quot;detail&quot;: &quot;COHR 的失败检测信号是『2 月财报仍为负值（&lt; 0）且库存同比再增 &gt;20%』。2 月财报距今日（2026-11-11）约 3 个月，而持仓是 35 DTE（约一个多月）。也就是说整个持仓期内该信号完全无法触发或监控，不满足『可量化、用户能日常监控』的要求——它更像是事后的论点体检，而非交易期的退出纪律。对比 LITE 的『次日缩量至 467 万股 50% 以下且收盘跌破 596』（每日可观测、且 596 在入场 620–650 与止损 560 之间，逻辑自洽），COHR 这一项明显偏弱。&quot;,
+      &quot;actionable&quot;: &quot;为 COHR 增加持仓期内可周度监控的替代信号，如库存周转天数、DSO/应收账款增速、或板块内订单取消/交付延迟新闻；把现金流信号标注为『季度级、非交易期信号』。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;同一交易日数据多处口径不一致&quot;,
+      &quot;detail&quot;: &quot;LITE『10 日回撤』两个数字打架：Layer 1 写『LITE 10 日从 $919 → $509，回撤 -45%』，而 Layer 5 与 JSON reasoning 写『10 日仍在 -27% 的下跌通道』/『10日回撤-27%』。同日涨幅也有三套：Layer 1 写 LITE +11%、Layer 4 写 +14%、Layer 5 写 +12.6%；COHR Layer 1 写 +7%（盘中）、Layer 4 写 +12%。这些口径直接影响止损位、回撤幅度判断与 R:R 可信度，说明底层数据抓取未统一。&quot;,
+      &quot;actionable&quot;: &quot;统一数据源与时间窗口（明确是『盘中 vs 收盘』、『10 日 vs 月内』），重新校准 LITE 回撤幅度与两只票的当日涨幅，再定入场/止损。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;COHR止损理由自相矛盾&quot;,
+      &quot;detail&quot;: &quot;COHR 推荐写止损 $205 的理由是『低于 10 日低点 $160 之上的关键结构位』——这句话本身自相矛盾：若 10 日低点真是 $160，则 $205 实际高于该低点，止损落在近期波动区间内，极易被噪音扫掉，而非报告所称的『规避历史止损被洗区间』。若 $160 并非 10 日低点（很可能是引用错误或旧数据），则整个止损论证的前提失效。结合『距 6 月高点 -48%』（对应高点约 $456）与入场 $232–242，$160 这个数字与上下文难以自洽。&quot;,
+      &quot;actionable&quot;: &quot;核实 10 日低点究竟是哪个价位，重新论证 $205 止损为何在此、以及为何不会被盘中噪音触发；若 $160 属实需说明它与收盘价确认制的配合逻辑。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;Serenity/KOL维度完全缺失&quot;,
+      &quot;detail&quot;: &quot;Layer 1 与 Layer 4 明确披露 search_serenity 三次调用（无关键词 / CPO / LITE COHR optical bottleneck）全部返回空，本报告不含 Layer 4 KOL 交叉验证且已正确声明『请勿解读为他没有提及』。这是系统抓取限制（Nitter/DuckDuckGo 回退失败），非论点缺陷，报告处理合规。仅提示用户：社交维度置信度需下调，判断完全依赖公开新闻 + 卖方评级。&quot;,
+      &quot;actionable&quot;: &quot;无需操作；若需 KOL 信号，另行用替代渠道人工补查。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;, &quot;$VRT&quot;],
+      &quot;title&quot;: &quot;部分来源域名可疑/引用不落地&quot;,
+      &quot;detail&quot;: &quot;催化剂 2 引用 flexi-news.com（非主流财经站，内容为『global stock sell-off deepens』），可靠性存疑；VRT 评分项用『FPS（应为 FCF）据 Zacks 标题 1 个月内下滑 42%』——仅引用标题、未给具体数值，且『FPS』术语错误。PhotonLink 的 $200 亿订单亦无一手公告链接，仅夹在 COHR 段落叙述中，无法验证交易对手真实性。&quot;,
+      &quot;actionable&quot;: &quot;对可交易标的（COHR/LITE）的关键事实（PhotonLink 订单、营收/EPS）尽量回溯到公司公告或主流财经一手来源；VRT 的 FCF 下滑引用具体财报数字而非标题。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>结论：可下单，但要带着警觉。</strong> 没有发现需要一票否决的硬伤——核心数字（COHR 营收 +50%、数据中心 +79%、EPS +80%，LITE 回撤区间）在报告内部大体自洽，且报告的仓位/板块/止损都留了余量，AXTI 也被规则库正确剔除。所以是 `PROCEED_WITH_CAUTION` 而非 `AVOID_ALL`。</p><p><strong>最该盯的三件事：</strong></p><p>1. <strong>COHR 的短线锚点是错的。</strong> 报告把 $200 亿订单当主锤，但它 2028 才放量，而交易是 35 DTE 的卖 Put。真正支撑这一个多月的只有已发生的分部增长——别用远期叙事给短线壮胆。</p><p>2. <strong>反方不够硬。</strong> 两只票的反方都绕开了 CPO 替代这条最可能的结构性死路（板块明明标着 CPO，论点却全押可插拔模块），也没人问一句「CoreWeave 的客户预付款到底是需求还是供应商融资循环」。这两点才是 12 个月维度上真正能杀死论点的东西。</p><p>3. <strong>COHR 的失败信号在持仓期内根本看不到。</strong> 「2 月财报现金流为负」是季度级体检，不是交易期退出纪律。相比之下 LITE 的失败信号（次日缩量破 596）是真能每天盯的，做得对。COHR 需要补一个周度可观测的替代指标（库存周转、DSO、客户订单新闻）。</p><p><strong>次要但别忽略：</strong> LITE 回撤一处 -45% 一处 -27%、当日涨幅 COHR/LITE 各有两三套数字，COHR 止损理由「低于 10 日低点 $160」这句话逻辑打结——这些说明底层数据没对齐，动手前用一手行情重核一遍入场/止损位，别照着报告里的数字直接挂单。</p><p><strong>处理合规的部分：</strong> Serenity 抓取失败报告如实标注、没有编造，这点做得对，只是社交维度置信度要相应打折。</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;$200亿订单2028才放量，与35DTE不匹配&quot;,
+      &quot;detail&quot;: &quot;Layer 1 与推荐论点把「PhotonLink 约 $200 亿 / 5 年大单」作为 COHR 的核心多头锚点（『订单是对产能的锁定』），但报告自己写明『2028 初开始放量』。而交易结构是 Sell Put 30Δ / 35 DTE（约一个多月）。远期订单无法为未来 1–2 个月的价格提供任何基本面支撑，真正的近期锚点应是已发生的『数据中心 +79% YoY、占总营收 82%』与『scale-across DCI 超 $2 亿』。用 2028 才兑现的订单来强化短线交易，是逻辑时间尺度的错配。&quot;,
+      &quot;actionable&quot;: &quot;把论点权重重排：近期催化聚焦已发生的数据中心分部增长与 DCI 订单，$200 亿订单只作为长期期权价值陈述，不作为短线持仓的失败/成功判据。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;反方未覆盖CPO对可插拔模块的替代&quot;,
+      &quot;detail&quot;: &quot;Layer 2 供给链图把板块直接标注为『AI/CPO』，但两只票的论点（Layer 2 与两只推荐）全部围绕『800G/1.6T 可插拔光模块 + 光引擎』展开。CPO（共封装光学）恰恰是可插拔模块的结构性技术替代路径——一旦 CPO 渗透加速，COHR/LITE 的模块与光引擎收入会被同链条玩家以不同形态重构。两份反方各仅 2 条（COHR：现金流、利率；LITE：趋势、无独立催化），均未触及这一最可能的长期失败路径，反方偏稻草人。&quot;,
+      &quot;actionable&quot;: &quot;补充 CPO 渗透时间线与对 2027–2028 模块/DCI 收入的潜在侵蚀评估，再判断当前估值安全垫是否成立。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;客户预付款被当利好，未审视循环融资风险&quot;,
+      &quot;detail&quot;: &quot;Layer 1 把 CoreWeave 的『合约融资 + 客户预付款』方案直接解读为『AI 扩张的钱从哪来』的问题被正面回应，视为最强催化。但客户预付款本身可能是供应商融资（vendor financing）式的循环结构——账面繁荣而非终端真实需求。Layer 3 给 COHR 财务质量 6 分、列出库存从 $25.8 亿增至 $33.4 亿却未把这层风险与『预付款催化』联系，反方第 1 条只说『钱回不来』而未质疑需求真实性。此外 COHR/LITE 高度依赖少数超大客户 capex，客户集中度风险完全未讨论。&quot;,
+      &quot;actionable&quot;: &quot;明确区分『终端真实需求』与『客户融资堆出的账面需求』；跟踪超大客户 capex 指引与预付款/应收账结构，而非仅凭单季 beat 确认需求。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;COHR失败信号在持仓期内不可观测&quot;,
+      &quot;detail&quot;: &quot;COHR 的失败检测信号是『2 月财报仍为负值（&lt; 0）且库存同比再增 &gt;20%』。2 月财报距今日（2026-11-11）约 3 个月，而持仓是 35 DTE（约一个多月）。也就是说整个持仓期内该信号完全无法触发或监控，不满足『可量化、用户能日常监控』的要求——它更像是事后的论点体检，而非交易期的退出纪律。对比 LITE 的『次日缩量至 467 万股 50% 以下且收盘跌破 596』（每日可观测、且 596 在入场 620–650 与止损 560 之间，逻辑自洽），COHR 这一项明显偏弱。&quot;,
+      &quot;actionable&quot;: &quot;为 COHR 增加持仓期内可周度监控的替代信号，如库存周转天数、DSO/应收账款增速、或板块内订单取消/交付延迟新闻；把现金流信号标注为『季度级、非交易期信号』。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;同一交易日数据多处口径不一致&quot;,
+      &quot;detail&quot;: &quot;LITE『10 日回撤』两个数字打架：Layer 1 写『LITE 10 日从 $919 → $509，回撤 -45%』，而 Layer 5 与 JSON reasoning 写『10 日仍在 -27% 的下跌通道』/『10日回撤-27%』。同日涨幅也有三套：Layer 1 写 LITE +11%、Layer 4 写 +14%、Layer 5 写 +12.6%；COHR Layer 1 写 +7%（盘中）、Layer 4 写 +12%。这些口径直接影响止损位、回撤幅度判断与 R:R 可信度，说明底层数据抓取未统一。&quot;,
+      &quot;actionable&quot;: &quot;统一数据源与时间窗口（明确是『盘中 vs 收盘』、『10 日 vs 月内』），重新校准 LITE 回撤幅度与两只票的当日涨幅，再定入场/止损。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;
+      ],
+      &quot;title&quot;: &quot;COHR止损理由自相矛盾&quot;,
+      &quot;detail&quot;: &quot;COHR 推荐写止损 $205 的理由是『低于 10 日低点 $160 之上的关键结构位』——这句话本身自相矛盾：若 10 日低点真是 $160，则 $205 实际高于该低点，止损落在近期波动区间内，极易被噪音扫掉，而非报告所称的『规避历史止损被洗区间』。若 $160 并非 10 日低点（很可能是引用错误或旧数据），则整个止损论证的前提失效。结合『距 6 月高点 -48%』（对应高点约 $456）与入场 $232–242，$160 这个数字与上下文难以自洽。&quot;,
+      &quot;actionable&quot;: &quot;核实 10 日低点究竟是哪个价位，重新论证 $205 止损为何在此、以及为何不会被盘中噪音触发；若 $160 属实需说明它与收盘价确认制的配合逻辑。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;Serenity/KOL维度完全缺失&quot;,
+      &quot;detail&quot;: &quot;Layer 1 与 Layer 4 明确披露 search_serenity 三次调用（无关键词 / CPO / LITE COHR optical bottleneck）全部返回空，本报告不含 Layer 4 KOL 交叉验证且已正确声明『请勿解读为他没有提及』。这是系统抓取限制（Nitter/DuckDuckGo 回退失败），非论点缺陷，报告处理合规。仅提示用户：社交维度置信度需下调，判断完全依赖公开新闻 + 卖方评级。&quot;,
+      &quot;actionable&quot;: &quot;无需操作；若需 KOL 信号，另行用替代渠道人工补查。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$LITE&quot;,
+        &quot;$VRT&quot;
+      ],
+      &quot;title&quot;: &quot;部分来源域名可疑/引用不落地&quot;,
+      &quot;detail&quot;: &quot;催化剂 2 引用 flexi-news.com（非主流财经站，内容为『global stock sell-off deepens』），可靠性存疑；VRT 评分项用『FPS（应为 FCF）据 Zacks 标题 1 个月内下滑 42%』——仅引用标题、未给具体数值，且『FPS』术语错误。PhotonLink 的 $200 亿订单亦无一手公告链接，仅夹在 COHR 段落叙述中，无法验证交易对手真实性。&quot;,
+      &quot;actionable&quot;: &quot;对可交易标的（COHR/LITE）的关键事实（PhotonLink 订单、营收/EPS）尽量回溯到公司公告或主流财经一手来源；VRT 的 FCF 下滑引用具体财报数字而非标题。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-11-11 18:49 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
