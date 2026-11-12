@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-11-12</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-11-12</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 3 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>3</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$235.15</div>
+          <div class="change up">+3.84%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,10.5 L 70.0,19.4 L 105.0,2.5 L 140.0,2.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,10.5 L 70.0,19.4 L 105.0,2.5 L 140.0,2.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +22.0%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:33.9%;width:12.9%" title="入场区 $226-$236"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $205.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $205</div><div class="marker target" style="left:93.1%" title="止盈 $272.0"></div><div class="marker-label target-label" style="left:93.1%">target $272</div><div class="marker current" style="left:45.7%" title="当前 $235.15"></div><div class="marker-label current-label" style="left:45.7%">$235.15</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">226.00-236.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（事件冲击IV偏高，优于买Call）</span></div>
+      </div>
+      <div class="pick-thesis">激光器+光模块垂直整合瓶颈标的，NVDA领导层冲击造成盘中深V($210.08→$235.37)后强势收涨3.94%，恐慌盘被吸筹</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Jensen Huang辞任NVDA CEO引发AI恐慌，COHR盘中跌至$210后V型拉回至$235.37</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 800G/1.6T光模块+InP激光器垂直整合，数据中心光互联核心</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>媒体喊&#x27;AI危险区&#x27;，散户恐慌但盘中深V显示聪明钱吸筹，逆向机会窗口</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>IV因事件走高压制买Call性价比，正股+回踩加仓更优</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若COHR连续2日收盘跌破$210（今日盘中低点），则吸筹叙事证伪，属真实抛售</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LITE</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$629.59</div>
+          <div class="change down">-0.14%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,19.1 L 70.0,22.6 L 105.0,2.0 L 140.0,8.1 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,19.1 L 70.0,22.6 L 105.0,2.0 L 140.0,8.1" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +16.9%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:47.3%;width:13.5%" title="入场区 $615-$640"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $540.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $540</div><div class="marker target" style="left:93.1%" title="止盈 $700.0"></div><div class="marker-label target-label" style="left:93.1%">target $700</div><div class="marker current" style="left:55.2%" title="当前 $629.59"></div><div class="marker-label current-label" style="left:55.2%">$629.59</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">615.00-640.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">Sell Cash-Secured Put $570 (30-45DTE, Δ≈0.27)</span></div>
+      </div>
+      <div class="pick-thesis">被MRVL并购案完全遮蔽的CPO激光器龙头，营收+136.5%、刚拿下第二个$50亿CPO订单，股价比要约价折价15.5%</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>MRVL 11/2宣布4.5:1全股票收购LITE，要约价$746，现价$630折价15.5%</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO/NPO光引擎激光器瓶颈，配合Soitec SOI衬底，采购承诺超$50亿</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>8.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>被并购案完全遮蔽，市场只当MRVL影子股，$50亿订单无人讨论，极度冷门</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>IV偏高，卖$570Put收割时间价值，被行权则以远低于要约价建仓</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若MRVL跌破$140（10日低$132.54）或中国监管明确否决，则要约价锚失效，LITE将回归独立估值</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$43.72</div>
+          <div class="change down">-4.83%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,38.0 L 35.0,20.1 L 70.0,36.1 L 105.0,2.0 L 140.0,16.5 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,38.0 L 35.0,20.1 L 70.0,36.1 L 105.0,2.0 L 140.0,16.5" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 +12.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:22.6%;width:15.7%" title="入场区 $40-$44"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $36.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $36</div><div class="marker target" style="left:93.1%" title="止盈 $58.0"></div><div class="marker-label target-label" style="left:93.1%">target $58</div><div class="marker current" style="left:37.1%" title="当前 $43.72"></div><div class="marker-label current-label" style="left:37.1%">$43.72</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">40.00-44.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股半仓（波动率极高，受反规则约束）</span></div>
+      </div>
+      <div class="pick-thesis">7N高纯铟镓锗+InP衬底中国管制受益者，昨日AI基板需求大涨19.5%后今日回吐4.68%，属健康降温</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>微软抗争数据中心中国零件禁令，去中国化供应链叙事强化；Zacks称AI基板需求支撑增长</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>7N高纯铟/镓/锗+InP衬底，中国控制70-98%份额，替代产能lead time超2年</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>昨日+19.5%后被Zacks/InsiderMonkey报道，今日回吐属短期过热降温，仍小众积累期</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>中小盘期权链一般，采用正股半仓控制情绪冲击回撤</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若AXTI连续2日缩量下跌并跌破今日低点$39.91，说明昨日19.5%为诱多出货</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+    <section class="section">
+      <h2>📰 最新新闻</h2>
+      <div class="news-grid"><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://www.barrons.com/articles/coreweave-stock-drops-nvidia-huang-ai-3b3bbc9b?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">CoreWeave and These Other Stocks Are in the Nvidia Danger Zone</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://247wallst.com/investing/2026/11/12/microsoft-is-fighting-a-ban-on-chinese-parts-inside-ai-data-centers/" target="_blank" rel="noopener">Microsoft Is Fighting a Ban on Chinese Parts Inside AI Data Centers</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://finance.yahoo.com/markets/article/jensen-huangs-exit-puts-nvidias-530-billion-web-of-ai-deals-under-the-microscope-153142269.html" target="_blank" rel="noopener">Jensen Huang&#x27;s exit puts Nvidia&#x27;s $530 billion web of AI deals under the microscope</a> <span class="news-pub">Yahoo Finance</span></li></ul></div><div class="news-card"><h3>$LITE</h3><ul><li><a href="https://247wallst.com/investing/2026/11/12/microsoft-is-fighting-a-ban-on-chinese-parts-inside-ai-data-centers/" target="_blank" rel="noopener">Microsoft Is Fighting a Ban on Chinese Parts Inside AI Data Centers</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.barrons.com/articles/intel-stock-price-marvell-chips-nvidia-a79a4389?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">AI’s Central Bank Is in Crisis. Intel and These Stocks Are Feeling the Pain.</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://247wallst.com/investing/2026/11/12/lumentum-trades-below-marvells-buyout-offer-is-the-gap-a-bargain/" target="_blank" rel="noopener">Lumentum Trades Below Marvell’s Buyout Offer. Is the Gap a Bargain?</a> <span class="news-pub">24/7 Wall St.</span></li></ul></div><div class="news-card"><h3>$AXTI</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/propelled-axt-inc-axti-19-234754017.html" target="_blank" rel="noopener">What Propelled AXT Inc.’s (AXTI) 19.5% Rally?</a> <span class="news-pub">Insider Monkey</span></li><li><a href="https://finance.yahoo.com/technology/ai/articles/axtis-ai-data-center-boom-175000305.html" target="_blank" rel="noopener">AXTI&#x27;s AI Data Center Boom: Can Substrate Demand Sustain Growth?</a> <span class="news-pub">Zacks</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/axt-axti-stock-seems-reasonably-011206493.html" target="_blank" rel="noopener">AXT (AXTI) Stock Seems Reasonably Valued As Record Revenue Reshapes Earnings</a> <span class="news-pub">Simply Wall St.</span></li></ul></div></div>
+    </section>
+    
+  
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$LITE&quot;, &quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;NVDA辞职事件解读缺交叉验证&quot;,
+      &quot;detail&quot;: &quot;报告开头自述『web_search 与 search_serenity 今日均因 DuckDuckGo 页面结构变更返回空结果』，却在 Layer 1 以分钟级精度引用 Finviz『12:25 头条：Nvidia CEO Jensen Huang resigns amid investigation into relationship with alleged Chinese spy』并列为『压倒性第一』催化剂。该事件若属实属治理+合规危机级利空，而同日 NVDA 仅盘中最低 $148.80、收盘 $164.71（+2.71%）绿盘报收，与『完全买回=有人在接』的乐观解读存在张力。报告未提供任何第二信源（SEC 8-K / NVDA IR / 主流财经）交叉验证该头条，而三只推荐的全部『盘中深V=吸筹』叙事（COHR $210.08→$235.37、VRT $193.82→$211.12、NVDA $148.80→$164.71）都建立在此事件『已被消化』的判断上。&quot;,
+      &quot;actionable&quot;: &quot;下单前用独立信源（公司 IR / SEC 8-K / 两家以上主流财经）确认辞职事件是否真实及其性质（主动/被迫、是否涉调查）。若无法确证，应将其视为『未证实催化剂』，不据此重仓押注深V反转。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;],
+      &quot;title&quot;: &quot;Sell Put最坏情形未按交易破裂定价&quot;,
+      &quot;detail&quot;: &quot;Layer 5 与 reasoning 承认『若因监管失败…LITE 将回归独立估值（可能跌至 $500 区间）』，却把卖 $570 Put 描述为『若被行权则以 $570 持有优质资产，远低于要约价 $746』。此逻辑在并购破裂场景下失效：$746 要约价锚随交易破裂而消失，届时 $570 行权价很可能高于独立估值（$450–500），被行权即浮亏约 -12%~-21%，且是主动加杠杆接盘。反方论点虽点到『可能跌至 $500』却完全未量化对卖权持仓的实际损失，属稻草人式风控——把最可能失败的路径（交易因中国审批终止）识别出来却按不破裂情景做收益描述。&quot;,
+      &quot;actionable&quot;: &quot;显式测算卖权最坏情形：被行权于 $570、LITE 独立估值 $480，浮亏≈(570-480)/570≈-16%（另需考虑追加保证金）。据此下调行权价（如 $500–520）、减少张数，或改用价差结构（买 $500 Put 保护）限定最大亏损。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;],
+      &quot;title&quot;: &quot;失败阈值与期权止损口径不一致&quot;,
+      &quot;detail&quot;: &quot;失败信号设为『MRVL 跌破 $140（10 日低 $132.54）』，但固定换股比 4.5:1 下 4.5×$140=$630 恰等于 LITE 现价 $630.70——即 MRVL 跌到 $140 时</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;RISK_BUDGET&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;R:R=0.83（&lt; 1.5）&quot;,
+      &quot;detail&quot;: &quot;入场≈$627.50 · 止损$540.0 · 目标$700.0&quot;,
+      &quot;actionable&quot;: &quot;调整止损/目标价以达到 ≥1.5:1&quot;,
+      &quot;source&quot;: &quot;hard_audit&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-11-12 19:02 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
