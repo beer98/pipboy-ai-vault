@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-11-13</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-11-13</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 2 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>2</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LEU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$102.81</div>
+          <div class="change down">-2.55%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,20.5 L 70.0,14.8 L 105.0,35.2 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,20.5 L 70.0,14.8 L 105.0,35.2 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -12.4%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:27.4%;width:14.6%" title="入场区 $98.5-$103.5"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $91.5"></div><div class="marker-label stop-label" style="left:6.9%">stop $91.5</div><div class="marker target" style="left:93.1%" title="止盈 $121.0"></div><div class="marker-label target-label" style="left:93.1%">target $121</div><div class="marker current" style="left:39.9%" title="当前 $102.81"></div><div class="marker-label current-label" style="left:39.9%">$102.81</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">98.50-103.50</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">HALEU 西方唯一规模供应商，AI 数据中心 SMR 需求与 AI 股价脱钩；今日全场 AI 链 -6%~-10% 时仅 -2.55%、10日 +8.34%，全组最强相对强度</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI 交易去杠杆日，资金寻找非 AI 瓶颈避风港</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>HALEU 浓缩铀，SMR 燃料唯一西方规模供应</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.6</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>未获取到 Serenity 最新信号；散户冷清，无拥挤</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>期权链中等，选正股避免点差损失</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>成交量较5日均值放大&gt;100%且收盘跌破$97.67（今日低点）</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$ETN</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$352.14</div>
+          <div class="change down">-2.84%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,12.3 L 35.0,29.2 L 70.0,2.0 L 105.0,8.7 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,12.3 L 35.0,29.2 L 70.0,2.0 L 105.0,8.7 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -1.7%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:33.6%;width:13.4%" title="入场区 $345-$356"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $323.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $323</div><div class="marker target" style="left:93.1%" title="止盈 $394.0"></div><div class="marker-label target-label" style="left:93.1%">target $394</div><div class="marker current" style="left:42.3%" title="当前 $352.14"></div><div class="marker-label current-label" style="left:42.3%">$352.14</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">345.00-356.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股 或 SellPut30Δ($330行权)</span></div>
+      </div>
+      <div class="pick-thesis">变压器 lead time&gt;2年硬约束，backlog锁定未来两年与AI股价脱钩；今日AI全链-6%~-10%时仅-2.94%，防御属性验证</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI 数据中心电力接入瓶颈，独立于 AI 估值周期</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>变压器/HVDC，数据中心电力输入刚性约束</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>未获取到 Serenity 最新信号；低热度防御性配置</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>VIX 19.74上行推高IV，卖put收权利金有利</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>收盘跌破$340前低区域同时10年期突破5.30%</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+    <section class="section">
+      <h2>📰 最新新闻</h2>
+      <div class="news-grid"><div class="news-card"><h3>$LEU</h3><ul><li><a href="https://finance.yahoo.com/energy/articles/uuuu-bets-pinyon-plain-meet-130800565.html" target="_blank" rel="noopener">UUUU Bets on Pinyon Plain to Meet 2026 Output Goals: Will It Pay Off?</a> <span class="news-pub">Zacks</span></li><li><a href="https://247wallst.com/investing/2026/11/12/nuscale-power-just-dropped-25-in-a-month-nuke-your-shares-now-or-hunker-down-and-hold/" target="_blank" rel="noopener">NuScale Power Just Dropped 25% in a Month: Nuke Your Shares Now, or Hunker Down and Hold?</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/ccjs-share-uranium-output-down-124400298.html" target="_blank" rel="noopener">CCJ&#x27;s Share of Uranium Output Down 20% in Q3: Will 2026 Targets be Met?</a> <span class="news-pub">Zacks</span></li></ul></div><div class="news-card"><h3>$ETN</h3><ul><li><a href="https://www.trefis.com/stock/etn/articles/624624/is-one-shrinking-number-the-biggest-risk-to-eaton-stock/2026-11-12" target="_blank" rel="noopener">Is One Shrinking Number The Biggest Risk To Eaton Stock?</a> <span class="news-pub">Trefis</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/trending-stock-eaton-corporation-plc-130001478.html" target="_blank" rel="noopener">Is Trending Stock Eaton Corporation, PLC (ETN) a Buy Now?</a> <span class="news-pub">Zacks</span></li><li><a href="https://www.trefis.com/stock/vrt/articles/624240/the-reason-to-buy-vertiv-stock-today/2026-11-11" target="_blank" rel="noopener">The Reason To Buy Vertiv Stock Today</a> <span class="news-pub">Trefis</span></li></ul></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$LEU, $ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交数据全挂却仍下&#x27;散户冷清&#x27;结论并据此加仓</strong></div><div class="finding-detail">报告顶部声明 Nitter+DDG 连续 3 次返回空、&#x27;请勿将此解读为他未提及&#x27;，但 Layer 4 表格却给出 LITE&#x27;并购套利讨论为主&#x27;、COHR&#x27;板块恐慌抛售看空情绪重&#x27;、LEU/ETN&#x27;相对冷清&#x27;的 WSB/散户判断，且无任何来源。随后 Layer 4 判定规则又写&#x27;LEU：无明确 KOL 喊单 + 散户冷淡 + 基本面强 → 符合最高价值象限，可加仓&#x27;——这等于把一个&#x27;没拿到的数据&#x27;反转为&#x27;加仓理由&#x27;，与此前声明直接矛盾。核心论点&#x27;未被注意&#x27;(attention_inverse 5分/3分)因此缺乏证据。</div><div class="finding-action">→ 在 Layer 4/scorecard 里把&#x27;散户冷清&#x27;&#x27;无 KOL&#x27;降级为&#x27;数据缺失、不构成信号&#x27;，LEU/ETN 的加仓理由只能基于基本面与相对强度，不能基于&#x27;无关注度&#x27;。若要保留，须注明 WSB 数据来源。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$LITE, $MRVL</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>并购价差与交易规模数字自相矛盾</strong></div><div class="finding-detail">Layer 1 称 LITE 每股换 4.5 股 MRVL、隐含 $1,132/股，则 MRVL 须 $251.56。MRVL 现价 $155.29 → 4.5×155.29=$698.8，LITE 现价 $593.97，实际折价=$698.8/593.97−1≈17.6%，报告却写&#x27;折价约 15%&#x27;，另一处写&#x27;价差从 19.7% 收窄至 18%&#x27;，三处(15%/18%/19.7%)不一致；&#x27;较隐含价低 38.9%&#x27;按 $155.29/$251.56 计算实为 38.3%。更关键：$115B 全股票交易与给定数字对不上——$1,132 × LITE 约 6800 万股 ≈ $77B，而其市值 $593.97×股数仅约 $40B，$115B 溢价接近 3 倍，明显异常。这是全文最重要判断(LITE 剔除)的量化基础，数字打架会动摇整个 Layer 1 可信度。</div><div class="finding-action">→ 核对并购公告原文的换股比例、交易总价与 LITE 实际流通股数；把折溢价统一为单一算法并写明公式。若 $115B 或流通股数据有误，须在报告注明更正。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$LEU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>LEU 剪刀差打 9 分却无任何产能/订单数据</strong></div><div class="finding-detail">Layer 3 给 LEU &#x27;产能/需求剪刀差 9 分&#x27;、&#x27;替代难度 9 分&#x27;，理由为&#x27;HALEU 唯一西方规模供应商、产能缺口按年计&#x27;，但全文没有任何量化锚：无 HALEU 现有产能(kg/年)、无 SMR 意向订单量、无 DOE 拨款金额或时间表、无 LEU 的合同 backlog 数字或估值倍数(PE/PS)。财务质量仅 5 分、估值安全垫 4 分(报告自认&#x27;已从 $84.86 涨至 $102.81，不便宜&#x27;)，反方 2 亦承认&#x27;40% 涨幅已部分反映 SMR 订单预期&#x27;——即论点可能已被定价，但报告既无&#x27;已反映多少&#x27;的证据，也无&#x27;还需什么数据证伪&#x27;。核心数据不可证伪。</div><div class="finding-action">→ 补充 HALEU 产能/需求缺口的具体数字、DOE 相关拨款或合同的时间表，以及当前估值倍数。若拿不到数据，应在 scorecard 注明&#x27;关键数据缺失&#x27;并下调剪刀差置信度。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>ETN 反方打稻草人，漏掉最直接失败路径</strong></div><div class="finding-detail">ETN 核心论点是&#x27;需求来自 AI 数据中心电力接入，backlog 锁定未来两年，与 AI 股价脱钩&#x27;。但反方 1 是&#x27;机构覆盖度高、博弈空间小&#x27;、反方 2 是&#x27;10 年期上行&#x27;，两条都不是最直接的失败路径。真正的反方应是：ETN 的 backlog 恰恰由 AI 数据中心 capex 驱动，若 AI capex 下修，电网/变压器订单会同步削减，&#x27;与 AI 脱钩&#x27;不成立——这正是今日全 AI 链下跌的传导源。报告反方完全没触及这一路径，且&#x27;backlog 锁定两年&#x27;无具体数字支撑。</div><div class="finding-action">→ 增加反方：AI capex 下修→数据中心电力接入延期→ETN 订单/backlog 削减；并给出 backlog 的具体数字与其中 AI 相关占比，使&#x27;脱钩&#x27;论点可验证。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>ETN 失败信号 $340 来源不明且与止损脱节</strong></div><div class="finding-detail">ETN 失败检测信号为&#x27;收盘跌破 $340（前低区域）同时 10 年期突破 5.30%&#x27;，但 $340 在报告里没有任何定义/日期来源——报告给出的 10 日低点是 323.28（也是止损位 323 的依据）。$340 这个&#x27;前低&#x27;从何而来、是哪一天的低点，用户无法核对。同时失败信号($340)明显早于止损($323)，两者价差 17 点，用户在&#x27;信号触发但未到止损&#x27;时的处置不明确。虽然可量化（收盘价+10年期），但阈值本身缺依据。</div><div class="finding-action">→ 明确 $340 对应的具体日期/价格低点，或统一改用 10 日低点 323.28 为参照；写清信号触发后是减仓还是清仓。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Sell Put 30-45 DTE 未核查财报日</strong></div><div class="finding-detail">动作 2 建议&#x27;正股 或 Sell Put 30Δ、$330 行权价、30-45 DTE&#x27;，但全文未核查 ETN 财报日期。若财报落在 30-45 DTE 期权周期内，则构成规则库明确禁止的&#x27;财报日裸卖期权&#x27;（卖 put 跨财报）。当前为 11 月中，ETN 类工业股 Q3 财报通常在 10 月底-11 月初，需确认最近一次财报是否已过、下次财报(1 月)是否落在期权到期前。报告在无财报数据情况下给出裸卖期权结构。</div><div class="finding-action">→ 核查 ETN 最近及下次财报日期；若财报落在 30-45 DTE 到期日内，改为正股或选择跨过财报后的到期日，避免财报裸卖期权。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Serenity 全源失效，Layer 4 无有效信号</strong></div><div class="finding-detail">报告自述 Nitter+DDG 连续 3 次返回空、7 天内 @aleabitoreddit 零帖，Layer 4 全部标注&#x27;未获取到 Serenity 最新信号&#x27;。这是工具侧问题，非论点缺陷，但意味着社交交叉验证这一整个维度今日无效，LEU/ETN 的&#x27;冷清&#x27;判断无法用 KOL 数据佐证。</div><div class="finding-action">→ 将今日社交信号视为缺失而非中性；待数据源恢复后补验 LEU/ETN 是否被 KOL 提及，切勿把&#x27;拿不到&#x27;当&#x27;没人提&#x27;。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR, $AXTI, $MRVL</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>外部引用无 URL，关键数据无法验证</strong></div><div class="finding-detail">报告引用&#x27;247wallst 10/28 已论证 Coherent Could Win&#x27;、&#x27;ctol.digital：InP 激光器短缺&#x27;、&#x27;NVIDIA 持有 MRVL $20 亿股份&#x27;、&#x27;微软反对禁用中国零件提案 11/12 报道&#x27;，均无链接。其中&#x27;NVIDIA 持有 Marvell $20 亿股份&#x27;与公开信息存疑，且被用作&#x27;光学供应链叙事&#x27;的论据。这些引用支撑了 COHR 的受益逻辑与 AXTI 的管制溢价削弱判断，但无法核验真实性。</div><div class="finding-action">→ 为每条外部引用补 URL 与发布日期；无法核验的（尤其 NVIDIA 持股）从论点中移除或标注&#x27;未证实&#x27;。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$LEU, $ETN</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>两只 pick 实为同一因子暴露（AI 用电）</strong></div><div class="finding-detail">LEU(Nuclear 8%) + ETN(Power Grid 7%) 虽分属不同板块标签，但经济驱动高度同一：AI 数据中心用电量。若 AI capex 放缓，SMR 需求(HALEU)与变压器 backlog 会同向收缩，两者并非独立风险源。报告&#x27;两非 AI 板块可分散&#x27;的表述忽略了这一相关性，合计 15% 实为单一因子押注。</div><div class="finding-action">→ 将 LEU+ETN 视作同一&#x27;AI 用电&#x27;因子合并计算敞口；若想真正分散，需引入与 AI 用电无关的瓶颈节点，或下调两者合计仓位。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LEU&quot;, &quot;$ETN&quot;],
+      &quot;title&quot;: &quot;社交数据全挂却仍下&#x27;散户冷清&#x27;结论并据此加仓&quot;,
+      &quot;detail&quot;: &quot;报告顶部声明 Nitter+DDG 连续 3 次返回空、&#x27;请勿将此解读为他未提及&#x27;，但 Layer 4 表格却给出 LITE&#x27;并购套利讨论为主&#x27;、COHR&#x27;板块恐慌抛售看空情绪重&#x27;、LEU/ETN&#x27;相对冷清&#x27;的 WSB/散户判断，且无任何来源。随后 Layer 4 判定规则又写&#x27;LEU：无明确 KOL 喊单 + 散户冷淡 + 基本面强 → 符合最高价值象限，可加仓&#x27;——这等于把一个&#x27;没拿到的数据&#x27;反转为&#x27;加仓理由&#x27;，与此前声明直接矛盾。核心论点&#x27;未被注意&#x27;(attention_inverse 5分/3分)因此缺乏证据。&quot;,
+      &quot;actionable&quot;: &quot;在 Layer 4/scorecard 里把&#x27;散户冷清&#x27;&#x27;无 KOL&#x27;降级为&#x27;数据缺失、不构成信号&#x27;，LEU/ETN 的加仓理由只能基于基本面与相对强度，不能基于&#x27;无关注度&#x27;。若要保留，须注明 WSB 数据来源。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$MRVL&quot;],
+      &quot;title&quot;: &quot;并购价差与交易规模数字自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 1 称 LITE 每股换 4.5 股 MRVL、隐含 $1,132/股，则 MRVL 须 $251.56。MRVL 现价 $155.29 → 4.5×155.29=$698.8，LITE 现价 $593.97，实际折价=$698.8/593.97−1≈17.6%，报告却写&#x27;折价约 15%&#x27;，另一处写&#x27;价差从 19.7% 收窄至 18%&#x27;，三处(15%/18%/19.7%)不一致；&#x27;较隐含价低 38.9%&#x27;按 $155.29/$251.56 计算实为 38.3%。更关键：$115B 全股票交易与给定数字对不上——$1,132 × LITE 约 6800 万股 ≈ $77B，而其市值 $593.97×股数仅约 $40B，$115B 溢价接近 3 倍，明显异常。这是全文最重要判断(LITE 剔除)的量化基础，数字打架会动摇整个 Layer 1 可信度。&quot;,
+      &quot;actionable&quot;: &quot;核对并购公告原文的换股比例、交易总价与 LITE 实际流通股数；把折溢价统一为单一算法并写明公式。若 $115B 或流通股数据有误，须在报告注明更正。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LEU&quot;],
+      &quot;title&quot;: &quot;LEU 剪刀差打 9 分却无任何产能/订单数据&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给 LEU &#x27;产能/需求剪刀差 9 分&#x27;、&#x27;替代难度 9 分&#x27;，理由为&#x27;HALEU 唯一西方规模供应商、产能缺口按年计&#x27;，但全文没有任何量化锚：无 HALEU 现有产能(kg/年)、无 SMR 意向订单量、无 DOE 拨款金额或时间表、无 LEU 的合同 backlog 数字或估值倍数(PE/PS)。财务质量仅 5 分、估值安全垫 4 分(报告自认&#x27;已从 $84.86 涨至 $102.81，不便宜&#x27;)，反方 2 亦承认&#x27;40% 涨幅已部分反映 SMR 订单预期&#x27;——即论点可能已被定价，但报告既无&#x27;已反映多少&#x27;的证据，也无&#x27;还需什么数据证伪&#x27;。核心数据不可证伪。&quot;,
+      &quot;actionable&quot;: &quot;补充 HALEU 产能/需求缺口的具体数字、DOE 相关拨款或合同的时间表，以及当前估值倍数。若拿不到数据，应在 scorecard 注明&#x27;关键数据缺失&#x27;并下调剪刀差置信度。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$ETN&quot;],
+      &quot;title&quot;: &quot;ETN 反方打稻草人，漏掉最直接失败路径&quot;,
+      &quot;detail&quot;: &quot;ETN 核心论点是&#x27;需求来自 AI 数据中心电力接入，backlog 锁定未来两年，与 AI 股价脱钩&#x27;。但反方 1 是&#x27;机构覆盖度高、博弈空间小&#x27;、反方 2 是&#x27;10 年期上行&#x27;，两条都不是最直接的失败路径。真正的反方应是：ETN 的 backlog 恰恰由 AI 数据中心 capex 驱动，若 AI capex 下修，电网/变压器订单会同步削减，&#x27;与 AI 脱钩&#x27;不成立——这正是今日全 AI 链下跌的传导源。报告反方完全没触及这一路径，且&#x27;backlog 锁定两年&#x27;无具体数字支撑。&quot;,
+      &quot;actionable&quot;: &quot;增加反方：AI capex 下修→数据中心电力接入延期→ETN 订单/backlog 削减；并给出 backlog 的具体数字与其中 AI 相关占比，使&#x27;脱钩&#x27;论点可验证。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$ETN&quot;],
+      &quot;title&quot;: &quot;ETN 失败信号 $340 来源不明且与止损脱节&quot;,
+      &quot;detail&quot;: &quot;ETN 失败检测信号为&#x27;收盘跌破 $340（前低区域）同时 10 年期突破 5.30%&#x27;，但 $340 在报告里没有任何定义/日期来源——报告给出的 10 日低点是 323.28（也是止损位 323 的依据）。$340 这个&#x27;前低&#x27;从何而来、是哪一天的低点，用户无法核对。同时失败信号($340)明显早于止损($323)，两者价差 17 点，用户在&#x27;信号触发但未到止损&#x27;时的处置不明确。虽然可量化（收盘价+10年期），但阈值本身缺依据。&quot;,
+      &quot;actionable&quot;: &quot;明确 $340 对应的具体日期/价格低点，或统一改用 10 日低点 323.28 为参照；写清信号触发后是减仓还是清仓。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$ETN&quot;],
+      &quot;title&quot;: &quot;Sell Put 30-45 DTE 未核查财报日&quot;,
+      &quot;detail&quot;: &quot;动作 2 建议&#x27;正股 或 Sell Put 30Δ、$330 行权价、30-45 DTE&#x27;，但全文未核查 ETN 财报日期。若财报落在 30-45 DTE 期权周期内，则构成规则库明确禁止的&#x27;财报日裸卖期权&#x27;（卖 put 跨财报）。当前为 11 月中，ETN 类工业股 Q3 财报通常在 10 月底-11 月初，需确认最近一次财报是否已过、下次财报(1 月)是否落在期权到期前。报告在无财报数据情况下给出裸卖期权结构。&quot;,
+      &quot;actionable&quot;: &quot;核查 ETN 最近及下次财报日期；若财报落在 30-45 DTE 到期日内，改为正股或选择跨过财报后的到期日，避免财报裸卖期权。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;Serenity 全源失效，Layer 4 无有效信号&quot;,
+      &quot;detail&quot;: &quot;报告自述 Nitter+DDG 连续 3 次返回空、7 天内 @aleabitoreddit 零帖，Layer 4 全部标注&#x27;未获取到 Serenity 最新信号&#x27;。这是工具侧问题，非论点缺陷，但意味着社交交叉验证这一整个维度今日无效，LEU/ETN 的&#x27;冷清&#x27;判断无法用 KOL 数据佐证。&quot;,
+      &quot;actionable&quot;: &quot;将今日社交信号视为缺失而非中性；待数据源恢复后补验 LEU/ETN 是否被 KOL 提及，切勿把&#x27;拿不到&#x27;当&#x27;没人提&#x27;。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$AXTI&quot;, &quot;$MRVL&quot;],
+      &quot;title&quot;: &quot;外部引用无 URL，关键数据无法验证&quot;,
+      &quot;detail&quot;: &quot;报告引用&#x27;247wallst 10/28 已论证 Coherent Could Win&#x27;、&#x27;ctol.digital：InP 激光器短缺&#x27;、&#x27;NVIDIA 持有 MRVL $20 亿股份&#x27;、&#x27;微软反对禁用中国零件提案 11/12 报道&#x27;，均无链接。其中&#x27;NVIDIA 持有 Marvell $20 亿股份&#x27;与公开信息存疑，且被用作&#x27;光学供应链叙事&#x27;的论据。这些引用支撑了 COHR 的受益逻辑与 AXTI 的管制溢价削弱判断，但无法核验真实性。&quot;,
+      &quot;actionable&quot;: &quot;为每条外部引用补 URL 与发布日期；无法核验的（尤其 NVIDIA 持股）从论点中移除或标注&#x27;未证实&#x27;。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$LEU&quot;, &quot;$ETN&quot;],
+      &quot;title&quot;: &quot;两只 pick 实为同一因子暴露（AI 用电）&quot;,
+      &quot;detail&quot;: &quot;LEU(Nuclear 8%) + ETN(Power Grid 7%) 虽分属不同板块标签，但经济驱动高度同一：AI 数据中心用电量。若 AI capex 放缓，SMR 需求(HALEU)与变压器 backlog 会同向收缩，两者并非独立风险源。报告&#x27;两非 AI 板块可分散&#x27;的表述忽略了这一相关性，合计 15% 实为单一因子押注。&quot;,
+      &quot;actionable&quot;: &quot;将 LEU+ETN 视作同一&#x27;AI 用电&#x27;因子合并计算敞口；若想真正分散，需引入与 AI 用电无关的瓶颈节点，或下调两者合计仓位。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>结论：可下单，但带多项警告，且两只票的&quot;加仓信心&quot;需要打折。</strong> 没有发现能一票否决 LEU/ETN 论点的硬证伪证据，所以我没开 BLOCKER（也严格遵守：数据源失效不判 BLOCKER）。但如果按报告原文的信心水平去执行，会踩到几个真实的软坑：</p><p>1. <strong>最刺眼的是&quot;数据全挂却照常下结论&quot;。</strong> 报告开篇很有纪律地声明 Nitter/DDG 全挂、&quot;请勿解读为他未提及&quot;，结果到了 Layer 4 又冒出&quot;散户冷淡&quot;&quot;无 KOL 喊单&quot;并把它当成&quot;最高价值象限=可加仓&quot;的理由。这是把缺失当利好，逻辑反转了。LEU/ETN 的&quot;未被注意&quot;属性今天实际上<strong>无法验证</strong>，别把它写进加仓理由。</p><p>2. <strong>LITE 那段数字自己在打架。</strong> 折价一处 15%、一处 18%、一处&quot;19.7%→18%&quot;，按它自己给的价格算出来是 17.6%；$115B 交易规模跟隐含市值（约 $77B 上限、市值约 $40B）差了近 3 倍。LITE 的&quot;死亡判定&quot;方向我认同（并购标的不该再当 CPO 基本面做），但支撑它的算术有错，等于把最重要的一个判断建在了没对齐的数字上。建议核对公告原文。</p><p>3. <strong>两只票的论点都缺可证伪的核心数据。</strong> LEU 剪刀差打 9 分，却没有任何 HALEU 产能、SMR 订单、DOE 合同金额；财务 5 分、估值 4 分，反方还自认&quot;40% 涨幅已反映预期&quot;——那到底已反映多少？没答案。这样的 7.30 分更像是给叙事打分。ETN 更明显：它的 backlog 恰恰来自 AI 数据中心用电，报告却说&quot;与 AI 脱钩&quot;，反方只打&quot;机构覆盖度高/利率&quot;，把最可能的失败路径（AI capex 下修→电网订单削减）整个漏掉了。</p><p>4. <strong>ETN 的 Sell Put 结构有合规隐患。</strong> 30-45 DTE 卖 put 却没核查财报日——如果 ETN 财报落在周期内，就是规则库点名的&quot;财报日裸卖期权&quot;。这个我无法替你确认财报日，所以只给 WARNING，但<strong>下单前务必自己查一眼</strong>，要么改正股，要么挑跨过财报的到期日。</p><p>5. <strong>分散是假的。</strong> LEU(核燃料) + ETN(电网) 听起来两个板块，其实都在押&quot;AI 数据中心用电&quot;这一个因子。AI capex 一放缓，两条腿一起软。合起来 15% 是单一因子的 15%，不是两个独立的 8%+7%。</p><p><strong>给你的实操建议</strong>：可以按报告入场，但把 LEU 和 ETN 当成一笔合计 15% 的&quot;AI 用电&quot;押注来控风险（或各自砍半），并优先补齐三件事：</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LEU&quot;,
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;社交数据全挂却仍下&#x27;散户冷清&#x27;结论并据此加仓&quot;,
+      &quot;detail&quot;: &quot;报告顶部声明 Nitter+DDG 连续 3 次返回空、&#x27;请勿将此解读为他未提及&#x27;，但 Layer 4 表格却给出 LITE&#x27;并购套利讨论为主&#x27;、COHR&#x27;板块恐慌抛售看空情绪重&#x27;、LEU/ETN&#x27;相对冷清&#x27;的 WSB/散户判断，且无任何来源。随后 Layer 4 判定规则又写&#x27;LEU：无明确 KOL 喊单 + 散户冷淡 + 基本面强 → 符合最高价值象限，可加仓&#x27;——这等于把一个&#x27;没拿到的数据&#x27;反转为&#x27;加仓理由&#x27;，与此前声明直接矛盾。核心论点&#x27;未被注意&#x27;(attention_inverse 5分/3分)因此缺乏证据。&quot;,
+      &quot;actionable&quot;: &quot;在 Layer 4/scorecard 里把&#x27;散户冷清&#x27;&#x27;无 KOL&#x27;降级为&#x27;数据缺失、不构成信号&#x27;，LEU/ETN 的加仓理由只能基于基本面与相对强度，不能基于&#x27;无关注度&#x27;。若要保留，须注明 WSB 数据来源。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LITE&quot;,
+        &quot;$MRVL&quot;
+      ],
+      &quot;title&quot;: &quot;并购价差与交易规模数字自相矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 1 称 LITE 每股换 4.5 股 MRVL、隐含 $1,132/股，则 MRVL 须 $251.56。MRVL 现价 $155.29 → 4.5×155.29=$698.8，LITE 现价 $593.97，实际折价=$698.8/593.97−1≈17.6%，报告却写&#x27;折价约 15%&#x27;，另一处写&#x27;价差从 19.7% 收窄至 18%&#x27;，三处(15%/18%/19.7%)不一致；&#x27;较隐含价低 38.9%&#x27;按 $155.29/$251.56 计算实为 38.3%。更关键：$115B 全股票交易与给定数字对不上——$1,132 × LITE 约 6800 万股 ≈ $77B，而其市值 $593.97×股数仅约 $40B，$115B 溢价接近 3 倍，明显异常。这是全文最重要判断(LITE 剔除)的量化基础，数字打架会动摇整个 Layer 1 可信度。&quot;,
+      &quot;actionable&quot;: &quot;核对并购公告原文的换股比例、交易总价与 LITE 实际流通股数；把折溢价统一为单一算法并写明公式。若 $115B 或流通股数据有误，须在报告注明更正。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LEU&quot;
+      ],
+      &quot;title&quot;: &quot;LEU 剪刀差打 9 分却无任何产能/订单数据&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给 LEU &#x27;产能/需求剪刀差 9 分&#x27;、&#x27;替代难度 9 分&#x27;，理由为&#x27;HALEU 唯一西方规模供应商、产能缺口按年计&#x27;，但全文没有任何量化锚：无 HALEU 现有产能(kg/年)、无 SMR 意向订单量、无 DOE 拨款金额或时间表、无 LEU 的合同 backlog 数字或估值倍数(PE/PS)。财务质量仅 5 分、估值安全垫 4 分(报告自认&#x27;已从 $84.86 涨至 $102.81，不便宜&#x27;)，反方 2 亦承认&#x27;40% 涨幅已部分反映 SMR 订单预期&#x27;——即论点可能已被定价，但报告既无&#x27;已反映多少&#x27;的证据，也无&#x27;还需什么数据证伪&#x27;。核心数据不可证伪。&quot;,
+      &quot;actionable&quot;: &quot;补充 HALEU 产能/需求缺口的具体数字、DOE 相关拨款或合同的时间表，以及当前估值倍数。若拿不到数据，应在 scorecard 注明&#x27;关键数据缺失&#x27;并下调剪刀差置信度。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;ETN 反方打稻草人，漏掉最直接失败路径&quot;,
+      &quot;detail&quot;: &quot;ETN 核心论点是&#x27;需求来自 AI 数据中心电力接入，backlog 锁定未来两年，与 AI 股价脱钩&#x27;。但反方 1 是&#x27;机构覆盖度高、博弈空间小&#x27;、反方 2 是&#x27;10 年期上行&#x27;，两条都不是最直接的失败路径。真正的反方应是：ETN 的 backlog 恰恰由 AI 数据中心 capex 驱动，若 AI capex 下修，电网/变压器订单会同步削减，&#x27;与 AI 脱钩&#x27;不成立——这正是今日全 AI 链下跌的传导源。报告反方完全没触及这一路径，且&#x27;backlog 锁定两年&#x27;无具体数字支撑。&quot;,
+      &quot;actionable&quot;: &quot;增加反方：AI capex 下修→数据中心电力接入延期→ETN 订单/backlog 削减；并给出 backlog 的具体数字与其中 AI 相关占比，使&#x27;脱钩&#x27;论点可验证。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;ETN 失败信号 $340 来源不明且与止损脱节&quot;,
+      &quot;detail&quot;: &quot;ETN 失败检测信号为&#x27;收盘跌破 $340（前低区域）同时 10 年期突破 5.30%&#x27;，但 $340 在报告里没有任何定义/日期来源——报告给出的 10 日低点是 323.28（也是止损位 323 的依据）。$340 这个&#x27;前低&#x27;从何而来、是哪一天的低点，用户无法核对。同时失败信号($340)明显早于止损($323)，两者价差 17 点，用户在&#x27;信号触发但未到止损&#x27;时的处置不明确。虽然可量化（收盘价+10年期），但阈值本身缺依据。&quot;,
+      &quot;actionable&quot;: &quot;明确 $340 对应的具体日期/价格低点，或统一改用 10 日低点 323.28 为参照；写清信号触发后是减仓还是清仓。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;Sell Put 30-45 DTE 未核查财报日&quot;,
+      &quot;detail&quot;: &quot;动作 2 建议&#x27;正股 或 Sell Put 30Δ、$330 行权价、30-45 DTE&#x27;，但全文未核查 ETN 财报日期。若财报落在 30-45 DTE 期权周期内，则构成规则库明确禁止的&#x27;财报日裸卖期权&#x27;（卖 put 跨财报）。当前为 11 月中，ETN 类工业股 Q3 财报通常在 10 月底-11 月初，需确认最近一次财报是否已过、下次财报(1 月)是否落在期权到期前。报告在无财报数据情况下给出裸卖期权结构。&quot;,
+      &quot;actionable&quot;: &quot;核查 ETN 最近及下次财报日期；若财报落在 30-45 DTE 到期日内，改为正股或选择跨过财报后的到期日，避免财报裸卖期权。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;Serenity 全源失效，Layer 4 无有效信号&quot;,
+      &quot;detail&quot;: &quot;报告自述 Nitter+DDG 连续 3 次返回空、7 天内 @aleabitoreddit 零帖，Layer 4 全部标注&#x27;未获取到 Serenity 最新信号&#x27;。这是工具侧问题，非论点缺陷，但意味着社交交叉验证这一整个维度今日无效，LEU/ETN 的&#x27;冷清&#x27;判断无法用 KOL 数据佐证。&quot;,
+      &quot;actionable&quot;: &quot;将今日社交信号视为缺失而非中性；待数据源恢复后补验 LEU/ETN 是否被 KOL 提及，切勿把&#x27;拿不到&#x27;当&#x27;没人提&#x27;。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$COHR&quot;,
+        &quot;$AXTI&quot;,
+        &quot;$MRVL&quot;
+      ],
+      &quot;title&quot;: &quot;外部引用无 URL，关键数据无法验证&quot;,
+      &quot;detail&quot;: &quot;报告引用&#x27;247wallst 10/28 已论证 Coherent Could Win&#x27;、&#x27;ctol.digital：InP 激光器短缺&#x27;、&#x27;NVIDIA 持有 MRVL $20 亿股份&#x27;、&#x27;微软反对禁用中国零件提案 11/12 报道&#x27;，均无链接。其中&#x27;NVIDIA 持有 Marvell $20 亿股份&#x27;与公开信息存疑，且被用作&#x27;光学供应链叙事&#x27;的论据。这些引用支撑了 COHR 的受益逻辑与 AXTI 的管制溢价削弱判断，但无法核验真实性。&quot;,
+      &quot;actionable&quot;: &quot;为每条外部引用补 URL 与发布日期；无法核验的（尤其 NVIDIA 持股）从论点中移除或标注&#x27;未证实&#x27;。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$LEU&quot;,
+        &quot;$ETN&quot;
+      ],
+      &quot;title&quot;: &quot;两只 pick 实为同一因子暴露（AI 用电）&quot;,
+      &quot;detail&quot;: &quot;LEU(Nuclear 8%) + ETN(Power Grid 7%) 虽分属不同板块标签，但经济驱动高度同一：AI 数据中心用电量。若 AI capex 放缓，SMR 需求(HALEU)与变压器 backlog 会同向收缩，两者并非独立风险源。报告&#x27;两非 AI 板块可分散&#x27;的表述忽略了这一相关性，合计 15% 实为单一因子押注。&quot;,
+      &quot;actionable&quot;: &quot;将 LEU+ETN 视作同一&#x27;AI 用电&#x27;因子合并计算敞口；若想真正分散，需引入与 AI 用电无关的瓶颈节点，或下调两者合计仓位。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-11-13 18:39 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
