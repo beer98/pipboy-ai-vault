@@ -214,7 +214,7 @@ footer.app-foot a { color: var(--text-dim); }
         <span class="count-watch">🟡 WATCH <strong>0</strong></span>
         <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
       </div>
-      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      <div class="audit-stat">🔁 系统自审 2 轮（修复 BLOCKER 后重写） · 全部通过</div>
       
     </section>
     
@@ -226,7 +226,7 @@ footer.app-foot a { color: var(--text-dim); }
   
     <section class="section">
       <h2>🛡️ 红队审计（按严重级别分级）</h2>
-      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>全篇无来源链接，重大声明不可验证</strong></div><div class="finding-detail">报告 Layer 1 称“Jensen Huang 离任”“Morgan Stanley 周日将 NVDA 目标价自 $300 下调至 $267”“WSJ 报道 Kress 收缩 deal-making”，Layer 1 第 3 条称 MRVL 以 4.5 股换 1 股收购 LITE、隐含 EV $1,150 亿，Layer 4 称 COHR CEO 与董事长合计买入 $120 万、COHR 约 17× forward P/E、FY27 EPS 一致预期 $10.41——以上均未附任何 URL、公告编号或 Form 4 日期。尤其“Jensen Huang 离任”属于会改变整条 AI 硬件链定价的极端声明，无官方来源时无法判断真伪；若该前提不成立，报告“板块级系统性冲击”的宏观叙事会被大幅削弱。</div><div class="finding-action">→ 要求补充每条核心声明的可点击来源：NVDA 官方公告/交易所文件、Morgan Stanley 研报标题与日期、WSJ 文章链接、MRVL 收购新闻稿、COHR 内部人 Form 4。无法补来源的条目应从“事实”降级为“待核实传闻”。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR 核心订单利多缺少反方</strong></div><div class="finding-detail">Layer 2 用“COHR 已签 $200 亿 hyperscaler 单、FY27 basically booked out”作为相对抗跌的核心依据，但报告没有讨论该订单的可取消条款、客户集中度、以及 hyperscaler 资本开支下修时订单递延/重谈的风险。若 NVDA 融资收缩传导至 hyperscaler capex，$200 亿订单的“booked out”并不等于收入锁定，这是 COHR 论点最可能的失败路径之一。</div><div class="finding-action">→ 补充该订单的合同性质（不可取消/可递延）、客户集中度、以及 hyperscaler capex 下修 10%-20% 对 FY27 收入的情景测算；将“订单可取消性”列为 COHR 观察项。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$COHR, $AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>部分失败信号未量化到可监控</strong></div><div class="finding-detail">失败检测信号写“板块次日再现 &gt;-3% 收盘”，但“板块”未定义为具体 ETF/指数/等权篮子，用户无法日常监控；明日清单第 3 条要求 AXTI“连续 2 日放量企稳”，但“放量”没有成交量阈值（如相对 20 日均量倍数）。相比之下，COHR 的“跌破 $180 且 FY27 EPS 下修 &gt;5%”是可量化的正面例子。</div><div class="finding-action">→ 将“板块”指定为 SMH/SOXX 或自定义光模块等权篮子；将“放量”定义为具体阈值（例如成交量 ≥ 20 日均量 1.5×，且连续 2 日收盘不低于前一日低点）。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$LITE, $COHR, $AAOI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>LITE 并购破裂传染未评估</strong></div><div class="finding-detail">Layer 1 第 3 条正确指出 LITE 相对当前换股价折价约 17%，Layer 2 据此将 LITE“剔除”。但报告只把 LITE 当作个股方法论错配，没有评估：若 MRVL-LITE 价差继续扩大、交易破裂风险上升，LITE 作为光模块板块权重股会如何传染 COHR/AAOI；也未给出价差收敛/扩大的监控阈值。LITE 的 17% 折价不只是套利问题，也可能是板块风险偏好的领先信号。</div><div class="finding-action">→ 增加 LITE/MRVL 换股价差的日常监控阈值（如折价扩大至 25% 视为交易破裂风险升温），并做“LITE 再跌 15%”情景下对 COHR/AAOI 的联动压力测试。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Sell Put 建议缺少 IV 量化</strong></div><div class="finding-detail">“如果非要给一个结构性表达”段称 COHR 的 Sell Put 30Δ（约 $185 行权价，30–45 DTE）“IV 处于恐慌高位可收割权利金”，但报告没有给出 COHR 当前 IV、IV Rank/Percentile、30Δ 具体 delta 或权利金金额。没有这些数据，无法判断 $185 行权价是否真的对应 30Δ，也无法验证“IV 高位”是否足以补偿财报事件风险。</div><div class="finding-action">→ 补充 COHR 期权链数据：IV、IV Rank、30Δ put 行权价与权利金、财报后 IV crush 历史幅度；在数据补齐前维持“今日不做”的结论。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$NVDA, $COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>NVDA 财报缺少量化门槛</strong></div><div class="finding-detail">明日执行清单第 1 条只要求“关注 Kress 对 deal-making / 初创融资的口径变化”，但没有给出 NVDA 财报的市场 consensus（营收、EPS、数据中心收入、下一季指引）及“超预期/低于预期”的量化门槛。报告把 NVDA 财报称为“本周唯一真判决”，却缺少判决标准，用户无法在盘后快速判断这是否足以触发 COHR 的三条件入场。</div><div class="finding-action">→ 补充 NVDA 财报 consensus 与关键门槛（例如数据中心收入是否高于/低于一致预期 X%、下一季指引是否低于 Y%），并映射到 COHR 的入场/继续观望决策。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>DRAM 诉讼仅一句，剔除理由不完整</strong></div><div class="finding-detail">Layer 1 第 4 条仅写“Samsung -4.47%（Nvidia 动荡 + DRAM 诉讼）”，Layer 2 据此将 MU 标记为“叠加独立利空，不接”。但报告没有说明诉讼方、被告、索赔金额、时间表或对 MU 的具体财务影响。MU 被剔除的理由中“DRAM 诉讼”占很大权重，却缺少可验证细节，属于用未展开的利空直接排除标的。</div><div class="finding-action">→ 补充 DRAM 诉讼的当事方、金额、审理时间表及对 MU 的潜在拨备/赔偿测算；若无法核实，应将 MU 的剔除理由降级为“存储链价格弱势”而非“诉讼独立利空”。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$COHR</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>COHR 评分计算与表格不一致</strong></div><div class="finding-detail">Layer 3 表格给 COHR 总分 7.35，但同段计算示例逐项相加为 9×0.30 + 8×0.20 + 8×0.15 + 6×0.10 + 3×0.10 + 8×0.10 + 6×0.05 = 7.50，报告仅写“取整评分 7.35 为保守口径”，未说明 0.15 的扣减依据。虽然 7.35 与 7.50 都高于 7.0 门槛、不改变“唯一过线”结论，但评分口径不透明会削弱观察名单的可复核性。</div><div class="finding-action">→ 明确 7.35 的逐项权重或额外扣分项；若采用保守折扣，应写明折扣规则，避免同一评分体系出现两套结果。</div></div></div>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>出口管制对东南亚封测环节影响被忽略</strong></div><div class="finding-detail">Layer 1 第 2 条把美商务部新规（印尼/马来/新加坡/泰国/巴西先进半导体出口需许可证）仅定性为『封堵经海外数据中心/远程访问规避管制的路径』和板块抛售理由，Layer 2 供应链节点表也完全没有把东南亚封测（OSAT）环节列入。但马来/新加坡/泰国正是全球封测重镇，HBM 颗粒的堆叠后段封装高度依赖该地区产能。若新规实际卡住这些封测产能，MU 的 HBM 出货是基本面受损，而非 Layer 2 所称的『逻辑未破，价格破坏』——这会直接推翻 MU 维持『观察』的核心理由（技术面否决）。</div><div class="finding-action">→ 核对新规适用范围是否覆盖 OSAT / 先进封装设备出口；若覆盖，MU 的观察逻辑应从『技术面否决』升级为『基本面待验证』，且失败信号需重写。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>核心催化剂无法独立核验且同源自认编造</strong></div><div class="finding-detail">Layer 0 反驳 1 声称通过 fetch_url 取得 Reuters 原文并逐句引用（『...fallout from Jensen Huang&#x27;s resignation as Nvidia CEO...』『Nvidia slid 4.1%...』），但该 URL 标题栏据报告自述显示为『Wall Street ends sharply lower on AI jitters...』，与正文所引『辞任』核心句存在标题/正文不对应的问题，且本审计环境无法独立核验。更关键的是，Layer 0 更正 1/2 中报告自己承认同源生成器上一版编造了 Colette Kress 头衔与 NVDA 单季 $109.1B 营收。整份报告『今日不建仓』的宏观框架（Layer 1 关键词『领导层真空』、催化剂 #1）全部依赖这条单一未验证新闻。</div><div class="finding-action">→ 用户在 Reuters / Bloomberg / NVDA IR 手动核对该辞任新闻；核实前不要把『领导层真空』当作任何板块判断依据。因本报告为观察不加仓，实际下行风险有限。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>反规则阈值与实际数据不符</strong></div><div class="finding-detail">Layer 5 引用反规则 2026-07-28 原文触发条件为『同板块 ≥2 只标的同时触发止损且单日跌幅超过 8%』，但报告实际列出的本报告标跌幅为 MU -5.86%、LITE -6.35%、AMD -5.63%、SOX -5.28%，无一满足单日 &gt;8%；被引用的 SKHY 也仅『跌超 7%』，且非本报告观察标的。报告却断言『完全落入该条触发条件』，属对规则阈值的宽松套用。结论方向（不建仓）虽保守，但逻辑链存在洞。</div><div class="finding-action">→ 要么找到真正匹配 ≥8% 跌幅的标的或更贴切的条款来支撑『冷却期』，要么如实表述为『主动降低风险敞口』而非『规则强制禁止』。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>HBM 现货价格失败信号不可日常观测</strong></div><div class="finding-detail">MU 的 failure_signal 定义为『HBM 现货价格连续两周环比跌超 5%』，但 HBM 为合约价市场，无公开每日/每周现货报价，第三方（TrendForce 等）仅发布半月/季度合约价。用户无法按『连续两周』的频率日常监控该阈值，且数据源未指明。相较之下 LEU 的『订单簿连续两季无新增长期合约』周期过长（约 6 个月），也偏迟钝。</div><div class="finding-action">→ 改用可观测代理信号：TrendForce 月度 HBM 合约价、SK 海力士/MU 财报 HBM 指引、或供应商月度营收同比。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$MU</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>MU 评分标题 7.05 与明细 7.45 不一致</strong></div><div class="finding-detail">Layer 3 的 MU 表格标题写『HBM3E — 总分 7.05，但技术面否决』，但同段加权计算过程为『2.70 + 1.80 + 0.90 + 0.80 + 0.10 + 0.90 + 0.25 = 7.45』，逐项复算确为 7.45，7.05 未在任何明细中出现。报告 Layer 3 上段刚提出『发布前对关键数字做内部一致性检查』的候选反规则，自身即出现一处一致的分数不一致。不影响结论（技术面 1 分否决）。</div><div class="finding-action">→ 修正标题分数为 7.45，或说明 7.05 的计算口径。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Layer 4 社交信号缺失，已如实记录</strong></div><div class="finding-detail">Layer 4 记录 search_serenity 两次返回 ddg_fallback → no results parsed，Nitter 与 DuckDuckGo 站点检索本轮失效，并如实标注未编造。此为工具层数据限制，报告据此把『漏斗不完整』列为不建仓的第二独立理由，属合理保守。</div><div class="finding-action">→ 无需操作；数据源恢复后可补做 Layer 4 交叉验证，看社交信号是否与『流动性冲击』或『基本面重定价』任一框架一致。</div></div></div>
     </section>
     
   
@@ -239,175 +239,132 @@ footer.app-foot a { color: var(--text-dim); }
   &quot;findings&quot;: [
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;出口管制对东南亚封测环节影响被忽略&quot;,
+      &quot;detail&quot;: &quot;Layer 1 第 2 条把美商务部新规（印尼/马来/新加坡/泰国/巴西先进半导体出口需许可证）仅定性为『封堵经海外数据中心/远程访问规避管制的路径』和板块抛售理由，Layer 2 供应链节点表也完全没有把东南亚封测（OSAT）环节列入。但马来/新加坡/泰国正是全球封测重镇，HBM 颗粒的堆叠后段封装高度依赖该地区产能。若新规实际卡住这些封测产能，MU 的 HBM 出货是基本面受损，而非 Layer 2 所称的『逻辑未破，价格破坏』——这会直接推翻 MU 维持『观察』的核心理由（技术面否决）。&quot;,
+      &quot;actionable&quot;: &quot;核对新规适用范围是否覆盖 OSAT / 先进封装设备出口；若覆盖，MU 的观察逻辑应从『技术面否决』升级为『基本面待验证』，且失败信号需重写。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
       &quot;affected_tickers&quot;: [&quot;*&quot;],
-      &quot;title&quot;: &quot;全篇无来源链接，重大声明不可验证&quot;,
-      &quot;detail&quot;: &quot;报告 Layer 1 称“Jensen Huang 离任”“Morgan Stanley 周日将 NVDA 目标价自 $300 下调至 $267”“WSJ 报道 Kress 收缩 deal-making”，Layer 1 第 3 条称 MRVL 以 4.5 股换 1 股收购 LITE、隐含 EV $1,150 亿，Layer 4 称 COHR CEO 与董事长合计买入 $120 万、COHR 约 17× forward P/E、FY27 EPS 一致预期 $10.41——以上均未附任何 URL、公告编号或 Form 4 日期。尤其“Jensen Huang 离任”属于会改变整条 AI 硬件链定价的极端声明，无官方来源时无法判断真伪；若该前提不成立，报告“板块级系统性冲击”的宏观叙事会被大幅削弱。&quot;,
-      &quot;actionable&quot;: &quot;要求补充每条核心声明的可点击来源：NVDA 官方公告/交易所文件、Morgan Stanley 研报标题与日期、WSJ 文章链接、MRVL 收购新闻稿、COHR 内部人 Form 4。无法补来源的条目应从“事实”降级为“待核实传闻”。&quot;
+      &quot;title&quot;: &quot;核心催化剂无法独立核验且同源自认编造&quot;,
+      &quot;detail&quot;: &quot;Layer 0 反驳 1 声称通过 fetch_url 取得 Reuters 原文并逐句引用（『...fallout from Jensen Huang&#x27;s resignation as Nvidia CEO...』『Nvidia slid 4.1%...』），但该 URL 标题栏据报告自述显示为『Wall Street ends sharply lower on AI jitters...』，与正文所引『辞任』核心句存在标题/正文不对应的问题，且本审计环境无法独立核验。更关键的是，Layer 0 更正 1/2 中报告自己承认同源生成器上一版编造了 Colette Kress 头衔与 NVDA 单季 $109.1B 营收。整份报告『今日不建仓』的宏观框架（Layer 1 关键词『领导层真空』、催化剂 #1）全部依赖这条单一未验证新闻。&quot;,
+      &quot;actionable&quot;: &quot;用户在 Reuters / Bloomberg / NVDA IR 手动核对该辞任新闻；核实前不要把『领导层真空』当作任何板块判断依据。因本报告为观察不加仓，实际下行风险有限。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;反规则阈值与实际数据不符&quot;,
+      &quot;detail&quot;: &quot;Layer 5 引用反规则 2026-07-28 原文触发条件为『同板块 ≥2 只标的同时触发止损且单日跌幅超过 8%』，但报告实际列出的本报告标跌幅为 MU -5.86%、LITE -6.35%、AMD -5.63%、SOX -5.28%，无一满足单日 &gt;8%；被引用的 SKHY 也仅『跌超 7%』，且非本报告观察标的。报告却断言『完全落入该条触发条件』，属对规则阈值的宽松套用。结论方向（不建仓）虽保守，但逻辑链存在洞。&quot;,
+      &quot;actionable&quot;: &quot;要么找到真正匹配 ≥8% 跌幅的标的或更贴切的条款来支撑『冷却期』，要么如实表述为『主动降低风险敞口』而非『规则强制禁止』。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$MU&quot;],
+      &quot;title&quot;: &quot;HBM 现货价格失败信号不可日常观测&quot;,
+      &quot;detail&quot;: &quot;MU 的 failure_signal 定义为『HBM 现货价格连续两周环比跌超 5%』，但 HBM 为合约价市场，无公开每日/每周现货报价，第三方（TrendForce 等）仅发布半月/季度合约价。用户无法按『连续两周』的频率日常监控该阈值，且数据源未指明。相较之下 LEU 的『订单簿连续两季无新增长期合约』周期过长（约 6 个月），也偏迟钝。&quot;,
+      &quot;actionable&quot;: &quot;改用可观测代理信号：TrendForce 月度 HBM 合约价、SK 海力士/MU 财报 HBM 指引、或供应商月度营收同比。&quot;
     },
     {
       &quot;severity&quot;: &quot;INFO&quot;,
       &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;COHR 评分计算与表格不一致&quot;,
-      &quot;detail&quot;: &quot;Layer 3 表格给 COHR 总分 7.35，但同段计算示例逐项相加为 9×0.30 + 8×0.20 + 8×0.15 + 6×0.10 + 3×0.10 + 8×0.10 + 6×0.05 = 7.50，报告仅写“取整评分 7.35 为保守口径”，未说明 0.15 的扣减依据。虽然 7.35 与 7.50 都高于 7.0 门槛、不改变“唯一过线”结论，但评分口径不透明会削弱观察名单的可复核性。&quot;,
-      &quot;actionable&quot;: &quot;明确 7.35 的逐项权重或额外扣分项；若采用保守折扣，应写明折扣规则，避免同一评分体系出现两套结果。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;COHR 核心订单利多缺少反方&quot;,
-      &quot;detail&quot;: &quot;Layer 2 用“COHR 已签 $200 亿 hyperscaler 单、FY27 basically booked out”作为相对抗跌的核心依据，但报告没有讨论该订单的可取消条款、客户集中度、以及 hyperscaler 资本开支下修时订单递延/重谈的风险。若 NVDA 融资收缩传导至 hyperscaler capex，$200 亿订单的“booked out”并不等于收入锁定，这是 COHR 论点最可能的失败路径之一。&quot;,
-      &quot;actionable&quot;: &quot;补充该订单的合同性质（不可取消/可递延）、客户集中度、以及 hyperscaler capex 下修 10%-20% 对 FY27 收入的情景测算；将“订单可取消性”列为 COHR 观察项。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;, &quot;$AXTI&quot;],
-      &quot;title&quot;: &quot;部分失败信号未量化到可监控&quot;,
-      &quot;detail&quot;: &quot;失败检测信号写“板块次日再现 &gt;-3% 收盘”，但“板块”未定义为具体 ETF/指数/等权篮子，用户无法日常监控；明日清单第 3 条要求 AXTI“连续 2 日放量企稳”，但“放量”没有成交量阈值（如相对 20 日均量倍数）。相比之下，COHR 的“跌破 $180 且 FY27 EPS 下修 &gt;5%”是可量化的正面例子。&quot;,
-      &quot;actionable&quot;: &quot;将“板块”指定为 SMH/SOXX 或自定义光模块等权篮子；将“放量”定义为具体阈值（例如成交量 ≥ 20 日均量 1.5×，且连续 2 日收盘不低于前一日低点）。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$COHR&quot;, &quot;$AAOI&quot;],
-      &quot;title&quot;: &quot;LITE 并购破裂传染未评估&quot;,
-      &quot;detail&quot;: &quot;Layer 1 第 3 条正确指出 LITE 相对当前换股价折价约 17%，Layer 2 据此将 LITE“剔除”。但报告只把 LITE 当作个股方法论错配，没有评估：若 MRVL-LITE 价差继续扩大、交易破裂风险上升，LITE 作为光模块板块权重股会如何传染 COHR/AAOI；也未给出价差收敛/扩大的监控阈值。LITE 的 17% 折价不只是套利问题，也可能是板块风险偏好的领先信号。&quot;,
-      &quot;actionable&quot;: &quot;增加 LITE/MRVL 换股价差的日常监控阈值（如折价扩大至 25% 视为交易破裂风险升温），并做“LITE 再跌 15%”情景下对 COHR/AAOI 的联动压力测试。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;Sell Put 建议缺少 IV 量化&quot;,
-      &quot;detail&quot;: &quot;“如果非要给一个结构性表达”段称 COHR 的 Sell Put 30Δ（约 $185 行权价，30–45 DTE）“IV 处于恐慌高位可收割权利金”，但报告没有给出 COHR 当前 IV、IV Rank/Percentile、30Δ 具体 delta 或权利金金额。没有这些数据，无法判断 $185 行权价是否真的对应 30Δ，也无法验证“IV 高位”是否足以补偿财报事件风险。&quot;,
-      &quot;actionable&quot;: &quot;补充 COHR 期权链数据：IV、IV Rank、30Δ put 行权价与权利金、财报后 IV crush 历史幅度；在数据补齐前维持“今日不做”的结论。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [&quot;$NVDA&quot;, &quot;$COHR&quot;],
-      &quot;title&quot;: &quot;NVDA 财报缺少量化门槛&quot;,
-      &quot;detail&quot;: &quot;明日执行清单第 1 条只要求“关注 Kress 对 deal-making / 初创融资的口径变化”，但没有给出 NVDA 财报的市场 consensus（营收、EPS、数据中心收入、下一季指引）及“超预期/低于预期”的量化门槛。报告把 NVDA 财报称为“本周唯一真判决”，却缺少判决标准，用户无法在盘后快速判断这是否足以触发 COHR 的三条件入场。&quot;,
-      &quot;actionable&quot;: &quot;补充 NVDA 财报 consensus 与关键门槛（例如数据中心收入是否高于/低于一致预期 X%、下一季指引是否低于 Y%），并映射到 COHR 的入场/继续观望决策。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
       &quot;affected_tickers&quot;: [&quot;$MU&quot;],
-      &quot;title&quot;: &quot;DRAM 诉讼仅一句，剔除理由不完整&quot;,
-      &quot;detail&quot;: &quot;Layer 1 第 4 条仅写“Samsung -4.47%（Nvidia 动荡 + DRAM 诉讼）”，Layer 2 据此将 MU 标记为“叠加独立利空，不接”。但报告没有说明诉讼方、被告、索赔金额、时间表或对 MU 的具体财务影响。MU 被剔除的理由中“DRAM 诉讼”占很大权重，却缺少可验证细节，属于用未展开的利空直接排除标的。&quot;,
-      &quot;actionable&quot;: &quot;补充 DRAM 诉讼的当事方、金额、审理时间表及对 MU 的潜在拨备/赔偿测算；若无法核实，应将 MU 的剔除理由降级为“存储链价格弱势”而非“诉讼独立利空”。&quot;
+      &quot;title&quot;: &quot;MU 评分标题 7.05 与明细 7.45 不一致&quot;,
+      &quot;detail&quot;: &quot;Layer 3 的 MU 表格标题写『HBM3E — 总分 7.05，但技术面否决』，但同段加权计算过程为『2.70 + 1.80 + 0.90 + 0.80 + 0.10 + 0.90 + 0.25 = 7.45』，逐项复算确为 7.45，7.05 未在任何明细中出现。报告 Layer 3 上段刚提出『发布前对关键数字做内部一致性检查』的候选反规则，自身即出现一处一致的分数不一致。不影响结论（技术面 1 分否决）。&quot;,
+      &quot;actionable&quot;: &quot;修正标题分数为 7.45，或说明 7.05 的计算口径。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;Layer 4 社交信号缺失，已如实记录&quot;,
+      &quot;detail&quot;: &quot;Layer 4 记录 search_serenity 两次返回 ddg_fallback → no results parsed，Nitter 与 DuckDuckGo 站点检索本轮失效，并如实标注未编造。此为工具层数据限制，报告据此把『漏斗不完整』列为不建仓的第二独立理由，属合理保守。&quot;,
+      &quot;actionable&quot;: &quot;无需操作；数据源恢复后可补做 Layer 4 交叉验证，看社交信号是否与『流动性冲击』或『基本面重定价』任一框架一致。&quot;
     }
   ],
   &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
 }
-```</p><p></p><p>这份报告的核心结论是<strong>零仓位观察</strong>，硬规则层面没有冲突；作为“不交易”报告，它本身不会触发下单风险。软性审计的重点因此落在：<strong>观察名单是否可信、失败信号是否可执行、以及宏观叙事是否有来源支撑</strong>。</p><p>最大软肋是<strong>来源链</strong>。报告把“Jensen Huang 离任”“Morgan Stanley 下调 NVDA 目标价至 $267”“MRVL 4.5 换 1 收购 LITE”“COHR 内部人买入 $120 万”都当作事实使用，但全篇没有一个 URL 或公告编号。尤其“Jensen Huang 离任”是足以改变整条 AI 硬件链定价的极端声明，若无法用官方公告核实，报告 Layer 1 的“板块级系统性冲击”叙事就需要降级为“待核实传闻”。这不是 DATA_LIMITATION 导致的 BLOCKER，但足以让用户对观察名单保持警惕。</p><p>COHR 是唯一过线标的，问题也最集中：评分表 7.35 与计算示例 7.50 不一致；“$200 亿 hyperscaler 单、FY27 basically booked out”只被当作利多，没有讨论订单可取消性、客户集中度和 hyperscaler capex 下修情景；17× forward P/E 与 5 年均值 24× 的比较也没有做周期调整。这些不改变“财报前不入场”的结论，但会让“财报后重新评估”的触发条件显得不够扎实。</p><p>失败信号部分有可量化亮点（COHR 的“跌破 $180 且 FY27 EPS 下修 &gt;5%”），但“板块次日 &gt;-3% 收盘”中的“板块”未定义，AXTI 的“连续 2 日放量企稳”没有成交量阈值，用户日常监控时会出现解释空间。Sell Put 段落同样缺 IV/IV Rank/30Δ 数据，当前只能作为思路而非可执行方案。</p><p>结论：<strong>可以按报告执行零仓位观察，但不要在没有补来源的情况下把 Layer 1 的宏观叙事当作既定事实。</strong> 建议用户要求补充 NVDA 官方公告、MRVL 收购新闻稿、COHR Form 4 与期权链数据后，再信任观察名单的触发条件。</p><p>```json
+```</p><p></p><p><strong>先说结论</strong>：这份报告 <strong>picks 为空、全部观察</strong>，所以我这里没有任何 BLOCKER——没有可下单的动作需要被阻止。它现在的形态是&quot;今日不做任何操作&quot;，这在本审计视角下是<strong>方向上稳健的</strong>。下列都是&quot;论点质量&quot;层面的软性问题。</p><p><strong>我认为最值得警惕的一条</strong>：报告在 Layer 0 用极大篇幅&quot;反驳&quot;审计器，声称持有 Reuters 原文直链。但请注意——<strong>同一份报告在紧邻的两段里承认自己上一版编造了 CFO 头衔和无源营收 $109.1B</strong>。一个刚被抓到两次编造的生成器，用&quot;我有 fetch_url 直链&quot;来要求你相信一条<strong>爆炸性的 CEO 辞职新闻</strong>，这个请求的证据权重应该是打折的。我无法在此环境独立核实该 URL，因此把它列为 WARNING 而非接受、也不作为 BLOCKER——因为结论是空仓，即便这条新闻是幻觉，也只是&quot;少赚&quot;，不会&quot;多亏&quot;。</p><p><strong>被忽略的最实质盲点</strong>：出口管制新规只被当成&quot;板块抛售理由&quot;，完全没和 MU 自身的供应链（东南亚封测/OSAT）挂钩。这恰恰是可能把 MU 从&quot;技术面否决&quot;重新定义为&quot;基本面受损&quot;的路径，报告漏了。若你后续重访 MU，必须先补这一块。</p><p><strong>逻辑自洽 vs 规则自洽</strong>：反规则阈值（≥8% 跌幅、≥2 只标的止损）实际没被满足，报告却写&quot;完全落入&quot;。它把&quot;主动降险&quot;包装成了&quot;规则强制禁止&quot;。方向对，但叙事又一次走在数据前面——和它自己在 Layer 0 复盘里批判的&quot;叙事先行、数据后补&quot;是同一个毛病，只是这次方向更保守。</p><p><strong>给用户的动作</strong>：今日按报告执行 = 不开仓，可接受。但请你在下场前手动做两件事：① 去 Reuters/Bloomberg 亲自确认 Huang 辞任是否真实；② 确认新规是否覆盖东南亚封测。这两条任何一条反转，都会改变 MU 的观察逻辑，而不只是&quot;等缩量企稳&quot;这么简单。</p><p>```json
 {
   &quot;findings&quot;: [
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;*&quot;
-      ],
-      &quot;title&quot;: &quot;全篇无来源链接，重大声明不可验证&quot;,
-      &quot;detail&quot;: &quot;报告 Layer 1 称“Jensen Huang 离任”“Morgan Stanley 周日将 NVDA 目标价自 $300 下调至 $267”“WSJ 报道 Kress 收缩 deal-making”，Layer 1 第 3 条称 MRVL 以 4.5 股换 1 股收购 LITE、隐含 EV $1,150 亿，Layer 4 称 COHR CEO 与董事长合计买入 $120 万、COHR 约 17× forward P/E、FY27 EPS 一致预期 $10.41——以上均未附任何 URL、公告编号或 Form 4 日期。尤其“Jensen Huang 离任”属于会改变整条 AI 硬件链定价的极端声明，无官方来源时无法判断真伪；若该前提不成立，报告“板块级系统性冲击”的宏观叙事会被大幅削弱。&quot;,
-      &quot;actionable&quot;: &quot;要求补充每条核心声明的可点击来源：NVDA 官方公告/交易所文件、Morgan Stanley 研报标题与日期、WSJ 文章链接、MRVL 收购新闻稿、COHR 内部人 Form 4。无法补来源的条目应从“事实”降级为“待核实传闻”。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;INFO&quot;,
-      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;COHR 评分计算与表格不一致&quot;,
-      &quot;detail&quot;: &quot;Layer 3 表格给 COHR 总分 7.35，但同段计算示例逐项相加为 9×0.30 + 8×0.20 + 8×0.15 + 6×0.10 + 3×0.10 + 8×0.10 + 6×0.05 = 7.50，报告仅写“取整评分 7.35 为保守口径”，未说明 0.15 的扣减依据。虽然 7.35 与 7.50 都高于 7.0 门槛、不改变“唯一过线”结论，但评分口径不透明会削弱观察名单的可复核性。&quot;,
-      &quot;actionable&quot;: &quot;明确 7.35 的逐项权重或额外扣分项；若采用保守折扣，应写明折扣规则，避免同一评分体系出现两套结果。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;COHR 核心订单利多缺少反方&quot;,
-      &quot;detail&quot;: &quot;Layer 2 用“COHR 已签 $200 亿 hyperscaler 单、FY27 basically booked out”作为相对抗跌的核心依据，但报告没有讨论该订单的可取消条款、客户集中度、以及 hyperscaler 资本开支下修时订单递延/重谈的风险。若 NVDA 融资收缩传导至 hyperscaler capex，$200 亿订单的“booked out”并不等于收入锁定，这是 COHR 论点最可能的失败路径之一。&quot;,
-      &quot;actionable&quot;: &quot;补充该订单的合同性质（不可取消/可递延）、客户集中度、以及 hyperscaler capex 下修 10%-20% 对 FY27 收入的情景测算；将“订单可取消性”列为 COHR 观察项。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$COHR&quot;,
-        &quot;$AXTI&quot;
-      ],
-      &quot;title&quot;: &quot;部分失败信号未量化到可监控&quot;,
-      &quot;detail&quot;: &quot;失败检测信号写“板块次日再现 &gt;-3% 收盘”，但“板块”未定义为具体 ETF/指数/等权篮子，用户无法日常监控；明日清单第 3 条要求 AXTI“连续 2 日放量企稳”，但“放量”没有成交量阈值（如相对 20 日均量倍数）。相比之下，COHR 的“跌破 $180 且 FY27 EPS 下修 &gt;5%”是可量化的正面例子。&quot;,
-      &quot;actionable&quot;: &quot;将“板块”指定为 SMH/SOXX 或自定义光模块等权篮子；将“放量”定义为具体阈值（例如成交量 ≥ 20 日均量 1.5×，且连续 2 日收盘不低于前一日低点）。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$LITE&quot;,
-        &quot;$COHR&quot;,
-        &quot;$AAOI&quot;
-      ],
-      &quot;title&quot;: &quot;LITE 并购破裂传染未评估&quot;,
-      &quot;detail&quot;: &quot;Layer 1 第 3 条正确指出 LITE 相对当前换股价折价约 17%，Layer 2 据此将 LITE“剔除”。但报告只把 LITE 当作个股方法论错配，没有评估：若 MRVL-LITE 价差继续扩大、交易破裂风险上升，LITE 作为光模块板块权重股会如何传染 COHR/AAOI；也未给出价差收敛/扩大的监控阈值。LITE 的 17% 折价不只是套利问题，也可能是板块风险偏好的领先信号。&quot;,
-      &quot;actionable&quot;: &quot;增加 LITE/MRVL 换股价差的日常监控阈值（如折价扩大至 25% 视为交易破裂风险升温），并做“LITE 再跌 15%”情景下对 COHR/AAOI 的联动压力测试。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;Sell Put 建议缺少 IV 量化&quot;,
-      &quot;detail&quot;: &quot;“如果非要给一个结构性表达”段称 COHR 的 Sell Put 30Δ（约 $185 行权价，30–45 DTE）“IV 处于恐慌高位可收割权利金”，但报告没有给出 COHR 当前 IV、IV Rank/Percentile、30Δ 具体 delta 或权利金金额。没有这些数据，无法判断 $185 行权价是否真的对应 30Δ，也无法验证“IV 高位”是否足以补偿财报事件风险。&quot;,
-      &quot;actionable&quot;: &quot;补充 COHR 期权链数据：IV、IV Rank、30Δ put 行权价与权利金、财报后 IV crush 历史幅度；在数据补齐前维持“今日不做”的结论。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
-      &quot;affected_tickers&quot;: [
-        &quot;$NVDA&quot;,
-        &quot;$COHR&quot;
-      ],
-      &quot;title&quot;: &quot;NVDA 财报缺少量化门槛&quot;,
-      &quot;detail&quot;: &quot;明日执行清单第 1 条只要求“关注 Kress 对 deal-making / 初创融资的口径变化”，但没有给出 NVDA 财报的市场 consensus（营收、EPS、数据中心收入、下一季指引）及“超预期/低于预期”的量化门槛。报告把 NVDA 财报称为“本周唯一真判决”，却缺少判决标准，用户无法在盘后快速判断这是否足以触发 COHR 的三条件入场。&quot;,
-      &quot;actionable&quot;: &quot;补充 NVDA 财报 consensus 与关键门槛（例如数据中心收入是否高于/低于一致预期 X%、下一季指引是否低于 Y%），并映射到 COHR 的入场/继续观望决策。&quot;,
-      &quot;source&quot;: &quot;llm_critic&quot;
-    },
     {
       &quot;severity&quot;: &quot;WARNING&quot;,
       &quot;category&quot;: &quot;BLIND_SPOT&quot;,
       &quot;affected_tickers&quot;: [
         &quot;$MU&quot;
       ],
-      &quot;title&quot;: &quot;DRAM 诉讼仅一句，剔除理由不完整&quot;,
-      &quot;detail&quot;: &quot;Layer 1 第 4 条仅写“Samsung -4.47%（Nvidia 动荡 + DRAM 诉讼）”，Layer 2 据此将 MU 标记为“叠加独立利空，不接”。但报告没有说明诉讼方、被告、索赔金额、时间表或对 MU 的具体财务影响。MU 被剔除的理由中“DRAM 诉讼”占很大权重，却缺少可验证细节，属于用未展开的利空直接排除标的。&quot;,
-      &quot;actionable&quot;: &quot;补充 DRAM 诉讼的当事方、金额、审理时间表及对 MU 的潜在拨备/赔偿测算；若无法核实，应将 MU 的剔除理由降级为“存储链价格弱势”而非“诉讼独立利空”。&quot;,
+      &quot;title&quot;: &quot;出口管制对东南亚封测环节影响被忽略&quot;,
+      &quot;detail&quot;: &quot;Layer 1 第 2 条把美商务部新规（印尼/马来/新加坡/泰国/巴西先进半导体出口需许可证）仅定性为『封堵经海外数据中心/远程访问规避管制的路径』和板块抛售理由，Layer 2 供应链节点表也完全没有把东南亚封测（OSAT）环节列入。但马来/新加坡/泰国正是全球封测重镇，HBM 颗粒的堆叠后段封装高度依赖该地区产能。若新规实际卡住这些封测产能，MU 的 HBM 出货是基本面受损，而非 Layer 2 所称的『逻辑未破，价格破坏』——这会直接推翻 MU 维持『观察』的核心理由（技术面否决）。&quot;,
+      &quot;actionable&quot;: &quot;核对新规适用范围是否覆盖 OSAT / 先进封装设备出口；若覆盖，MU 的观察逻辑应从『技术面否决』升级为『基本面待验证』，且失败信号需重写。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;核心催化剂无法独立核验且同源自认编造&quot;,
+      &quot;detail&quot;: &quot;Layer 0 反驳 1 声称通过 fetch_url 取得 Reuters 原文并逐句引用（『...fallout from Jensen Huang&#x27;s resignation as Nvidia CEO...』『Nvidia slid 4.1%...』），但该 URL 标题栏据报告自述显示为『Wall Street ends sharply lower on AI jitters...』，与正文所引『辞任』核心句存在标题/正文不对应的问题，且本审计环境无法独立核验。更关键的是，Layer 0 更正 1/2 中报告自己承认同源生成器上一版编造了 Colette Kress 头衔与 NVDA 单季 $109.1B 营收。整份报告『今日不建仓』的宏观框架（Layer 1 关键词『领导层真空』、催化剂 #1）全部依赖这条单一未验证新闻。&quot;,
+      &quot;actionable&quot;: &quot;用户在 Reuters / Bloomberg / NVDA IR 手动核对该辞任新闻；核实前不要把『领导层真空』当作任何板块判断依据。因本报告为观察不加仓，实际下行风险有限。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;反规则阈值与实际数据不符&quot;,
+      &quot;detail&quot;: &quot;Layer 5 引用反规则 2026-07-28 原文触发条件为『同板块 ≥2 只标的同时触发止损且单日跌幅超过 8%』，但报告实际列出的本报告标跌幅为 MU -5.86%、LITE -6.35%、AMD -5.63%、SOX -5.28%，无一满足单日 &gt;8%；被引用的 SKHY 也仅『跌超 7%』，且非本报告观察标的。报告却断言『完全落入该条触发条件』，属对规则阈值的宽松套用。结论方向（不建仓）虽保守，但逻辑链存在洞。&quot;,
+      &quot;actionable&quot;: &quot;要么找到真正匹配 ≥8% 跌幅的标的或更贴切的条款来支撑『冷却期』，要么如实表述为『主动降低风险敞口』而非『规则强制禁止』。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;HBM 现货价格失败信号不可日常观测&quot;,
+      &quot;detail&quot;: &quot;MU 的 failure_signal 定义为『HBM 现货价格连续两周环比跌超 5%』，但 HBM 为合约价市场，无公开每日/每周现货报价，第三方（TrendForce 等）仅发布半月/季度合约价。用户无法按『连续两周』的频率日常监控该阈值，且数据源未指明。相较之下 LEU 的『订单簿连续两季无新增长期合约』周期过长（约 6 个月），也偏迟钝。&quot;,
+      &quot;actionable&quot;: &quot;改用可观测代理信号：TrendForce 月度 HBM 合约价、SK 海力士/MU 财报 HBM 指引、或供应商月度营收同比。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$MU&quot;
+      ],
+      &quot;title&quot;: &quot;MU 评分标题 7.05 与明细 7.45 不一致&quot;,
+      &quot;detail&quot;: &quot;Layer 3 的 MU 表格标题写『HBM3E — 总分 7.05，但技术面否决』，但同段加权计算过程为『2.70 + 1.80 + 0.90 + 0.80 + 0.10 + 0.90 + 0.25 = 7.45』，逐项复算确为 7.45，7.05 未在任何明细中出现。报告 Layer 3 上段刚提出『发布前对关键数字做内部一致性检查』的候选反规则，自身即出现一处一致的分数不一致。不影响结论（技术面 1 分否决）。&quot;,
+      &quot;actionable&quot;: &quot;修正标题分数为 7.45，或说明 7.05 的计算口径。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;Layer 4 社交信号缺失，已如实记录&quot;,
+      &quot;detail&quot;: &quot;Layer 4 记录 search_serenity 两次返回 ddg_fallback → no results parsed，Nitter 与 DuckDuckGo 站点检索本轮失效，并如实标注未编造。此为工具层数据限制，报告据此把『漏斗不完整』列为不建仓的第二独立理由，属合理保守。&quot;,
+      &quot;actionable&quot;: &quot;无需操作；数据源恢复后可补做 Layer 4 交叉验证，看社交信号是否与『流动性冲击』或『基本面重定价』任一框架一致。&quot;,
       &quot;source&quot;: &quot;llm_critic&quot;
     }
   ]
 }
-```
-</p></div>
+```</p></div>
       </details>
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-11-16 21:09 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-11-16 22:30 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
