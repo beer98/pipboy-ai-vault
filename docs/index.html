@@ -206,12 +206,12 @@ footer.app-foot a { color: var(--text-dim); }
     <div class="date">2026-11-18</div>
   </header>
   
-    <section class="banner banner-watch">
+    <section class="banner banner-buy">
       <div class="banner-head">今日核心判断</div>
-      <div class="banner-headline">今天观察 2 只，等回踩</div>
+      <div class="banner-headline">今天可以下手 4 只</div>
       <div class="banner-counts">
-        <span class="count-buy">🟢 BUY <strong>0</strong></span>
-        <span class="count-watch">🟡 WATCH <strong>2</strong></span>
+        <span class="count-buy">🟢 BUY <strong>4</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
         <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
       </div>
       <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
@@ -221,91 +221,181 @@ footer.app-foot a { color: var(--text-dim); }
   <section class="section">
     <h2>📊 持仓建议</h2>
     <div class="picks-grid">
-    <article class="pick-card verdict-watch">
-      <div class="pick-ribbon">WATCH</div>
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$MU</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$704.45</div>
+          <div class="change down">-4.93%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,9.7 L 70.0,32.4 L 105.0,35.0 L 140.0,38.0 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,9.7 L 70.0,32.4 L 105.0,35.0 L 140.0,38.0" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -11.8%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:27.6%;width:6.9%" title="入场区 $690-$710"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $630.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $630</div><div class="marker target" style="left:93.1%" title="止盈 $880.0"></div><div class="marker-label target-label" style="left:93.1%">target $880</div><div class="marker current" style="left:32.6%" title="当前 $704.45"></div><div class="marker-label current-label" style="left:32.6%">$704.45</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">690.00-710.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股 + SellPut30Δ(650)</span></div>
+      </div>
+      <div class="pick-thesis">Nvidia内存承诺升至3900亿但股价跌5%，周期股定价与多年度HBM合约基本面撕裂</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - NVDA内存承诺2790亿→3900亿，主要增量是多年度HBM采购</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - HBM3E/HBM4内存，AI GPU最刚性瓶颈</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>8.1</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 零售恐慌买put(8.3倍均值)，但MU自身无狂热，逆向偏建设性</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - IV高位+看涨，卖put30Δ收权利金降成本</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>12月季度毛利率指引跌破80%（现86.8%）或HBM合约价环比转负</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
       <div class="pick-head">
         <div>
           <div class="ticker">$COHR</div>
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$211.53</div>
-          <div class="change down">-5.78%</div>
+          <div class="price">$212.66</div>
+          <div class="change down">-5.27%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,19.5 L 70.0,38.0 L 105.0,28.7 L 140.0,27.8 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,19.5 L 70.0,38.0 L 105.0,28.7 L 140.0,27.8" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 -8.8%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,19.5 L 70.0,38.0 L 105.0,28.7 L 140.0,26.4 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,19.5 L 70.0,38.0 L 105.0,28.7 L 140.0,26.4" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -8.4%</div>
       </div>
       
     <div class="zone-bar-wrap">
       <div class="zone-bar">
-        <div class="zone-entry" style="left:17.7%;width:12.0%" title="入场区 $185-$195"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $176.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $176</div><div class="marker target" style="left:93.1%" title="止盈 $248.0"></div><div class="marker-label target-label" style="left:93.1%">target $248</div><div class="marker current" style="left:49.4%" title="当前 $211.53"></div><div class="marker-label current-label" style="left:49.4%">$211.53</div>
+        <div class="zone-entry" style="left:27.6%;width:10.9%" title="入场区 $205-$215"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $186.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $186</div><div class="marker target" style="left:93.1%" title="止盈 $265.0"></div><div class="marker-label target-label" style="left:93.1%">target $265</div><div class="marker current" style="left:36.0%" title="当前 $212.66"></div><div class="marker-label current-label" style="left:36.0%">$212.66</div>
       </div>
     </div>
     
       <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">185.00-195.00</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">SellPut30Δ</span></div>
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">205.00-215.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
       </div>
-      <div class="pick-thesis">CPO光模块与激光器双瓶颈的美产龙头，受益美方对中国光学元件管制，但当前处于利率驱动的估值压缩中，仅以卖权试探而非正股建仓。</div>
-      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 8.5%，等回踩</div>
+      <div class="pick-thesis">光通讯最干净载体，无并购套利干扰，受益美国限制中国光模块进口</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>美国收紧中国光学元件进口，美产产能直接受益</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>CPO 800G/1.6T 光模块与激光器</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity数据未获取；卖方覆盖密集，散户恐慌，AXTQ做空ETF单日+15%</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>VIX24下卖put收权利金，破位时以折价接双瓶颈龙头</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若看错，最先在10Y收益率跌破4.85%并维持3日上看到反转确认</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - 路透报道美国推进限制中国光模块进口，国产化替代直接受益</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - CPO 800G/1.6T光模块+激光器垂直整合</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 月内仅跌9%，较LITE/AAOI抗跌，板块内相对强度最强</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 期权链流动性充足但IV不算极端，正股更干净</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>美国对华光模块限制被推迟或推翻，或光模块订单积压环比走平</span></div>
       </div>
     </details>
     
     </article>
     
-    <article class="pick-card verdict-watch">
-      <div class="pick-ribbon">WATCH</div>
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$LITE</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$552.69</div>
+          <div class="change down">-6.24%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,14.8 L 70.0,38.0 L 105.0,31.6 L 140.0,34.9 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,14.8 L 70.0,38.0 L 105.0,31.6 L 140.0,34.9" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -11.5%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:25.6%;width:10.9%" title="入场区 $535-$560"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $492.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $492</div><div class="marker target" style="left:93.1%" title="止盈 $690.0"></div><div class="marker-label target-label" style="left:93.1%">target $690</div><div class="marker current" style="left:33.3%" title="当前 $552.69"></div><div class="marker-label current-label" style="left:33.3%">$552.69</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">535.00-560.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
+      </div>
+      <div class="pick-thesis">收入+136%却因MRVL跌37%拖累固定换股比价而跌33%，纯并购套利机制失真</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - MRVL全股票固定换股收购LITE，MRVL跌37%机械拖累LITE估值</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - CPO激光器+光路交换OCS，第二个NPO/CPO订单50亿承诺</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - 散户对这一机制性错价无认知，Bernstein目标700维持Outperform</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - 并购价差扭曲IV结构，用正股避免隐含波动误导</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>MRVL财报后仍跌破135使offer价值继续下移，或中国监管审查明确负面</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
       <div class="pick-head">
         <div>
           <div class="ticker">$VRT</div>
           <div class="direction">LONG</div>
         </div>
         <div class="price-block">
-          <div class="price">$193.98</div>
-          <div class="change down">-3.19%</div>
+          <div class="price">$194.1</div>
+          <div class="change down">-3.13%</div>
         </div>
       </div>
       <div class="pick-trend">
-        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,15.0 L 70.0,38.0 L 105.0,35.1 L 140.0,28.9 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,15.0 L 70.0,38.0 L 105.0,35.1 L 140.0,28.9" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="trend-label">5日 -7.5%</div>
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,2.0 L 35.0,15.0 L 70.0,38.0 L 105.0,35.1 L 140.0,28.7 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,2.0 L 35.0,15.0 L 70.0,38.0 L 105.0,35.1 L 140.0,28.7" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -7.4%</div>
       </div>
       
     <div class="zone-bar-wrap">
       <div class="zone-bar">
-        <div class="zone-entry" style="left:20.4%;width:10.8%" title="入场区 $178-$186"></div>
-        <div class="marker stop" style="left:6.9%" title="止损 $168.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $168</div><div class="marker target" style="left:93.1%" title="止盈 $232.0"></div><div class="marker-label target-label" style="left:93.1%">target $232</div><div class="marker current" style="left:41.9%" title="当前 $193.98"></div><div class="marker-label current-label" style="left:41.9%">$193.98</div>
+        <div class="zone-entry" style="left:25.4%;width:12.3%" title="入场区 $188-$196"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $176.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $176</div><div class="marker target" style="left:93.1%" title="止盈 $232.0"></div><div class="marker-label target-label" style="left:93.1%">target $232</div><div class="marker current" style="left:34.8%" title="当前 $194.1"></div><div class="marker-label current-label" style="left:34.8%">$194.1</div>
       </div>
     </div>
     
       <div class="pick-meta">
-        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">178.00-186.00</span></div>
-        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（观察，未触发）</span></div>
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">188.00-196.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股</span></div>
       </div>
-      <div class="pick-thesis">AI数据中心电源与液冷瓶颈，回撤21%后估值安全垫改善，但技术面尚未止跌，列为最高优先级观察而非入场。</div>
-      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 4.3%，等回踩</div>
+      <div class="pick-thesis">AI去杠杆日仅跌3.2%且10日趋势仍+9.8%，液冷电源是物理瓶颈无并购噪音</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
       
     <details class="reasoning">
       <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
       <div class="reasoning-body">
-        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>NVDA创纪录116B季度确认数据中心电源与液冷需求未证伪</span></div>
-        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>数据中心电源模块与液冷散热</span></div>
-        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.4</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
-        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Serenity未获取；散户情绪转向谨慎，AI激进基金单季减仓92%</span></div>
-        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>待企稳后正股入场，当前仅挂观察不建仓</span></div>
-        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若看错，最先在VRT对SOX的5日相对强度转正且连3日上看到板块脱钩</span></div>
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>Layer 1 - AI板块去杠杆，资金向低杠杆物理瓶颈标的轮动</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>Layer 2 - 数据中心液冷+电源配电，AI机柜功率密度刚性瓶颈</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.1</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Layer 4 - Zacks/Insider Monkey今日重申AI基础设施必要性，无散户狂热</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>Layer 5 - IV温和，正股直持优于卖put</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>数据中心订单积压指引下调或液冷订单推迟至2027年</span></div>
       </div>
     </details>
     
@@ -315,7 +405,7 @@ footer.app-foot a { color: var(--text-dim); }
   
     <section class="section">
       <h2>📰 最新新闻</h2>
-      <div class="news-grid"><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://www.barrons.com/articles/stock-movers-62881b61?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Nvidia, Take-Two, Palo Alto, Applied Optoelectronics, TJX, and More Stocks That Explain Today’s Market</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://finance.yahoo.com/technology/ai/articles/aaoi-rides-ai-led-optical-164700563.html" target="_blank" rel="noopener">AAOI Rides on AI-Led Optical Demand: Can It Beat Fabrinet and Coherent?</a> <span class="news-pub">Zacks</span></li><li><a href="https://www.tikr.com/blog/astera-labs-and-credo-each-trade-about-60-below-their-highs-only-one-still-needs-a-1-46-billion-second-half?ref=yahoofinance&amp;tlnk=yf-261118-2jfmh78p" target="_blank" rel="noopener">Astera Labs and Credo Each Trade About 60% Below Their Highs. Only One Still Needs a $1.46 Billion Second Half</a> <span class="news-pub">TIKR</span></li></ul></div><div class="news-card"><h3>$VRT</h3><ul><li><a href="https://www.tikr.com/blog/ge-vernova-is-35-below-its-high-after-raising-its-year-end-gas-turbine-goal-to-130-gigawatts?ref=yahoofinance&amp;tlnk=yf-261118-rr72rfxr" target="_blank" rel="noopener">GE Vernova Is 35% Below Its High After Raising Its Year-End Gas Turbine Goal to 130 Gigawatts</a> <span class="news-pub">TIKR</span></li><li><a href="https://www.trefis.com/stock/be/articles/626059/is-bloom-energy-stock-at-173-still-worth-owning/2026-11-18" target="_blank" rel="noopener">Is Bloom Energy Stock At $173 Still Worth Owning?</a> <span class="news-pub">Trefis</span></li><li><a href="https://stocktwits.com/news-articles/markets/equity/boeing-ge-aerospace-lead-trump-s-17-b-plus-asia-deals-with-12-b-aircraft-sale-vertiv-panasonic-also-in-focus/cNbgJ3TR9LU" target="_blank" rel="noopener">Boeing, GE Aerospace Lead Trump&#x27;s $17B-Plus Asia Deals With $12B Aircraft Sale — Vertiv, Panasonic Also In Focus</a> <span class="news-pub">Stocktwits</span></li></ul></div></div>
+      <div class="news-grid"><div class="news-card"><h3>$MU</h3><ul><li><a href="https://www.fool.com/investing/2026/11/18/is-micron-undervalued/" target="_blank" rel="noopener">Is Micron Undervalued?</a> <span class="news-pub">Motley Fool</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/micron-stocks-rise-1-7-194453345.html" target="_blank" rel="noopener">Micron Stocks Rise 1.7% as Nvidia&#x27;s Supply Commitments Jump to $390 Billion</a> <span class="news-pub">GuruFocus.com</span></li><li><a href="https://247wallst.com/technology-3/2026/11/18/nvidias-annual-gpu-upgrades-are-changing-the-hbm-investment-outlook/" target="_blank" rel="noopener">Nvidia’s Annual GPU Upgrades Are Changing the HBM Investment Outlook</a> <span class="news-pub">24/7 Wall St.</span></li></ul></div><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://247wallst.com/investing/2026/11/18/lumentum-is-down-33-in-a-month-as-marvells-slide-shrinks-its-buyout-value-can-lite-stock-get-back-to-bernsteins-700-target/" target="_blank" rel="noopener">Lumentum Is Down 33% in a Month as Marvell’s Slide Shrinks Its Buyout Value. Can LITE Stock Get Back to Bernstein’s $700 Target?</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://www.barrons.com/articles/stock-movers-62881b61?siteid=yhoof2&amp;yptr=yahoo" target="_blank" rel="noopener">Nvidia, Take-Two, Palo Alto, Applied Optoelectronics, TJX, and More Stocks That Explain Today’s Market</a> <span class="news-pub">Barrons.com</span></li><li><a href="https://finance.yahoo.com/technology/ai/articles/aaoi-rides-ai-led-optical-164700563.html" target="_blank" rel="noopener">AAOI Rides on AI-Led Optical Demand: Can It Beat Fabrinet and Coherent?</a> <span class="news-pub">Zacks</span></li></ul></div><div class="news-card"><h3>$LITE</h3><ul><li><a href="https://247wallst.com/investing/2026/11/18/lumentum-is-down-33-in-a-month-as-marvells-slide-shrinks-its-buyout-value-can-lite-stock-get-back-to-bernsteins-700-target/" target="_blank" rel="noopener">Lumentum Is Down 33% in a Month as Marvell’s Slide Shrinks Its Buyout Value. Can LITE Stock Get Back to Bernstein’s $700 Target?</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/deal-behind-needham-call-lumentum-161129119.html" target="_blank" rel="noopener">The Deal Behind Needham’s Call on Lumentum (LITE)</a> <span class="news-pub">Insider Monkey</span></li><li><a href="https://www.tikr.com/blog/a-3-8-billion-fund-dumps-these-3-stocks?ref=yahoofinance&amp;tlnk=yf-261118-848c25mv" target="_blank" rel="noopener">A $3.8 Billion Fund Dumps These 3 Stocks</a> <span class="news-pub">TIKR</span></li></ul></div><div class="news-card"><h3>$VRT</h3><ul><li><a href="https://finance.yahoo.com/technology/ai/articles/top-ranked-ai-stock-buy-194200011.html" target="_blank" rel="noopener">Top-Ranked AI Stock to Buy Now on the Dip for 100% Upside: VRT</a> <span class="news-pub">Zacks</span></li><li><a href="https://www.tikr.com/blog/ge-vernova-is-35-below-its-high-after-raising-its-year-end-gas-turbine-goal-to-130-gigawatts?ref=yahoofinance&amp;tlnk=yf-261118-rr72rfxr" target="_blank" rel="noopener">GE Vernova Is 35% Below Its High After Raising Its Year-End Gas Turbine Goal to 130 Gigawatts</a> <span class="news-pub">TIKR</span></li><li><a href="https://www.trefis.com/stock/be/articles/626059/is-bloom-energy-stock-at-173-still-worth-owning/2026-11-18" target="_blank" rel="noopener">Is Bloom Energy Stock At $173 Still Worth Owning?</a> <span class="news-pub">Trefis</span></li></ul></div></div>
     </section>
     
   
@@ -323,32 +413,8 @@ footer.app-foot a { color: var(--text-dim); }
     <section class="section">
       <details class="critic">
         <summary>🛡️ 红队自审批注（点击展开）</summary>
-        <div class="critic-body"><p>
+        <div class="critic-body"><p></p><p>
 ```json
-{
-  &quot;findings&quot;: [
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;允许的卖put与自身regime判断自相矛盾&quot;,
-      &quot;detail&quot;: &quot;Layer 5 明确写：&#x27;在 10Y 破 5%、12 月加息未落地之前，任何抄底都是在做多 duration&#x27;，并据此不开正股。但同一段又放行 COHR Sell Cash-Secured Put 5%（行权价 $185-195，Δ≈0.30）。卖 put 的钱恰好在&#x27;12 月加息落地 + 股价下跌&#x27;这一报告自己定义的最坏情景里赚到、并以被行权收场——即用户在最坏情景中被动接一个 technicals 仅 4/10、15 日 -10.8% 已破位的标的。这不是&#x27;以折价获得双瓶颈龙头&#x27;，是把&#x27;等待&#x27;包装成了一笔下行敞口。&quot;,
-      &quot;actionable&quot;: &quot;二选一：(a) 把卖 put 推迟到 10Y 回落确认之后再执行；(b) 改为 bull put spread 或把行权价下移到更深的 OTM，并在方案里明写&#x27;被行权即等于违背本报告的 regime 判断，属于计划内亏损而非机会&#x27;。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
-      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
-      &quot;title&quot;: &quot;COHR失败信号测的是宏观而非论点&quot;,
-      &quot;detail&quot;: &quot;失败检测信号给的是&#x27;10Y 跌破 4.85% 并 3 日内维持&#x27;，而论点本体是 Layer 2/Layer 4 的&#x27;CPO 光模块与激光器双瓶颈 + 美产受益中国光学管制&#x27;。论点被证伪的真实路径——管制清单被豁免/推迟、1.6T 定点份额流失、对手产能释放引发价格战、毛利率指引下修——一条都没有进入失败信号。后果是：即便论点已破，只要利率回落，用户会被&#x27;信号未触发&#x27;锚住继续持有。JSON 里 failure_signal 字段同样只写了利率条件。&quot;,
-      &quot;actionable&quot;: &quot;补一条业务侧失效条件（例：COHR 下季毛利率指引低于前值、或 1.6T 客户定点公告缺失），并明确 short put 的离场触发（现 &#x27;stop 176&#x27; 对卖权不构成可执行含义）。&quot;
-    },
-    {
-      &quot;severity&quot;: &quot;WARNING&quot;,
-      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
-      &quot;affected_tickers&quot;: [&quot;$LITE&quot;, &quot;$MRVL&quot;],
-      &quot;title&quot;: &quot;剔除LITE依赖未核实的并购数字&quot;,
-      &quot;detail&quot;: &quot;Layer 1 第 4 条称&#x27;MRVL 以全股票收购 LITE（$115B EV，11/2 公告，同期 LITE 财报）&#x27;，据此把 LITE 判为&#x27;非独立标的、无独立 alpha&#x27;并整只剔除。但报告没有给出换股比例、当前套利价差、交割时间表、反垄断审查路径中的任何一项；且 $115B EV 相对 LITE 的体量量级可疑（若为全股票，对 MRVL 的摊薄将是百亿美元级，报告却只引用了&#x27;TD Cowen 下调 MRVL&#x27;一句）。同时 Layer</p><p>```json
 {
   &quot;findings&quot;: []
 }
@@ -358,7 +424,7 @@ footer.app-foot a { color: var(--text-dim); }
     </section>
     
   <footer class="app-foot">
-    生成时间 2026-11-18 19:29 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    生成时间 2026-11-18 20:52 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
     <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
   </footer>
 </div>
