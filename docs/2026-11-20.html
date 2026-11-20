@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-11-20</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-11-20</div>
+  </header>
+  
+    <section class="banner banner-avoid">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天什么都不要做</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>0</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>0</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid"><p class="text-dim">无候选标的</p></div>
+  </section>
+  
+  
+    <section class="section">
+      <h2>🛡️ 红队审计（按严重级别分级）</h2>
+      <div class="findings"><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$AXTI, $LITE</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Lumentum-Marvel 并购对 AXTI 订单的双向冲击未评估</strong></div><div class="finding-detail">Layer 2 把『已收到 Lumentum $43.5M 预付产能锁定款』当纯利好，Layer 1 第 3 条又点明『LITE 相对换股价值还有 14% 折价，CEO Hurlston 承认股东不高兴，预计 2028 年上半年才交割』。但报告没有把两件事连起来：2028 上半年才交割的整合期通常伴随供应商重新评估/采购冻结；若 LITE 股东因对价从 $1,132 缩水到 ~$623（-45%）继续施压导致交易重谈或破裂，Lumentum 的 capex 可能收缩，直接冲击 AXTI 的 $500M InP 积压订单可转化性。这是 AXTI 多头论点最可能的失败路径之一，报告完全没覆盖。</div><div class="finding-action">→ 在预设 AXTI 入场前，把『LITE 并购进展/破裂风险』列为 AXTI 订单能见度的追踪项；评估 Lumentum 占 AXTI 收入比重与预付款的可逆性。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>Jensen Huang 离任作为单一来源事实，与『情绪抛售』定性矛盾</strong></div><div class="finding-detail">Layer 1 第 2 条把『the exit of Nvidia CEO Jensen Huang』列为第 2 大催化剂，仅引用一个 Yahoo URL，无交叉验证。如果领导层变动为真，这属于基本面/治理风险，不能同时在第 2 条归为『叙事被证伪型风险』、又在第 5 条用 Dan Ives『panic-driven sell-off, not a red flag』来定性为纯情绪。两处定性的矛盾报告没有解决：若 Jensen 真离任，今日 -11% 就不是等企稳就能修复的洗盘。</div><div class="finding-action">→ 核实该事件是否属实（多源交叉）。若为误读需更正催化剂定性；若为真，整套『等板块企稳再入』框架需重新评估。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>入场区间 $28-31 未给当前价，无法判断『回到』的距离</strong></div><div class="finding-detail">今日动作部分要求 AXTI『收盘回到 $28-31 区间内』，但全文只给出 AXTI -10.13%，没有当日收盘价或现价。无法验证 $28-31 相对现价是上方、下方还是已在区间内，用户无法日常监控这条条件是否接近触发。</div><div class="finding-action">→ 任何入场价区间必须附当前参考价与距离百分比；否则该信号不可观测。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">THESIS_WEAKNESS</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>漏斗评分 7.05 权重不透明，反关注 8 分无证据链</strong></div><div class="finding-detail">Layer 3 表格让 AXTI 得 7.05，但技术列 2 分、估值列 4 分、反关注列 8 分，7 维度加权公式未披露，无法复现该总分，也就无法验证『唯一达到 ≥7.0 门槛』的结论是否稳健。同时 Layer 3/4 承认 Serenity 信号缺失（Nitter RSS + DuckDuckGo 均空解析），反关注却仍给 8 分并称『来自公开报道而非推断』——两者自相矛盾。</div><div class="finding-action">→ 披露 7 维度权重公式；反关注维度需给出可引用的社交数据来源，否则应下调该维度分数并重算总分。</div></div><div class="finding finding-warning" style="border-left-color:var(--watch);background:var(--watch-soft)"><div class="finding-head"><span class="finding-sev">⚠️ WARNING</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>AXTI 估值抢跑风险与回踩入场逻辑冲突</strong></div><div class="finding-detail">Layer 2 自己指出『4.95× forward sales，且股价年内 +117.8%（已大幅抢跑）』，漏斗给估值 4/10。但仍把 AXTI 当唯一候选、预设 $28-31 入场。如果 InP 叙事已被市场充分定价，回踩到 $28-31 更可能是叙事降温而非错杀。报告没有区分『板块 beta 拖累导致回踩（可买）』和『AXTI 个体叙事降温导致回踩（慎买）』这两种情形。</div><div class="finding-action">→ 入场条件附加『回踩原因』判断逻辑：需确认回踩由板块 beta 驱动、且 InP 积压/交期等基本面指标未松动。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">DATA_LIMITATION</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>社交信号工具故障影响反关注维度</strong></div><div class="finding-detail">Layer 3/4 披露 Nitter RSS 与 DuckDuckGo site:x.com 全部返回空解析、WSB/Stocks daily thread 抓取失败。这是系统性问题，已诚实披露，不阻断今日空仓动作；但意味着反关注评分（AXTI 给 8 分）缺乏直接社交数据支撑。</div><div class="finding-action">→ 修复抓取通道（列为待办①）；通道恢复前对依赖社交情绪的评分保持警惕。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">BLIND_SPOT</span><span class="finding-tickers">$AXTI</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>InP/关键金属出口管制与地缘风险未讨论</strong></div><div class="finding-detail">报告把 AXTI 定位为『垄断级供给 + $COHR 是它的下游客户』，但只提反规则库里『关键金属标的流动性冲击』这条市场情绪规则，未讨论实际的出口管制/地缘政策风险对 InP 衬底供应链的冲击，AXTI 的中国相关生产/客户敞口也未评估。</div><div class="finding-action">→ 补充 InP 出口管制/地缘政策风险监测项，作为 AXTI 论点的独立风险轴。</div></div><div class="finding finding-info" style="border-left-color:var(--text-dim);background:#F1F0EB"><div class="finding-head"><span class="finding-sev">ℹ INFO</span><span class="finding-cat">FAILURE_SIGNAL</span><span class="finding-tickers">全部</span><span class="finding-source">🤖 LLM</span></div><div class="finding-title"><strong>宏观 regime 判断缺失，VIX&lt;22 触发线可能长期失灵</strong></div><div class="finding-detail">失败检测信号用『VIX 跌破 22 且 LITE/COHR 连续 2 日收盘站上 5 日均线』判断踏空。但报告未判断当前是趋势反转还是恐慌波动：若为长期下跌，VIX 可能长期 &gt;22，预设条件永不触发；若个股先于 VIX 反弹（2018 式），会因等 VIX 而错过。Macro regime 基线缺失使该失败信号不完整。</div><div class="finding-action">→ 明确当前是『波动』还是『反转向下』的基线假设；并为个股层面反弹增设独立触发线（不依赖 VIX）。</div></div></div>
+    </section>
+    
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;, &quot;$LITE&quot;],
+      &quot;title&quot;: &quot;Lumentum-Marvel 并购对 AXTI 订单的双向冲击未评估&quot;,
+      &quot;detail&quot;: &quot;Layer 2 把『已收到 Lumentum $43.5M 预付产能锁定款』当纯利好，Layer 1 第 3 条又点明『LITE 相对换股价值还有 14% 折价，CEO Hurlston 承认股东不高兴，预计 2028 年上半年才交割』。但报告没有把两件事连起来：2028 上半年才交割的整合期通常伴随供应商重新评估/采购冻结；若 LITE 股东因对价从 $1,132 缩水到 ~$623（-45%）继续施压导致交易重谈或破裂，Lumentum 的 capex 可能收缩，直接冲击 AXTI 的 $500M InP 积压订单可转化性。这是 AXTI 多头论点最可能的失败路径之一，报告完全没覆盖。&quot;,
+      &quot;actionable&quot;: &quot;在预设 AXTI 入场前，把『LITE 并购进展/破裂风险』列为 AXTI 订单能见度的追踪项；评估 Lumentum 占 AXTI 收入比重与预付款的可逆性。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;Jensen Huang 离任作为单一来源事实，与『情绪抛售』定性矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 1 第 2 条把『the exit of Nvidia CEO Jensen Huang』列为第 2 大催化剂，仅引用一个 Yahoo URL，无交叉验证。如果领导层变动为真，这属于基本面/治理风险，不能同时在第 2 条归为『叙事被证伪型风险』、又在第 5 条用 Dan Ives『panic-driven sell-off, not a red flag』来定性为纯情绪。两处定性的矛盾报告没有解决：若 Jensen 真离任，今日 -11% 就不是等企稳就能修复的洗盘。&quot;,
+      &quot;actionable&quot;: &quot;核实该事件是否属实（多源交叉）。若为误读需更正催化剂定性；若为真，整套『等板块企稳再入』框架需重新评估。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;入场区间 $28-31 未给当前价，无法判断『回到』的距离&quot;,
+      &quot;detail&quot;: &quot;今日动作部分要求 AXTI『收盘回到 $28-31 区间内』，但全文只给出 AXTI -10.13%，没有当日收盘价或现价。无法验证 $28-31 相对现价是上方、下方还是已在区间内，用户无法日常监控这条条件是否接近触发。&quot;,
+      &quot;actionable&quot;: &quot;任何入场价区间必须附当前参考价与距离百分比；否则该信号不可观测。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;漏斗评分 7.05 权重不透明，反关注 8 分无证据链&quot;,
+      &quot;detail&quot;: &quot;Layer 3 表格让 AXTI 得 7.05，但技术列 2 分、估值列 4 分、反关注列 8 分，7 维度加权公式未披露，无法复现该总分，也就无法验证『唯一达到 ≥7.0 门槛』的结论是否稳健。同时 Layer 3/4 承认 Serenity 信号缺失（Nitter RSS + DuckDuckGo 均空解析），反关注却仍给 8 分并称『来自公开报道而非推断』——两者自相矛盾。&quot;,
+      &quot;actionable&quot;: &quot;披露 7 维度权重公式；反关注维度需给出可引用的社交数据来源，否则应下调该维度分数并重算总分。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;AXTI 估值抢跑风险与回踩入场逻辑冲突&quot;,
+      &quot;detail&quot;: &quot;Layer 2 自己指出『4.95× forward sales，且股价年内 +117.8%（已大幅抢跑）』，漏斗给估值 4/10。但仍把 AXTI 当唯一候选、预设 $28-31 入场。如果 InP 叙事已被市场充分定价，回踩到 $28-31 更可能是叙事降温而非错杀。报告没有区分『板块 beta 拖累导致回踩（可买）』和『AXTI 个体叙事降温导致回踩（慎买）』这两种情形。&quot;,
+      &quot;actionable&quot;: &quot;入场条件附加『回踩原因』判断逻辑：需确认回踩由板块 beta 驱动、且 InP 积压/交期等基本面指标未松动。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;社交信号工具故障影响反关注维度&quot;,
+      &quot;detail&quot;: &quot;Layer 3/4 披露 Nitter RSS 与 DuckDuckGo site:x.com 全部返回空解析、WSB/Stocks daily thread 抓取失败。这是系统性问题，已诚实披露，不阻断今日空仓动作；但意味着反关注评分（AXTI 给 8 分）缺乏直接社交数据支撑。&quot;,
+      &quot;actionable&quot;: &quot;修复抓取通道（列为待办①）；通道恢复前对依赖社交情绪的评分保持警惕。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;InP/关键金属出口管制与地缘风险未讨论&quot;,
+      &quot;detail&quot;: &quot;报告把 AXTI 定位为『垄断级供给 + $COHR 是它的下游客户』，但只提反规则库里『关键金属标的流动性冲击』这条市场情绪规则，未讨论实际的出口管制/地缘政策风险对 InP 衬底供应链的冲击，AXTI 的中国相关生产/客户敞口也未评估。&quot;,
+      &quot;actionable&quot;: &quot;补充 InP 出口管制/地缘政策风险监测项，作为 AXTI 论点的独立风险轴。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;*&quot;],
+      &quot;title&quot;: &quot;宏观 regime 判断缺失，VIX&lt;22 触发线可能长期失灵&quot;,
+      &quot;detail&quot;: &quot;失败检测信号用『VIX 跌破 22 且 LITE/COHR 连续 2 日收盘站上 5 日均线』判断踏空。但报告未判断当前是趋势反转还是恐慌波动：若为长期下跌，VIX 可能长期 &gt;22，预设条件永不触发；若个股先于 VIX 反弹（2018 式），会因等 VIX 而错过。Macro regime 基线缺失使该失败信号不完整。&quot;,
+      &quot;actionable&quot;: &quot;明确当前是『波动』还是『反转向下』的基线假设；并为个股层面反弹增设独立触发线（不依赖 VIX）。&quot;
+    }
+  ],
+  &quot;overall_verdict&quot;: &quot;PROCEED_WITH_CAUTION&quot;
+}
+```</p><p></p><p><strong>总体判断：今日空仓动作本身合规，但『预设入场条件』这一层的软性质量不足以让人放心。</strong></p><p>先说好的：报告诚实披露了社交工具故障、明确援引规则编号说明为何不建仓、失败信号（VIX + 5 日均线）有量化形式。这些都是加分项。今日没有 picks，也就没有仓位/集中度/裸赌财报这类硬风险，所以我找不到任何 BLOCKER——overall 定为 `PROCEED_WITH_CAUTION`。</p><p><strong>但有三个软性漏洞，用户若不警觉，等信号触发后按预设条件入场时就会踩到：</strong></p><p>1. <strong>LITE-MRVL 并购是 AXTI 论点里的&quot;暗礁&quot;，报告只把它当利好。</strong> 报告一边拿 Lumentum $43.5M 预付款证明 InP 瓶颈，一边又承认该并购对价已缩水 45%、股东不满、2028 才交割。整合期削供应商、交易重谈都是真实失败路径，报告完全没有把它和 AXTI 的 $500M 积压订单转化率挂钩。这是对多头最可能死法的一次盲区。</p><p>2. <strong>&quot;Jensen 离任&quot;这个事实性断言没有交叉验证，却和全篇&quot;情绪抛售、基本面不变&quot;的定性打架。</strong> 真要属实，这是领导层黑天鹅，不是等 VIX 回落就能修复的洗盘。报告把一个可能推翻自己框架的事件，塞进了第 2 条催化剂而没有处理它的推论。</p><p>3. <strong>入场区间 $28-31 是个悬空数字。</strong> 报告没给 AXTI 当日收盘价，用户根本没法日常盯&quot;是否回到区间&quot;。而且报告自己承认 AXTI 年内 +117.8%、4.95× forward sales 已抢跑——那回踩到 $28-31 是&quot;错杀&quot;还是&quot;叙事降温&quot;，报告没给判别标准。</p><p><strong>建议用户动作：</strong> 把今天当&quot;观察日&quot;完全没错，但在把 AXTI 放入实盘候选前，要求补齐三件事——LITE 并购进度对 AXTI 订单的敏感度、Jensen 事件的二次核实、AXTI 当前价与 $28-31 的距离以及回踩归因。这三项补齐前，`$AXTI` 的预设入场条件应视为未就绪。漏斗评分 7.05 的权重公式也应一并索要，否则&quot;唯一及格标的&quot;这个结论不具备可复现性。</p><p>```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;,
+        &quot;$LITE&quot;
+      ],
+      &quot;title&quot;: &quot;Lumentum-Marvel 并购对 AXTI 订单的双向冲击未评估&quot;,
+      &quot;detail&quot;: &quot;Layer 2 把『已收到 Lumentum $43.5M 预付产能锁定款』当纯利好，Layer 1 第 3 条又点明『LITE 相对换股价值还有 14% 折价，CEO Hurlston 承认股东不高兴，预计 2028 年上半年才交割』。但报告没有把两件事连起来：2028 上半年才交割的整合期通常伴随供应商重新评估/采购冻结；若 LITE 股东因对价从 $1,132 缩水到 ~$623（-45%）继续施压导致交易重谈或破裂，Lumentum 的 capex 可能收缩，直接冲击 AXTI 的 $500M InP 积压订单可转化性。这是 AXTI 多头论点最可能的失败路径之一，报告完全没覆盖。&quot;,
+      &quot;actionable&quot;: &quot;在预设 AXTI 入场前，把『LITE 并购进展/破裂风险』列为 AXTI 订单能见度的追踪项；评估 Lumentum 占 AXTI 收入比重与预付款的可逆性。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;Jensen Huang 离任作为单一来源事实，与『情绪抛售』定性矛盾&quot;,
+      &quot;detail&quot;: &quot;Layer 1 第 2 条把『the exit of Nvidia CEO Jensen Huang』列为第 2 大催化剂，仅引用一个 Yahoo URL，无交叉验证。如果领导层变动为真，这属于基本面/治理风险，不能同时在第 2 条归为『叙事被证伪型风险』、又在第 5 条用 Dan Ives『panic-driven sell-off, not a red flag』来定性为纯情绪。两处定性的矛盾报告没有解决：若 Jensen 真离任，今日 -11% 就不是等企稳就能修复的洗盘。&quot;,
+      &quot;actionable&quot;: &quot;核实该事件是否属实（多源交叉）。若为误读需更正催化剂定性；若为真，整套『等板块企稳再入』框架需重新评估。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;入场区间 $28-31 未给当前价，无法判断『回到』的距离&quot;,
+      &quot;detail&quot;: &quot;今日动作部分要求 AXTI『收盘回到 $28-31 区间内』，但全文只给出 AXTI -10.13%，没有当日收盘价或现价。无法验证 $28-31 相对现价是上方、下方还是已在区间内，用户无法日常监控这条条件是否接近触发。&quot;,
+      &quot;actionable&quot;: &quot;任何入场价区间必须附当前参考价与距离百分比；否则该信号不可观测。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;漏斗评分 7.05 权重不透明，反关注 8 分无证据链&quot;,
+      &quot;detail&quot;: &quot;Layer 3 表格让 AXTI 得 7.05，但技术列 2 分、估值列 4 分、反关注列 8 分，7 维度加权公式未披露，无法复现该总分，也就无法验证『唯一达到 ≥7.0 门槛』的结论是否稳健。同时 Layer 3/4 承认 Serenity 信号缺失（Nitter RSS + DuckDuckGo 均空解析），反关注却仍给 8 分并称『来自公开报道而非推断』——两者自相矛盾。&quot;,
+      &quot;actionable&quot;: &quot;披露 7 维度权重公式；反关注维度需给出可引用的社交数据来源，否则应下调该维度分数并重算总分。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;AXTI 估值抢跑风险与回踩入场逻辑冲突&quot;,
+      &quot;detail&quot;: &quot;Layer 2 自己指出『4.95× forward sales，且股价年内 +117.8%（已大幅抢跑）』，漏斗给估值 4/10。但仍把 AXTI 当唯一候选、预设 $28-31 入场。如果 InP 叙事已被市场充分定价，回踩到 $28-31 更可能是叙事降温而非错杀。报告没有区分『板块 beta 拖累导致回踩（可买）』和『AXTI 个体叙事降温导致回踩（慎买）』这两种情形。&quot;,
+      &quot;actionable&quot;: &quot;入场条件附加『回踩原因』判断逻辑：需确认回踩由板块 beta 驱动、且 InP 积压/交期等基本面指标未松动。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;DATA_LIMITATION&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;社交信号工具故障影响反关注维度&quot;,
+      &quot;detail&quot;: &quot;Layer 3/4 披露 Nitter RSS 与 DuckDuckGo site:x.com 全部返回空解析、WSB/Stocks daily thread 抓取失败。这是系统性问题，已诚实披露，不阻断今日空仓动作；但意味着反关注评分（AXTI 给 8 分）缺乏直接社交数据支撑。&quot;,
+      &quot;actionable&quot;: &quot;修复抓取通道（列为待办①）；通道恢复前对依赖社交情绪的评分保持警惕。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;$AXTI&quot;
+      ],
+      &quot;title&quot;: &quot;InP/关键金属出口管制与地缘风险未讨论&quot;,
+      &quot;detail&quot;: &quot;报告把 AXTI 定位为『垄断级供给 + $COHR 是它的下游客户』，但只提反规则库里『关键金属标的流动性冲击』这条市场情绪规则，未讨论实际的出口管制/地缘政策风险对 InP 衬底供应链的冲击，AXTI 的中国相关生产/客户敞口也未评估。&quot;,
+      &quot;actionable&quot;: &quot;补充 InP 出口管制/地缘政策风险监测项，作为 AXTI 论点的独立风险轴。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;INFO&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [
+        &quot;*&quot;
+      ],
+      &quot;title&quot;: &quot;宏观 regime 判断缺失，VIX&lt;22 触发线可能长期失灵&quot;,
+      &quot;detail&quot;: &quot;失败检测信号用『VIX 跌破 22 且 LITE/COHR 连续 2 日收盘站上 5 日均线』判断踏空。但报告未判断当前是趋势反转还是恐慌波动：若为长期下跌，VIX 可能长期 &gt;22，预设条件永不触发；若个股先于 VIX 反弹（2018 式），会因等 VIX 而错过。Macro regime 基线缺失使该失败信号不完整。&quot;,
+      &quot;actionable&quot;: &quot;明确当前是『波动』还是『反转向下』的基线假设；并为个股层面反弹增设独立触发线（不依赖 VIX）。&quot;,
+      &quot;source&quot;: &quot;llm_critic&quot;
+    }
+  ]
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-11-20 19:11 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
