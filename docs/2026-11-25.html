@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>瓶颈猎手 · 2026-11-25</title>
+<style>
+:root {
+  --bg: #F8F6F1;
+  --card: #FFFFFF;
+  --border: #E8E5DE;
+  --text: #1F2937;
+  --text-dim: #6B7280;
+  --buy: #15803D;
+  --buy-soft: #DCFCE7;
+  --watch: #B45309;
+  --watch-soft: #FEF3C7;
+  --avoid: #B91C1C;
+  --avoid-soft: #FEE2E2;
+  --accent: #1D4ED8;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+               "Microsoft YaHei", "Noto Sans CJK SC", Roboto, "Helvetica Neue",
+               Arial, sans-serif;
+  line-height: 1.5;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 24px 18px 80px; }
+header.app-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+header.app-head h1 { font-size: 20px; margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+header.app-head .date { color: var(--text-dim); font-size: 14px; font-variant-numeric: tabular-nums; }
+header.app-head .subtitle { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.banner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px 20px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.banner::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  background: var(--text-dim);
+}
+.banner-buy::before { background: var(--buy); }
+.banner-watch::before { background: var(--watch); }
+.banner-avoid::before { background: var(--avoid); }
+.banner-head { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.04em; text-transform: uppercase; }
+.banner-headline { font-size: 26px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 14px; }
+.banner-counts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--text-dim); }
+.banner-counts strong { color: var(--text); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.warning {
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--avoid-soft); color: var(--avoid);
+  border-radius: 8px; font-weight: 600; font-size: 13px;
+}
+
+.section { margin-bottom: 28px; }
+.section h2 { font-size: 16px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+
+.picks-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .picks-grid { grid-template-columns: 1fr 1fr; } }
+
+.pick-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+}
+.pick-ribbon {
+  position: absolute; top: 0; right: 18px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 0 0 6px 6px;
+  color: white;
+}
+.verdict-buy .pick-ribbon { background: var(--buy); }
+.verdict-watch .pick-ribbon { background: var(--watch); }
+.verdict-avoid .pick-ribbon { background: var(--avoid); }
+.verdict-buy { border-left: 3px solid var(--buy); }
+.verdict-watch { border-left: 3px solid var(--watch); }
+.verdict-avoid { border-left: 3px solid var(--avoid); }
+
+.pick-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.ticker { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-weight: 700; font-size: 18px; }
+.direction { color: var(--text-dim); font-size: 11px; letter-spacing: 0.06em; margin-top: 2px; }
+.price-block { text-align: right; }
+.price { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 18px; font-weight: 700; }
+.change { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.change.up { color: var(--buy); }
+.change.down { color: var(--avoid); }
+
+.pick-trend { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
+.sparkline { display: block; }
+.trend-label { font-size: 12px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+.zone-bar-wrap { padding: 16px 0 30px; position: relative; }
+.zone-bar { position: relative; height: 4px; background: #EEE9DF; border-radius: 2px; }
+.zone-entry { position: absolute; top: 0; height: 100%; background: var(--accent); opacity: 0.5; border-radius: 2px; }
+.marker {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid white; box-shadow: 0 0 0 1px var(--text-dim);
+}
+.marker.stop { background: var(--avoid); box-shadow: 0 0 0 1px var(--avoid); }
+.marker.target { background: var(--buy); box-shadow: 0 0 0 1px var(--buy); }
+.marker.current { background: var(--text); box-shadow: 0 0 0 1px var(--text); width: 14px; height: 14px; }
+.marker-label {
+  position: absolute; top: 14px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-dim);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.current-label { top: 18px; color: var(--text); font-weight: 600; }
+
+.pick-meta { font-size: 13px; }
+.meta-row { display: flex; justify-content: space-between; padding: 4px 0; border-top: 1px dashed var(--border); }
+.meta-row:first-child { border-top: none; }
+.meta-key { color: var(--text-dim); }
+.meta-val { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+
+.pick-thesis { margin-top: 12px; padding: 10px 12px; background: #FBFAF6; border-radius: 8px; font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.pick-reason { margin-top: 10px; font-size: 13px; font-weight: 500; }
+.verdict-buy .pick-reason { color: var(--buy); }
+.verdict-watch .pick-reason { color: var(--watch); }
+.verdict-avoid .pick-reason { color: var(--avoid); }
+.reason-icon { margin-right: 4px; }
+
+.news-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+.news-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.news-card h3 { margin: 0 0 8px; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 14px; }
+.news-card ul { list-style: none; padding: 0; margin: 0; }
+.news-card li { padding: 6px 0; border-top: 1px dashed var(--border); font-size: 13px; line-height: 1.45; }
+.news-card li:first-child { border-top: none; }
+.news-card a { color: var(--accent); text-decoration: none; }
+.news-card a:hover { text-decoration: underline; }
+.news-pub { color: var(--text-dim); font-size: 11px; margin-left: 6px; }
+
+.critic { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0; }
+.critic summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 14px; user-select: none; list-style: none; }
+.critic summary::-webkit-details-marker { display: none; }
+.critic summary::before { content: "▸ "; color: var(--text-dim); }
+.critic[open] summary::before { content: "▾ "; }
+.critic-body { padding: 0 18px 16px; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.critic-body p { margin: 0 0 10px; }
+
+/* Reasoning chain (5-layer thinking funnel) */
+.reasoning { margin-top: 14px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.reasoning summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent); list-style: none; padding: 4px 0; user-select: none; }
+.reasoning summary::-webkit-details-marker { display: none; }
+.reasoning summary::before { content: "▸ "; color: var(--text-dim); }
+.reasoning[open] summary::before { content: "▾ "; }
+.reasoning-body { padding-top: 10px; }
+.layer-row { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; font-size: 13px; }
+.layer-row.failure { color: var(--watch); border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 8px; }
+.layer-section { padding: 8px 0; }
+.layer-tag { flex-shrink: 0; min-width: 88px; font-size: 11px; color: var(--text-dim); padding-top: 2px; font-weight: 600; letter-spacing: 0.02em; }
+.scorecard { margin-top: 6px; }
+.score-avg { font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.score-avg strong { color: var(--text); font-size: 13px; }
+.score-row { display: grid; grid-template-columns: 100px 1fr 28px; gap: 8px; align-items: center; padding: 3px 0; font-size: 12px; }
+.score-label { color: var(--text-dim); }
+.score-track { background: #EEE9DF; height: 8px; border-radius: 4px; overflow: hidden; }
+.score-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.score-val { text-align: right; font-family: ui-monospace, "SF Mono", monospace; color: var(--text); font-weight: 600; }
+
+/* Findings (severity-graded red team) */
+.findings { display: grid; gap: 10px; }
+.finding { border-left: 4px solid; border-radius: 8px; padding: 12px 14px; }
+.finding-head { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; align-items: center; margin-bottom: 6px; }
+.finding-sev { font-weight: 700; letter-spacing: 0.04em; }
+.finding-cat { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.finding-tickers { color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+.data-lim-tag { background: var(--card); color: var(--text-dim); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--border); font-weight: 600; }
+.finding-title { font-size: 14px; margin-bottom: 4px; }
+.finding-detail { font-size: 13px; color: var(--text); line-height: 1.55; margin-bottom: 6px; }
+.finding-action { font-size: 12px; color: var(--text-dim); font-style: italic; }
+.finding-source { font-size: 10px; padding: 1px 5px; border-radius: 3px; background: var(--card); border: 1px solid var(--border); color: var(--text-dim); font-family: ui-monospace, "SF Mono", monospace; }
+
+/* Audit stat (self-evolution counter) */
+.audit-stat { margin-top: 10px; padding: 8px 12px; background: #F1F0EB; color: var(--text-dim); border-radius: 6px; font-size: 12px; font-weight: 500; }
+
+footer.app-foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 12px; text-align: center; }
+footer.app-foot a { color: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="app-head">
+    <div>
+      <h1>瓶颈猎手</h1>
+      <div class="subtitle">美股每日扫描 · Serenity 思维原型</div>
+    </div>
+    <div class="date">2026-11-25</div>
+  </header>
+  
+    <section class="banner banner-buy">
+      <div class="banner-head">今日核心判断</div>
+      <div class="banner-headline">今天可以下手 1 只</div>
+      <div class="banner-counts">
+        <span class="count-buy">🟢 BUY <strong>1</strong></span>
+        <span class="count-watch">🟡 WATCH <strong>1</strong></span>
+        <span class="count-avoid">🔴 AVOID <strong>0</strong></span>
+      </div>
+      <div class="audit-stat">✓ 单轮审计通过，无 BLOCKER</div>
+      
+    </section>
+    
+  <section class="section">
+    <h2>📊 持仓建议</h2>
+    <div class="picks-grid">
+    <article class="pick-card verdict-buy">
+      <div class="pick-ribbon">BUY</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$AXTI</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$31.99</div>
+          <div class="change up">+1.56%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,17.4 L 35.0,38.0 L 70.0,2.0 L 105.0,33.1 L 140.0,31.1 L 140,40 L 0,40 Z" fill="#15803D" fill-opacity="0.08"/><path d="M 0.0,17.4 L 35.0,38.0 L 70.0,2.0 L 105.0,33.1 L 140.0,31.1" fill="none" stroke="#15803D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -8.2%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:25.2%;width:10.4%" title="入场区 $30.5-$32.5"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $27.0"></div><div class="marker-label stop-label" style="left:6.9%">stop $27</div><div class="marker target" style="left:93.1%" title="止盈 $43.5"></div><div class="marker-label target-label" style="left:93.1%">target $43.5</div><div class="marker current" style="left:33.0%" title="当前 $31.99"></div><div class="marker-label current-label" style="left:33.0%">$31.99</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">30.50-32.50</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股分批（首笔50%，30.5-31.5补50%）</span></div>
+      </div>
+      <div class="pick-thesis">AI供应链全面抛售中唯一逆势收红的InP衬底瓶颈股，Q3毛利率由22.4%跃至56.1%、backlog超5亿美元，10日-26%提供最佳风险回报</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 区间内，可执行</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>AI交易瓦解中光互联链被无差别抛售，唯一逆势翻红标的</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>InP磷化铟衬底—CPO/800G-1.6T激光器不可替代上游</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>7.0</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:100%;background:var(--buy)"></span></span><span class="score-val">10</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:60%;background:var(--watch)"></span></span><span class="score-val">6</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:50%;background:var(--watch)"></span></span><span class="score-val">5</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>Zacks/InsiderMonkey讨论升温但仍属冷门小票；Serenity数据未获取</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>小市值期权链薄，用正股分批以控滑点</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若相对SOX超额收益由+1.75%转为连续2日跑输3个百分点以上且收盘击穿27.61低点，则论点失效</span></div>
+      </div>
+    </details>
+    
+    </article>
+    
+    <article class="pick-card verdict-watch">
+      <div class="pick-ribbon">WATCH</div>
+      <div class="pick-head">
+        <div>
+          <div class="ticker">$COHR</div>
+          <div class="direction">LONG</div>
+        </div>
+        <div class="price-block">
+          <div class="price">$193.93</div>
+          <div class="change down">-0.91%</div>
+        </div>
+      </div>
+      <div class="pick-trend">
+        <svg viewBox="0 0 140 40" width="140" height="40" xmlns="http://www.w3.org/2000/svg" class="sparkline"><path d="M 0.0,3.1 L 35.0,38.0 L 70.0,2.0 L 105.0,26.6 L 140.0,29.6 L 140,40 L 0,40 Z" fill="#B45309" fill-opacity="0.08"/><path d="M 0.0,3.1 L 35.0,38.0 L 70.0,2.0 L 105.0,26.6 L 140.0,29.6" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="trend-label">5日 -9.8%</div>
+      </div>
+      
+    <div class="zone-bar-wrap">
+      <div class="zone-bar">
+        <div class="zone-entry" style="left:24.1%;width:7.5%" title="入场区 $186-$191"></div>
+        <div class="marker stop" style="left:6.9%" title="止损 $174.5"></div><div class="marker-label stop-label" style="left:6.9%">stop $174.5</div><div class="marker target" style="left:93.1%" title="止盈 $232.0"></div><div class="marker-label target-label" style="left:93.1%">target $232</div><div class="marker current" style="left:36.0%" title="当前 $193.93"></div><div class="marker-label current-label" style="left:36.0%">$193.93</div>
+      </div>
+    </div>
+    
+      <div class="pick-meta">
+        <div class="meta-row"><span class="meta-key">入场区间</span><span class="meta-val">186.00-191.00</span></div>
+        <div class="meta-row"><span class="meta-key">结构</span><span class="meta-val">正股（观察仓）</span></div>
+      </div>
+      <div class="pick-thesis">董事11/20买入1522万美元成本183.7-190.05，现价已跌破其买入区间下沿，内部人成本下方构成观察性价值区</div>
+      <div class="pick-reason"><span class="reason-icon">✓</span> 高于入场区 1.5%，等回踩</div>
+      
+    <details class="reasoning">
+      <summary>🔬 为什么这只票（5 层思考漏斗）</summary>
+      <div class="reasoning-body">
+        <div class="layer-row"><span class="layer-tag">L1 催化剂</span><span>光互联重灾区，董事1522万美元买入未托住股价</span></div>
+        <div class="layer-row"><span class="layer-tag">L2 供应链节点</span><span>800G/1.6T光模块+激光器核心供应商</span></div>
+        <div class="layer-section"><span class="layer-tag">L3 7 维度打分</span><div class="scorecard"><div class="score-avg">总分 <strong>6.7</strong> / 10</div><div class="score-row"><span class="score-label">产能/需求剪刀差</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">替代难度</span><span class="score-track"><span class="score-fill" style="width:70%;background:var(--buy)"></span></span><span class="score-val">7</span></div><div class="score-row"><span class="score-label">估值安全垫</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">财务质量</span><span class="score-track"><span class="score-fill" style="width:80%;background:var(--buy)"></span></span><span class="score-val">8</span></div><div class="score-row"><span class="score-label">技术形态</span><span class="score-track"><span class="score-fill" style="width:30%;background:var(--avoid)"></span></span><span class="score-val">3</span></div><div class="score-row"><span class="score-label">期权链流动性</span><span class="score-track"><span class="score-fill" style="width:90%;background:var(--buy)"></span></span><span class="score-val">9</span></div><div class="score-row"><span class="score-label">反向关注度</span><span class="score-track"><span class="score-fill" style="width:40%;background:var(--watch)"></span></span><span class="score-val">4</span></div></div></div>
+        <div class="layer-row"><span class="layer-tag">L4 社交信号</span><span>散户情绪已热、Stocktwits与多篇TIKR同日出文，属拥挤警惕区</span></div>
+        <div class="layer-row"><span class="layer-tag">L5 期权结构</span><span>IV极高但方向不明，规则库要求反复洗盘标的新仓减半，故只买正股</span></div>
+        <div class="layer-row failure"><span class="layer-tag">⚠ 失败信号</span><span>若收盘跌破174.96今日低点且LITE同日跌超5%，确认为板块级破位而非洗盘</span></div>
+      </div>
+    </details>
+    
+    </article>
+    </div>
+  </section>
+  
+    <section class="section">
+      <h2>📰 最新新闻</h2>
+      <div class="news-grid"><div class="news-card"><h3>$AXTI</h3><ul><li><a href="https://finance.yahoo.com/technology/ai/articles/axti-vs-asx-ai-semiconductor-154300925.html" target="_blank" rel="noopener">AXTI vs. ASX: Which AI Semiconductor Stock Is the Better Buy Now?</a> <span class="news-pub">Zacks</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/why-investors-suddenly-turning-against-053354130.html" target="_blank" rel="noopener">Why Investors Are Suddenly Turning Against AXT Inc. (AXTI)?</a> <span class="news-pub">Insider Monkey</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/axt-inc-just-exploded-24-044000968.html" target="_blank" rel="noopener">AXT Inc. Just Exploded 24% After a Brutal Losing Streak</a> <span class="news-pub">Insider Monkey</span></li></ul></div><div class="news-card"><h3>$COHR</h3><ul><li><a href="https://finance.yahoo.com/markets/stocks/articles/coherent-cohr-authorizes-2-0b-201459636.html" target="_blank" rel="noopener">Coherent (COHR) Authorizes A $2.0b Buyback, Is The 47% Undervaluation Case Intact?</a> <span class="news-pub">Simply Wall St.</span></li><li><a href="https://247wallst.com/investing/2026/11/25/coherent-sinks-10-despite-15-million-director-buy-applied-optoelectronics-plunges-12-as-ai-selloff-deepens-lumentum-tumbles-10/" target="_blank" rel="noopener">Coherent Sinks 10% Despite $15 Million Director Buy, Applied Optoelectronics Plunges 12% as AI Selloff Deepens; Lumentum Tumbles 10%</a> <span class="news-pub">24/7 Wall St.</span></li><li><a href="https://247wallst.com/investing/2026/11/25/coherents-director-bought-15-million-of-stock-as-it-plunged-13/" target="_blank" rel="noopener">Coherent’s Director Bought $15 Million of Stock as It Plunged 13%</a> <span class="news-pub">24/7 Wall St.</span></li></ul></div></div>
+    </section>
+    
+  
+  
+    <section class="section">
+      <details class="critic">
+        <summary>🛡️ 红队自审批注（点击展开）</summary>
+        <div class="critic-body"><p>
+```json
+{
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;核心多头数据全部无源，无法核验&quot;,
+      &quot;detail&quot;: &quot;Layer 2 表格把「Q3 营收 +162% 至 $73.4M、InP 收入 $54.3M、Non-GAAP 毛利率 56.1%（去年 22.4%）、backlog &gt;$5亿、Lumentum 预付款 $4,350万」列为『关键证据』，但该行没有任何 URL，全文 AXTI 唯一的引用链接是 247wallst 那篇讲 COHR/AAOI/LITE 跌幅的聚合文。整份报告对这五组数字没有引用 AXT 的 10-Q、财报新闻稿或电话会记录。营收年化 $294M 对一家 $21亿市值公司而言意味着相对历史营收规模数倍跃升，这类量级的数据必须有原始出处才能作为 8% 仓位的唯一支柱。&quot;,
+      &quot;actionable&quot;: &quot;下单前调取 AXT 最新 10-Q 与 Q3 财报稿，核对 56.1% 是否含一次性项目、backlog 5 亿的口径（订单 vs 意向）；核不上就把 financials 从 7 降到 4–5，评分跌破 7.0 则取消。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;单日逆势翻红被当成瓶颈证据，n=1&quot;,
+      &quot;detail&quot;: &quot;Layer 2『关键观察』用今日 +1.75% 收红推出『唯一抗跌的那个往往就是真正的瓶颈』，但同一段落自己写着 10 日 -26%、盘中最低 $27.61 才拉回 $32.05，即当天是从深跌里反弹而非趋势向上。另外同表 VRT 当日 -0.38% 同样抗跌，与『唯一收红的标的』表述并不一致。用一个交易日的相对强度去印证『不可替代的上游』属于证据层级错配。&quot;,
+      &quot;actionable&quot;: &quot;把『唯一收红』降级为待观察线索，要求至少 3–5 个交易日 RS 持续为正才补第二笔；首笔控制在 4% 以内。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;BLIND_SPOT&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;漏掉出口管制与大客户集中度两条失败路径&quot;,
+      &quot;detail&quot;: &quot;AXTI 属 Critical Minerals 板块，报告的反方 1/2 只覆盖『小市值流动性差』和『InP 涨价周期见顶』，完全没有涉及中国对镓/锗/铟相关物项的出口许可风险——而报告自己在 Layer 2 把该公司定性为磷化铟衬底商。同时『Lumentum 长期协议含 $4,350万预付款』被当作正面证据，却未识别这同时意味着单一大客户依赖：大客户砍单会同时击穿 backlog 和 56.1% 的毛利率。这两条是比『流动性差』更可能的失败路径，被完全跳过。&quot;,
+      &quot;actionable&quot;: &quot;在反方补入出口许可延迟/大客户砍单两条，并为每条指定可观察代理（如 LITE/COHR 下季 capex 指引、AXTI backlog 环比）。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$AXTI&quot;],
+      &quot;title&quot;: &quot;失败信号全是价格，没有基本面触发器&quot;,
+      &quot;detail&quot;: &quot;失败检测信号只有『RS 由 +1.75% 转为连续 2 日跑输 SOX 超 3 个百分点 + 收盘击穿 $27.61』。但报告自己的反方 2 说的是『Lumentum/COHR 削减 2027 订单 → 毛利率快速回落』——这条基本面风险没有任何对应观测量（无 backlog 环比、无 InP 报价、无 COHR/LITE 指引阈值）。结果是：论点里说最怕的事，检测信号里完全测不到，等价格反应出来时已经跌了 15–20%。&quot;,
+      &quot;actionable&quot;: &quot;补一条基本面失效线：AXTI 下季 backlog 环比负增长，或 COHR/LITE 任一在财报中下调光模块 capex/出货指引，即视为论点失效，不等价格确认。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;内部人成本被当成估值锚，valuation 8/10 无估值数据&quot;,
+      &quot;detail&quot;: &quot;Layer 3 给 COHR 估值 8 分的唯一理由是『跌破董事 $183.7 成本』。全文没有出现 COHR 的任何估值倍数——没有 forward P/E、EV/EBITDA、P/S，也没有与自身 5 年区间分位或与 LITE/AAOI 的横向对比。内部人买入价是交易信息，不是估值信息；把『比董事买得便宜』等同于『有价值』是锚定谬误，且报告反方 1 已自认『内部人可能买得太早，其成本不是底』——即论点与反方结论直接对立。&quot;,
+      &quot;actionable&quot;: &quot;补 COHR 当前 forward P/E 与 5 年分位；若无法取得，valuation 应压到 5 分以下，COHR 自然出局。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;THESIS_WEAKNESS&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;自评未过门槛仍给仓位，且总分无法复现&quot;,
+      &quot;detail&quot;: &quot;Layer 3 原文写明『COHR 差 0.05，MU 差 0.25——两者今日都不进 Layer 4，仅列入观察』，但今日推荐随即给出 5% 实际仓位，JSON 里 position_pct: 5。同时按表格自己标注的权重（30/20/15/10/10/10/5）复算：AXTI = 3.0+2.0+0.9+0.7+0.5+0.4+0.35 = 7.85；COHR = 2.4+1.4+1.2+0.8+0.3+0.9+0.2 = 7.20；MU = 2.7+1.4+0.75+0.8+0.2+1.0+0.1 = 6.95。报告给出的是 7.55 / 6.95 / 6.75，三个全部对不上，且 COHR 复算值 7.20 其实已过 7.0 门槛。评分体系既不透明也不可复现，『过线/不过线』这条核心筛选器的判决因此不可信。&quot;,
+      &quot;actionable&quot;: &quot;公开每项权重与乘积。若复算 COHR 确为 7.20，应按过线标的给完整反方论证，而不是用『观察仓』这种模糊授权绕过自己的门槛；若权重另有定义，需在表下注明。&quot;
+    },
+    {
+      &quot;severity&quot;: &quot;WARNING&quot;,
+      &quot;category&quot;: &quot;FAILURE_SIGNAL&quot;,
+      &quot;affected_tickers&quot;: [&quot;$COHR&quot;],
+      &quot;title&quot;: &quot;失败信号与止损同价，零预警价值&quot;,
+      &quot;detail&quot;: &quot;止损设 $174.50，失败信号是『收盘跌破 $174.96 今日低点』——两者相差 0.26 美元（约 0.15%）。也就是说失败信号触发时止损已经执行，这个信号在交易管理上不提供任何提前量。更矛盾的是反方 2 自认『规则库记录 COHR 7–8 月多次出现跌破止损后 V 返，止损纪律历史胜率本身偏低』，等于承认把止损贴在前低下方 0.3% 的历史胜率很差，却没有因此调整止损位置或改用</p><p>```json
+{
+  &quot;findings&quot;: []
+}
+```
+</p></div>
+      </details>
+    </section>
+    
+  <footer class="app-foot">
+    生成时间 2026-11-25 20:33 UTC · 数据来源 Yahoo Finance (~15分钟延迟) ·
+    <a href="https://github.com/beer98/pipboy-ai-vault">GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
